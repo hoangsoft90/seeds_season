@@ -9,7 +9,7 @@ export const metadata: Metadata = {
   applicationName: "Trồng gì hôm nay?",
 };
 
-export default function RootLayout({ children }: LayoutProps<"/">) {
+export default function RootLayout({ children }: { children: React.ReactNode }) {
   return (
     // System font stack — tránh phụ thuộc Google Fonts (dev/offline-friendly, PWA-ready)
     <html lang="vi" className="h-full antialiased">
