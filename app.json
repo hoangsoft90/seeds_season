@@ -1,0 +1,32 @@
+{
+  "expo": {
+    "name": "Trồng Gì Hôm Nay",
+    "slug": "seeds-season",
+    "version": "1.0.0",
+    "orientation": "portrait",
+    "icon": "./assets/icon.png",
+    "scheme": "seedseason",
+    "userInterfaceStyle": "light",
+    "newArchEnabled": true,
+    "splash": {
+      "image": "./assets/splash-icon.png",
+      "resizeMode": "contain",
+      "backgroundColor": "#22c55e"
+    },
+    "android": {
+      "adaptiveIcon": {
+        "foregroundImage": "./assets/android-icon-foreground.png",
+        "backgroundColor": "#22c55e"
+      },
+      "package": "com.tronggihomnay.app",
+      "versionCode": 1,
+      "compileSdkVersion": 36,
+      "targetSdkVersion": 36,
+      "minSdkVersion": 24,
+      "allowCleartextTraffic": true
+    },
+    "plugins": [
+      "expo-router"
+    ]
+  }
+}

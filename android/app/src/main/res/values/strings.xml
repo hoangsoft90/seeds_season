@@ -1,7 +1,0 @@
-<?xml version='1.0' encoding='utf-8'?>
-<resources>
-    <string name="app_name">Trồng Gì Hôm Nay</string>
-    <string name="title_activity_main">Trồng Gì Hôm Nay</string>
-    <string name="package_name">com.tronggihomnay.app</string>
-    <string name="custom_url_scheme">com.tronggihomnay.app</string>
-</resources>

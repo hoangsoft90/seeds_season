@@ -1,15 +1,16 @@
-# Skill: Build Debug APK
+# Skill: Build Debug APK (Expo + EAS)
 
 ## Trigger
 When user asks to "build debug APK", "push code and build", "deploy to GitHub", or "build Android APK".
 
-## ⚠️ CRITICAL: NO LOCAL ANDROID BUILD
-Local environment does NOT have Android SDK / Gradle installed. ALL builds MUST go through GitHub Actions. Do NOT attempt to install Android SDK locally or run Gradle locally.
+## ⚠️ CRITICAL: Build via EAS (no local Android SDK)
+The project is now **Expo React Native**. Builds use **EAS Build** (Expo Application Services) — cloud-based, no local SDK needed.
 
 ## Context
 - **Repo**: `https://github.com/hoangsoft90/seeds_season`
 - **Branch**: `main`
-- **GitHub Token**: stored in `.env.local` as `GH_TOKEN` (do NOT commit tokens to repo)
+- **GitHub Token**: `$GH_TOKEN` (from `.env.local`)
+- **Expo Token**: stored as `EXPO_TOKEN` secret in GitHub repo settings
 
 ## Workflow
 
@@ -21,51 +22,41 @@ git push origin main
 ```
 
 ### 2. GitHub Actions workflow triggers automatically on push to `main`
-- **Build Debug APK** workflow: `.github/workflows/build-debug-apk.yml`
-- **CI** workflow: `.github/workflows/ci.yml`
+- **CI** workflow: `.github/workflows/ci.yml` (tests + typecheck)
+- **Build Debug APK (EAS)** workflow: `.github/workflows/build-debug-apk.yml`
 
 ### 3. Check workflow status
 ```bash
 curl -s -H "Authorization: token $GH_TOKEN" \
   "https://api.github.com/repos/hoangsoft90/seeds_season/actions/runs?per_page=3" | \
-  python3 -c "import sys,json; data=json.load(sys.stdin); [print(f'{r[\"id\"]}: {r[\"status\"]} — {r[\"conclusion\"] or \"running\"} — {r[\"name\"]}') for r in data.get('workflow_runs',[])]"
+  python3 -c "import sys,json; data=json.load(sys.stdin); [print(f'{r[\"id\"]}: {r[\"status\"]} — {r[\"conclusion\"] or \"pending\"} — {r[\"name\"]}') for r in data.get('workflow_runs',[])]"
 ```
 
-### 4. Download APK artifact
-- Go to: `https://github.com/hoangsoft90/seeds_season/actions`
-- Click on the latest successful "Build Debug APK" run
-- Download "debug-apk-xxx" artifact (contains `app-debug.apk`)
-- Artifact expires after 7 days
-
-### 5. Install on phone (if connected via ADB)
-```bash
-adb install -r app-debug.apk
-# or for live reload testing:
-adb reverse tcp:3000 tcp:3000  # forward localhost:3000 to phone
-```
+### 4. Download APK from EAS
+- Go to: `https://expo.dev` → find project `seeds-season`
+- Click latest build → Download APK
+- Or use: `eas build:list --limit 1` to get build URL
 
 ## Technical Details
 
-### Build process (GitHub Actions only)
+### Build process (EAS Build — cloud)
 1. `npm ci` — install dependencies
-2. `npm test` — run 84 tests
-3. `npm run build` — build Next.js
-4. Create placeholder `out/index.html` (Capacitor needs web assets)
-5. `npx cap sync android` — sync Capacitor Android (requires Node.js 22+)
-6. `./gradlew assembleDebug` — build debug APK
+2. `npm test` — run 37 tests (golden + first-aid + explanation)
+3. `eas build --platform android --profile preview` — build APK on EAS cloud
+4. APK available for download from Expo dashboard
 
-### Known issues to watch for
-- **Node.js version**: Capacitor 8 requires Node.js ≥22.0.0
-- **XML comments**: Android resource parser doesn't allow `--` in XML comments
-- **Android SDK**: `ubuntu-latest` has pre-installed SDK, no need for `android-actions/setup-android`
-- **Static export**: Next.js with API routes can't use `output: "export"`, so workflow creates placeholder `out/index.html`
-- **Disk space**: local `/home` partition may be full — always build on CI
+### Project structure (Expo React Native)
+- `app/` — Expo Router screens (tabs + detail pages)
+- `lib/` — Pure TypeScript logic (recommendation engine, first-aid, garden store)
+- `components/` — React Native components
+- `tests/` — Vitest tests (37 golden + first-aid + explanation)
+- `app.json` — Expo config
+- `eas.json` — EAS build profiles
 
-### Android config
-- `android/variables.gradle`: targetSdkVersion = 36
-- `android/app/src/main/res/xml/network_security_config.xml`: HTTP allowed for all domains
-- `capacitor.config.ts`: appId = `com.tronggihomnay.app`
-- `capacitor.config.ts`: server.url = `http://localhost:3000` (live reload via ADB reverse)
+### Known issues
+- **EAS Token**: Need `EXPO_TOKEN` secret in GitHub repo settings for CI builds
+- **First build**: May need to run `eas build:configure` locally first
+- **Expo Go**: Use `npx expo start` for development (no APK needed)
 
 ## Verification
 After build completes:
