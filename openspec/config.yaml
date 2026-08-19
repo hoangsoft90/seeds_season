@@ -1,0 +1,15 @@
+schema: spec-driven
+
+# Project context — shown to AI when creating artifacts.
+context: |
+  App: "Trồng gì hôm nay?" — gợi ý trồng rau/củ/quả theo mùa & vị trí cho người mới
+  trồng ban công ở Việt Nam. North Star: First Successful Grow.
+  Tech stack: Next.js 16 (App Router) + TypeScript + Tailwind CSS v4; API qua Next.js
+  API routes; data file-based (crops_data.json, Schema v2) — sẽ migrate PostgreSQL.
+  Testing: Vitest, Golden Test Cases (tests/golden.test.ts, 21 test) chạy như regression
+  suite trong CI (GitHub Actions).
+  Quy ước: UI tiếng Việt; hard constraints TUYỆT ĐỐI tách khỏi scoring (không weighted
+  average "cứu" cây vượt ngưỡng chết); season là scoring không phải hard exclude;
+  Controlled Diversity = 2 easy + 1 step-up (cây quả tốt nhất, chọn riêng khỏi ranking);
+  NO_MATCH_STATE khi candidates rỗng; weather provider interface (dummy theo mùa, Phase
+  2 swap thật); Recommendation Audit Mode dev-only (lib/recommendation-engine/audit.ts).

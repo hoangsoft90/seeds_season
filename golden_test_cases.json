@@ -1,0 +1,170 @@
+{
+  "schema_version": "2.0",
+  "notes": "Bộ test case cứng cho Recommendation Engine. Chạy như regression suite trong CI — mỗi lần Agent sửa engine (hard constraints, scoring, controlled diversity), toàn bộ case này PHẢI pass. 'must_include' là các crop_id bắt buộc phải xuất hiện trong Top 3 (không nhất thiết đúng thứ tự). 'must_exclude' là các crop_id tuyệt đối không được xuất hiện trong candidate list sau Hard Constraints Filter.",
+  "test_cases": [
+    {
+      "id": "TC01",
+      "description": "Điều kiện thuận lợi chuẩn mùa hè miền Bắc, ban công nắng vừa",
+      "input": {"region": "north_vietnam", "month": 8, "location_type": "balcony", "sunlight_hours": 3, "pot_depth_cm": 20},
+      "must_exclude": [],
+      "must_include": ["rau_muong", "mong_toi"],
+      "expected_note": "Top 3 nên có rau_muong/mong_toi (dễ nhất mùa hè) + 1 step-up (dau_bap hoặc dua_leo)"
+    },
+    {
+      "id": "TC02",
+      "description": "Rét đậm miền Bắc tháng 12, ban công",
+      "input": {"region": "north_vietnam", "month": 12, "location_type": "balcony", "sunlight_hours": 3, "pot_depth_cm": 20},
+      "must_exclude": ["dua_leo", "mong_toi", "rau_den", "hung_que", "dau_bap"],
+      "must_include": ["hanh_la"],
+      "expected_note": "Các cây nhạy cảm lạnh (temp_death_min_c > 10) phải bị loại. Hành lá luôn sống được."
+    },
+    {
+      "id": "TC03",
+      "description": "Cửa sổ ít nắng mùa đông miền Bắc — điều kiện khắc nghiệt kép",
+      "input": {"region": "north_vietnam", "month": 1, "location_type": "window", "sunlight_hours": 2, "pot_depth_cm": 15},
+      "must_exclude": ["ca_chua_bi", "dua_leo", "ot", "dau_bap", "hung_que"],
+      "must_include": ["hanh_la"],
+      "expected_note": "Mọi cây cần >=5h nắng bị loại do sunlight hard constraint (nếu áp dụng như hard constraint) hoặc điểm rất thấp."
+    },
+    {
+      "id": "TC04",
+      "description": "Chậu quá nông (10cm) — test hard constraint pot_depth",
+      "input": {"region": "north_vietnam", "month": 9, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 10},
+      "must_exclude": ["su_hao", "ca_chua_bi", "dua_leo", "ot", "dau_bap", "cu_cai"],
+      "must_include": ["rau_muong"],
+      "expected_note": "Mọi cây có min_pot_depth_cm > 10 phải bị loại tuyệt đối, không được weighted-average cứu."
+    },
+    {
+      "id": "TC05",
+      "description": "TP.HCM mùa khô, ban công nắng tốt, chậu vừa",
+      "input": {"region": "south_vietnam", "month": 1, "location_type": "balcony", "sunlight_hours": 6, "pot_depth_cm": 20},
+      "must_exclude": [],
+      "must_include": ["rau_muong"],
+      "expected_note": "Điều kiện lý tưởng miền Nam mùa khô — nhiều lựa chọn, rau_muong luôn nằm trong candidate."
+    },
+    {
+      "id": "TC06",
+      "description": "TP.HCM mùa mưa — test regional anomaly flag rainy_season",
+      "input": {"region": "south_vietnam", "month": 8, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 25},
+      "must_exclude": [],
+      "must_include": ["rau_muong", "mong_toi"],
+      "expected_note": "Cà chua bi/dưa leo nên bị hạ điểm mạnh (rainy_season anomaly flag) dù không bị loại cứng. Rau muống/mồng tơi chịu nước tốt nên lên top."
+    },
+    {
+      "id": "TC07",
+      "description": "Nắng nóng cực đoan 38-40°C liên tục 1 tuần (dự báo)",
+      "input": {"region": "north_vietnam", "month": 6, "location_type": "balcony", "sunlight_hours": 5, "pot_depth_cm": 20, "forecast_temp_max_c": 39},
+      "must_exclude": ["xa_lach", "ngo_ri", "ca_chua_bi", "cai_xanh", "cai_ngot"],
+      "must_include": ["rau_den"],
+      "expected_note": "Test Weather_Adjustment: cây có temp_death_max_c < 39 phải bị loại kể cả khi 'mùa' về lý thuyết là được."
+    },
+    {
+      "id": "TC08",
+      "description": "Mưa dầm liên tục 5 ngày (dự báo) — test flood tolerance",
+      "input": {"region": "north_vietnam", "month": 8, "location_type": "balcony", "sunlight_hours": 3, "pot_depth_cm": 20, "forecast_condition": "heavy_rain_5days"},
+      "must_exclude": ["cu_cai", "xa_lach", "ngo_ri"],
+      "must_include": ["rau_muong", "mong_toi"],
+      "expected_note": "Cây chịu ngập tốt (water: high_tolerates_waterlogged) nên được ưu tiên, cây rễ củ/lá mỏng nên bị hạ điểm/loại."
+    },
+    {
+      "id": "TC09",
+      "description": "Goal = 'Thu hoạch nhanh nhất' (⚡)",
+      "input": {"region": "north_vietnam", "month": 9, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 20, "user_goal": "fastest_harvest"},
+      "must_exclude": ["ot", "dua_leo", "ca_chua_bi"],
+      "must_include": ["hanh_la"],
+      "expected_note": "Days_To_Harvest_Bonus trọng số phải tăng đủ mạnh để loại các cây >45 ngày khỏi Top 3 dù điều kiện phù hợp. (cu_cai đã bỏ khỏi must_include: cùng 20-30 ngày với rau_muong nhưng thua Temp/Season ở tháng 9 nên không thể vượt lên Top 3.)"
+    },
+    {
+      "id": "TC10",
+      "description": "Goal = 'Rau ăn hàng ngày' (🍅) — ưu tiên cây thu hoạch nhiều lần",
+      "input": {"region": "north_vietnam", "month": 9, "location_type": "balcony", "sunlight_hours": 5,"pot_depth_cm": 25,
+      "user_goal": "daily_food"},
+      "must_exclude": ["cu_cai", "su_hao"],
+      "must_include": [],
+      "must_include_fruit_vegetable": true,
+      "expected_note": "Cây thu hoạch 1 lần (single_harvest tag) nên bị hạ điểm so với cây hái lá dần (cai_xanh, rau_muong)."
+    },
+    {
+      "id": "TC11",
+      "description": "Sân vườn đất, nắng toàn phần — điều kiện tốt nhất có thể",
+      "input": {"region": "north_vietnam", "month": 3, "location_type": "garden", "sunlight_hours": 7, "pot_depth_cm": null},
+      "must_exclude": [],
+      "must_include": [],
+      "must_include_fruit_vegetable": true,
+      "expected_note": "Không có giới hạn pot_depth (đất vườn), điều kiện lý tưởng cho cà chua/dưa leo mùa xuân miền Bắc. (assert: Top 3 phải có ≥1 cây quả — dưa leo đang mùa tháng 3.)"
+    },
+    {
+      "id": "TC12",
+      "description": "Beginner tuyệt đối (không chọn goal, mặc định) — test Beginner_Ease weight",
+      "input": {"region": "north_vietnam", "month": 5, "location_type": "balcony", "sunlight_hours": 5, "pot_depth_cm": 25, "user_experience": "absolute_beginner"},
+      "must_exclude": ["ngo_ri", "su_hao"],
+      "must_include": ["rau_muong"],
+      "must_include_fruit_vegetable": true,
+      "expected_note": "Cây base_difficulty=medium có disease_resistance thấp nên bị hạ dưới các cây easy/high forgiveness. (hanh_la bỏ khỏi must_include: slot 3 là step-up cây quả đang mùa — assert Top 3 có ≥1 cây quả.)"
+    },
+    {
+      "id": "TC13",
+      "description": "Controlled Diversity check — đảm bảo Top 3 có step-up crop",
+      "input": {"region": "north_vietnam", "month": 8, "location_type": "balcony", "sunlight_hours": 5, "pot_depth_cm": 30},
+      "must_exclude": [],
+      "must_include": ["dau_bap"],
+      "expected_note": "Top 3 phải có đúng cấu trúc 2 easy + 1 step-up (category=fruit_vegetable). Nếu chỉ toàn rau lá dễ là SAI logic controlled diversity."
+    },
+    {
+      "id": "TC14",
+      "description": "Feedback loop — tỷ lệ chết cao được báo cáo, không phải hard exclude",
+      "input": {"region": "north_vietnam", "month": 7, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 20, "community_fail_rate_override": {"cai_xanh": 0.7}},
+      "must_exclude": [],
+      "must_include": ["rau_muong"],
+      "expected_note": "cai_xanh KHÔNG bị loại cứng (vẫn theo mùa) nhưng phải bị hạ rank mạnh và hiển thị cảnh báo do community_fail_rate cao. rau_muong lên top vì fail rate thấp."
+    },
+    {
+      "id": "TC15",
+      "description": "No-match state — điều kiện cực khắc nghiệt (rét đậm + gần như không nắng + chậu rất nông)",
+      "input": {"region": "north_vietnam", "month": 1, "location_type": "window", "sunlight_hours": 1, "pot_depth_cm": 8},
+      "must_exclude": ["cai_xanh", "xa_lach", "ca_chua_bi", "dua_leo", "ot", "dau_bap", "su_hao", "cu_cai", "hung_que", "rau_den", "mong_toi"],
+      "must_include": [],
+      "expected_note": "Sau Hard Constraints, candidate list gần như rỗng → phải trả về NO_MATCH_STATE, không được ép trả danh sách gượng ép."
+    },
+    {
+      "id": "TC16",
+      "description": "Đà Lạt (giả định vùng cao, mát quanh năm) — test region không thuộc north/south chuẩn",
+      "input": {"region": "highland_vietnam", "month": 8, "location_type": "balcony", "sunlight_hours": 5, "pot_depth_cm": 25},
+      "must_exclude": [],
+      "must_include": ["hanh_la", "cai_ngot"],
+      "expected_note": "Nếu chưa có regional_rules riêng cho highland_vietnam, engine phải fallback về logic nhiệt độ chung (Đà Lạt mát quanh năm) thay vì áp nhầm quy tắc north/south. (xa_lach/cu_cai bỏ khỏi must_include: vẫn có điểm cao nhưng bị hanh_la/cai_ngot vượt nhẹ; cây quả chiếm slot step-up.)"
+    },
+    {
+      "id": "TC17",
+      "description": "TP.HCM mùa mưa dầm cực đoan (test kết hợp region + weather anomaly)",
+      "input": {"region": "south_vietnam", "month": 7, "location_type": "balcony", "sunlight_hours": 3, "pot_depth_cm": 20, "forecast_condition": "heavy_rain_5days"},
+      "must_exclude": ["ca_chua_bi", "dua_leo", "cu_cai"],
+      "must_include": ["rau_muong", "mong_toi"],
+      "expected_note": "Kết hợp cả regional rainy_season flag lẫn forecast anomaly — cây chịu nước phải chiếm top hoàn toàn."
+    },
+    {
+      "id": "TC18",
+      "description": "Sunlight vừa đủ ngưỡng tối thiểu (edge case) cho cây cần nắng nhiều",
+      "input": {"region": "south_vietnam", "month": 2, "location_type": "balcony", "sunlight_hours": 5, "pot_depth_cm": 30},
+      "must_exclude": [],
+      "must_include": [],
+      "must_include_fruit_vegetable": true,
+      "expected_note": "sunlight_hours=5 đúng bằng min_sunlight_hours của ca_chua_bi/dua_leo/ot/dau_bap → không bị loại (>= là pass), nhưng Sunlight_Score nên ở mức thấp-trung bình. (assert: Top 3 phải có ≥1 cây quả — đậu bắp là step-up tốt nhất tháng 2 miền Nam.)"
+    },
+    {
+      "id": "TC19",
+      "description": "Goal = 'Dễ sống, ít công chăm' (🌿)",
+      "input": {"region": "north_vietnam", "month": 9, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 20, "user_goal": "easy_care"},
+      "must_exclude": ["ngo_ri", "ca_chua_bi", "dua_leo"],
+      "must_include": ["rau_muong", "hanh_la"],
+      "expected_note": "Trọng số nên ưu tiên forgiveness_overwatering/underwatering cao + disease_resistance cao, loại các cây 'medium difficulty' có forgiveness thấp."
+    },
+    {
+      "id": "TC20",
+      "description": "Chuyển mùa — cùng vị trí, khác tháng, kỳ vọng ranking đổi hoàn toàn",
+      "input_a": {"region": "north_vietnam", "month": 7, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 20},
+      "input_b": {"region": "north_vietnam", "month": 11, "location_type": "balcony", "sunlight_hours": 4, "pot_depth_cm": 20},
+      "expected_note": "Test A/B: Top 3 của input_a (mùa hè: rau_muong/rau_den/dau_bap) PHẢI khác đáng kể so với input_b (mùa thu-đông: cai_xanh/xa_lach/su_hao). Nếu ranking giống nhau ở cả 2 input, engine đang bỏ qua Season_Fit — lỗi nghiêm trọng."
+    }
+  ]
+}

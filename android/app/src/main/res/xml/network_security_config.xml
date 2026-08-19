@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+  Network Security Config — cho phép HTTP traffic cho mọi domain.
+  Cần thiết cho Android 9+ (API 28+) vì mặc định chặn HTTP cleartext.
+  */
+<network-security-config>
+  <!-- Cho phép HTTP cho TẤT CẢ domain (dev + production) -->
+  <base-config cleartextTrafficPermitted="true">
+    <trust-anchors>
+      <certificates src="system" />
+    </trust-anchors>
+  </base-config>
+</network-security-config>
