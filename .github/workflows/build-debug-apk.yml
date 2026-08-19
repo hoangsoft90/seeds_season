@@ -32,8 +32,22 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build Next.js
+      - name: Build Next.js (static export)
         run: npm run build
+
+      - name: Create placeholder web assets for Capacitor
+        run: |
+          mkdir -p out
+          cat > out/index.html << 'HTMLEOF'
+          <!DOCTYPE html>
+          <html lang="vi">
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trồng Gì Hôm Nay</title></head>
+          <body><p>Loading...</p></body>
+          </html>
+          HTMLEOF
+
+      - name: Sync Capacitor Android
+        run: npx cap sync android
 
       - name: Setup Java JDK 21
         uses: actions/setup-java@v4
