@@ -1,15 +1,15 @@
-# Build Debug APK — GitHub Actions workflow
+# Build Debug APK - GitHub Actions workflow
 #
-# Trigger: push to main branch hoặc manual dispatch.
-# Build debug APK bằng Gradle trực tiếp (không cần EAS token).
-# Artifact: app-debug.apk được upload để download.
+# Trigger: push to main branch hoac manual dispatch.
+# Build debug APK bang Gradlu truc tiep (khong can EAS token).
+# Artifact: app-debug.apk duoc upload de download.
 
 name: Build Debug APK
 
 on:
   push:
     branches: [main, master]
-  workflow_dispatch: # Cho phép trigger thủ công từ GitHub UI
+  workflow_dispatch: # Cho phep trigger thu cong tu GitHub UI
 
 jobs:
   build:
@@ -32,7 +32,7 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build Next.js (static export)
+      - name: Build Next.js
         run: npm run build
 
       - name: Create placeholder web assets for Capacitor
@@ -41,7 +41,7 @@ jobs:
           cat > out/index.html << 'HTMLEOF'
           <!DOCTYPE html>
           <html lang="vi">
-          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trồng Gì Hôm Nay</title></head>
+          <head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>Trong Gi Hom Nay</title></head>
           <body><p>Loading...</p></body>
           </html>
           HTMLEOF
@@ -55,9 +55,6 @@ jobs:
           java-version: "21"
           distribution: "temurin"
 
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
       - name: Make gradlew executable
         run: chmod +x android/gradlew
 
@@ -70,11 +67,11 @@ jobs:
         run: |
           APK_PATH=$(find android/app/build/outputs/apk/debug -name "*.apk" 2>/dev/null | head -1)
           if [ -z "$APK_PATH" ]; then
-            echo "❌ No APK found!"
+            echo "No APK found!"
             exit 1
           fi
           echo "apk_path=$APK_PATH" >> $GITHUB_OUTPUT
-          echo "✅ Found APK: $APK_PATH"
+          echo "Found APK: $APK_PATH"
           ls -lh "$APK_PATH"
 
       - name: Upload Debug APK artifact
