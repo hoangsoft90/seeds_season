@@ -1,17 +1,21 @@
 import type { CapacitorConfig } from "@capacitor/cli";
 
+// Live reload: Capacitor WebView trỏ tới dev server trên máy tính.
+// Dùng ADB reverse (adb reverse tcp:3000 tcp:3000) để phone truy cập localhost:3000.
+// API routes hoạt động bình thường vì request đi qua dev server.
 const config: CapacitorConfig = {
   appId: "com.tronggihomnay.app",
   appName: "Trồng Gì Hôm Nay",
   webDir: "out",
   server: {
-    // Cho phép HTTP trong release APK (Android security config sẽ xử lý thêm)
+    // Live reload mode — Capacitor WebView load từ dev server
+    url: "http://localhost:3000",
+    cleartext: true,
     androidScheme: "https",
   },
   android: {
-    // Target SDK 36 (Google Play requirement từ 31/8/2026)
     buildOptions: {
-      keystorePath: undefined, // Signing sẽ config khi deploy
+      keystorePath: undefined,
       keystoreAlias: undefined,
     },
   },

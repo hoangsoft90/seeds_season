@@ -3,6 +3,9 @@
 ## Trigger
 When user asks to "build debug APK", "push code and build", "deploy to GitHub", or "build Android APK".
 
+## ⚠️ CRITICAL: NO LOCAL ANDROID BUILD
+Local environment does NOT have Android SDK / Gradle installed. ALL builds MUST go through GitHub Actions. Do NOT attempt to install Android SDK locally or run Gradle locally.
+
 ## Context
 - **Repo**: `https://github.com/hoangsoft90/seeds_season`
 - **Branch**: `main`
@@ -34,9 +37,16 @@ curl -s -H "Authorization: token $GH_TOKEN" \
 - Download "debug-apk-xxx" artifact (contains `app-debug.apk`)
 - Artifact expires after 7 days
 
+### 5. Install on phone (if connected via ADB)
+```bash
+adb install -r app-debug.apk
+# or for live reload testing:
+adb reverse tcp:3000 tcp:3000  # forward localhost:3000 to phone
+```
+
 ## Technical Details
 
-### Build process
+### Build process (GitHub Actions only)
 1. `npm ci` — install dependencies
 2. `npm test` — run 84 tests
 3. `npm run build` — build Next.js
@@ -49,11 +59,13 @@ curl -s -H "Authorization: token $GH_TOKEN" \
 - **XML comments**: Android resource parser doesn't allow `--` in XML comments
 - **Android SDK**: `ubuntu-latest` has pre-installed SDK, no need for `android-actions/setup-android`
 - **Static export**: Next.js with API routes can't use `output: "export"`, so workflow creates placeholder `out/index.html`
+- **Disk space**: local `/home` partition may be full — always build on CI
 
 ### Android config
 - `android/variables.gradle`: targetSdkVersion = 36
 - `android/app/src/main/res/xml/network_security_config.xml`: HTTP allowed for all domains
 - `capacitor.config.ts`: appId = `com.tronggihomnay.app`
+- `capacitor.config.ts`: server.url = `http://localhost:3000` (live reload via ADB reverse)
 
 ## Verification
 After build completes:
