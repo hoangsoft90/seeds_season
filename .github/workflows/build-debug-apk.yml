@@ -1,6 +1,4 @@
 # Build Debug APK — Expo prebuild + Gradle (no EAS token needed)
-#
-# Trigger: push to main or manual dispatch.
 
 name: Build Debug APK
 
@@ -39,25 +37,13 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Fix Kotlin version for Compose Compiler
+      - name: Suppress Kotlin version check (Compose Compiler compat)
         run: |
           cd android
-          # Force Kotlin 1.9.25 in gradle.properties
-          if [ -f gradle.properties ]; then
-            sed -i 's/kotlinVersion=.*/kotlinVersion=1.9.25/' gradle.properties || true
-          fi
-          # Also force in variables.gradle
-          if [ -f variables.gradle ]; then
-            sed -i 's/kotlinVersion:.*/kotlinVersion: "1.9.25"/' variables.gradle || true
-          fi
-          # And in build.gradle (top-level)
-          if [ -f build.gradle ]; then
-            sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' build.gradle || true
-          fi
-          echo "=== gradle.properties ==="
-          cat gradle.properties 2>/dev/null || echo "(none)"
-          echo "=== variables.gradle ==="
-          cat variables.gradle 2>/dev/null || echo "(none)"
+          # Compose Compiler 1.5.15 requires Kotlin 1.9.25, but expo-modules-core uses 1.9.24
+          # Official workaround: suppress the version compatibility check
+          echo "suppressKotlinVersionCompatibilityCheck=true" >> gradle.properties
+          echo "kotlinVersion=1.9.25" >> gradle.properties
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
