@@ -37,13 +37,16 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Suppress Kotlin version check (Compose Compiler compat)
+      - name: Fix Kotlin 1.9.24 → 1.9.25 for Compose Compiler compat
         run: |
           cd android
-          # Compose Compiler 1.5.15 requires Kotlin 1.9.25, but expo-modules-core uses 1.9.24
-          # Official workaround: suppress the version compatibility check
-          echo "suppressKotlinVersionCompatibilityCheck=true" >> gradle.properties
-          echo "kotlinVersion=1.9.25" >> gradle.properties
+          # Patch expo-modules-core/build.gradle to use Kotlin 1.9.25
+          for f in $(find ../node_modules -path "*/android/build.gradle" -name "build.gradle" 2>/dev/null | head -30); do
+            sed -i 's/"1\.9\.24"/"1.9.25"/g' "$f" 2>/dev/null || true
+          done
+          # Also patch gradle.properties at root
+          sed -i 's/kotlinVersion=.*/kotlinVersion=1.9.25/' gradle.properties 2>/dev/null || true
+          echo "Patched Kotlin version in node_modules"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
