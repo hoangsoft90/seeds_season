@@ -39,25 +39,22 @@ jobs:
 
       - name: Fix Kotlin 1.9.24 → 1.9.25 for Compose Compiler
         run: |
-          # Patch expo-modules-core to use Kotlin 1.9.25
-          sed -i 's/"1\.9\.24"/"1.9.25"/g' \
-            node_modules/expo-modules-core/android/build.gradle \
-            node_modules/expo/android/build.gradle \
-            node_modules/expo-constants/android/build.gradle \
-            node_modules/expo-linking/android/build.gradle \
-            node_modules/expo-splash-screen/android/build.gradle \
-            node_modules/expo-modules-core/android/expo-annotations/build.gradle \
-            node_modules/expo-modules-core/android/expo-modules-core/build.gradle \
-            2>/dev/null || true
+          cd android
 
-          # Also patch the root build.gradle kotlinVersion
-          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' \
-            android/build.gradle 2>/dev/null || true
+          # 1) Set the Gradle property that expo-modules-core reads via findProperty()
+          sed -i '/^android\.useAndroidX/a android.kotlinVersion=1.9.25' gradle.properties
 
-          # Verify
-          echo "=== Verify Kotlin version in expo-modules-core ==="
-          grep -r "1.9.24\|1.9.25" node_modules/expo-modules-core/android/build.gradle 2>/dev/null || echo "(file not found)"
-          grep "kotlinVersion" android/build.gradle 2>/dev/null || echo "(no match in root build.gradle)"
+          # 2) Patch root build.gradle ext block
+          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' build.gradle
+          sed -i "s/kotlinVersion = '1\.9\.24'/kotlinVersion = '1.9.25'/g" build.gradle
+
+          # 3) Patch expo-modules-core build.gradle (fallback)
+          sed -i "s/'1\.9\.24'/'1.9.25'/g" ../node_modules/expo-modules-core/android/build.gradle 2>/dev/null || true
+
+          echo "=== gradle.properties ==="
+          grep -i kotlin gradle.properties
+          echo "=== root build.gradle ==="
+          grep -i kotlin build.gradle || echo "(none)"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
