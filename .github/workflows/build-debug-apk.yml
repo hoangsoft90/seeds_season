@@ -1,4 +1,4 @@
-# Build Standalone Debug APK — Expo prebuild + JS bundle + Gradle
+# Build Standalone Debug APK — Expo prebuild + Gradle bundling
 # APK chạy offline, không cần Metro dev server
 
 name: Build Debug APK
@@ -23,12 +23,7 @@ jobs:
           node-version: "22"
 
       - name: Install dependencies
-        run: |
-          npm install
-          npx expo install --fix
-
-      - name: Install React Native CLI for bundling
-        run: npm install --no-save @react-native-community/cli @react-native-community/cli-platform-android
+        run: npm install
 
       - name: Run tests
         run: npm test
@@ -53,16 +48,14 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Bundle JS for Android (standalone)
+      - name: Enable JS bundling in debug builds
         run: |
-          mkdir -p android/app/src/main/assets
-          npx react-native bundle \
-            --platform android \
-            --dev false \
-            --entry-file node_modules/expo-router/entry.js \
-            --bundle-output android/app/src/main/assets/index.android.bundle \
-            --assets-dest android/app/src/main/res
-          echo "JS bundle size: $(du -sh android/app/src/main/assets/index.android.bundle)"
+          # Ensure Gradle bundles JS in debug mode too (not just release)
+          # This makes the APK standalone without needing Metro
+          if ! grep -q "bundleInDebug" android/app/build.gradle; then
+            sed -i '/react {/a\            bundleInDebug = true' android/app/build.gradle
+            echo "Added bundleInDebug = true"
+          fi
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -70,7 +63,7 @@ jobs:
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Build debug APK
+      - name: Build debug APK (with embedded JS)
         run: |
           cd android
           chmod +x gradlew
