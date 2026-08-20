@@ -37,25 +37,6 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Fix Kotlin 1.9.24 → 1.9.25 for Compose Compiler
-        run: |
-          cd android
-
-          # 1) Set the Gradle property that expo-modules-core reads via findProperty()
-          sed -i '/^android\.useAndroidX/a android.kotlinVersion=1.9.25' gradle.properties
-
-          # 2) Patch root build.gradle ext block
-          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' build.gradle
-          sed -i "s/kotlinVersion = '1\.9\.24'/kotlinVersion = '1.9.25'/g" build.gradle
-
-          # 3) Patch expo-modules-core build.gradle (fallback)
-          sed -i "s/'1\.9\.24'/'1.9.25'/g" ../node_modules/expo-modules-core/android/build.gradle 2>/dev/null || true
-
-          echo "=== gradle.properties ==="
-          grep -i kotlin gradle.properties
-          echo "=== root build.gradle ==="
-          grep -i kotlin build.gradle || echo "(none)"
-
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
@@ -66,7 +47,9 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug
+          ./gradlew assembleDebug \
+            -Pandroid.kotlinVersion=1.9.25 \
+            -PkotlinVersion=1.9.25
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
