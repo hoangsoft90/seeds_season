@@ -37,16 +37,27 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Fix Kotlin 1.9.24 → 1.9.25 for Compose Compiler compat
+      - name: Fix Kotlin 1.9.24 → 1.9.25 for Compose Compiler
         run: |
-          cd android
-          # Patch expo-modules-core/build.gradle to use Kotlin 1.9.25
-          for f in $(find ../node_modules -path "*/android/build.gradle" -name "build.gradle" 2>/dev/null | head -30); do
-            sed -i 's/"1\.9\.24"/"1.9.25"/g' "$f" 2>/dev/null || true
-          done
-          # Also patch gradle.properties at root
-          sed -i 's/kotlinVersion=.*/kotlinVersion=1.9.25/' gradle.properties 2>/dev/null || true
-          echo "Patched Kotlin version in node_modules"
+          # Patch expo-modules-core to use Kotlin 1.9.25
+          sed -i 's/"1\.9\.24"/"1.9.25"/g' \
+            node_modules/expo-modules-core/android/build.gradle \
+            node_modules/expo/android/build.gradle \
+            node_modules/expo-constants/android/build.gradle \
+            node_modules/expo-linking/android/build.gradle \
+            node_modules/expo-splash-screen/android/build.gradle \
+            node_modules/expo-modules-core/android/expo-annotations/build.gradle \
+            node_modules/expo-modules-core/android/expo-modules-core/build.gradle \
+            2>/dev/null || true
+
+          # Also patch the root build.gradle kotlinVersion
+          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' \
+            android/build.gradle 2>/dev/null || true
+
+          # Verify
+          echo "=== Verify Kotlin version in expo-modules-core ==="
+          grep -r "1.9.24\|1.9.25" node_modules/expo-modules-core/android/build.gradle 2>/dev/null || echo "(file not found)"
+          grep "kotlinVersion" android/build.gradle 2>/dev/null || echo "(no match in root build.gradle)"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
