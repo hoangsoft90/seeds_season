@@ -26,6 +26,9 @@ jobs:
       - name: Install dependencies
         run: npm ci
 
+      - name: Install React Native CLI for bundling
+        run: npm install --no-save @react-native-community/cli @react-native-community/cli-platform-android
+
       - name: Run tests
         run: npm test
 
