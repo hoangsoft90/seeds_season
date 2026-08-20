@@ -1,4 +1,5 @@
-# Build Debug APK — Expo prebuild + Gradle (no EAS token needed)
+# Build Standalone Debug APK — Expo prebuild + JS bundle + Gradle
+# APK chạy offline, không cần Metro dev server
 
 name: Build Debug APK
 
@@ -30,16 +31,12 @@ jobs:
 
       - name: Fix Kotlin version in react-native version catalogs
         run: |
-          # Root cause: React Native 0.76 bundles Kotlin 1.9.24 but
-          # Compose Compiler 1.5.15 requires Kotlin 1.9.25.
-          # Patch ALL version catalog files.
           for f in \
             node_modules/react-native/gradle/libs.versions.toml \
             node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
             if [ -f "$f" ]; then
               sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
               echo "Patched: $f"
-              grep "^kotlin" "$f"
             fi
           done
 
@@ -51,6 +48,17 @@ jobs:
 
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
+
+      - name: Bundle JS for Android (standalone)
+        run: |
+          mkdir -p android/app/src/main/assets
+          npx react-native bundle \
+            --platform android \
+            --dev false \
+            --entry-file node_modules/expo-router/entry.js \
+            --bundle-output android/app/src/main/assets/index.android.bundle \
+            --assets-dest android/app/src/main/res
+          echo "JS bundle size: $(du -sh android/app/src/main/assets/index.android.bundle)"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
