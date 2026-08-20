@@ -1,7 +1,6 @@
 # Build Debug APK — Expo prebuild + Gradle (no EAS token needed)
 #
 # Trigger: push to main or manual dispatch.
-# Uses expo prebuild to generate android/ folder, then builds debug APK with Gradle.
 
 name: Build Debug APK
 
@@ -40,12 +39,25 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Patch Kotlin version (Compose Compiler 1.5.15 needs 1.9.25)
+      - name: Fix Kotlin version for Compose Compiler
         run: |
-          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' android/build.gradle || true
-          sed -i 's/kotlin_version = "1\.9\.24"/kotlin_version = "1.9.25"/g' android/build.gradle || true
-          # Also fix variables.gradle if present
-          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' android/variables.gradle || true
+          cd android
+          # Force Kotlin 1.9.25 in gradle.properties
+          if [ -f gradle.properties ]; then
+            sed -i 's/kotlinVersion=.*/kotlinVersion=1.9.25/' gradle.properties || true
+          fi
+          # Also force in variables.gradle
+          if [ -f variables.gradle ]; then
+            sed -i 's/kotlinVersion:.*/kotlinVersion: "1.9.25"/' variables.gradle || true
+          fi
+          # And in build.gradle (top-level)
+          if [ -f build.gradle ]; then
+            sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' build.gradle || true
+          fi
+          echo "=== gradle.properties ==="
+          cat gradle.properties 2>/dev/null || echo "(none)"
+          echo "=== variables.gradle ==="
+          cat variables.gradle 2>/dev/null || echo "(none)"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
