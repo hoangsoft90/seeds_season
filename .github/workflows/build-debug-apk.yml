@@ -37,6 +37,48 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
+      - name: Debug — show build.gradle and gradle.properties
+        run: |
+          echo "=== android/build.gradle ==="
+          cat android/build.gradle
+          echo ""
+          echo "=== android/gradle.properties ==="
+          cat android/gradle.properties
+          echo ""
+          echo "=== expo-modules-core build.gradle (kotlin lines) ==="
+          grep -n "kotlin\|1.9" node_modules/expo-modules-core/android/build.gradle 2>/dev/null || echo "(not found)"
+
+      - name: Patch Kotlin version in ALL gradle files
+        run: |
+          cd android
+
+          # Patch root build.gradle — change ALL kotlin version refs
+          sed -i 's/"1\.9\.24"/"1.9.25"/g' build.gradle
+          sed -i "s/'1\.9\.24'/'1.9.25'/g" build.gradle
+          sed -i 's/1\.9\.24/1.9.25/g' build.gradle
+
+          # Patch expo-modules-core and other Expo modules
+          for f in \
+            ../node_modules/expo-modules-core/android/build.gradle \
+            ../node_modules/expo-modules-core/android/expo-modules-core/build.gradle \
+            ../node_modules/expo/android/build.gradle \
+            ../node_modules/expo-constants/android/build.gradle \
+            ../node_modules/expo-linking/android/build.gradle \
+            ../node_modules/expo-splash-screen/android/build.gradle; do
+            if [ -f "$f" ]; then
+              sed -i 's/1\.9\.24/1.9.25/g' "$f"
+            fi
+          done
+
+          # Add to gradle.properties
+          echo "android.kotlinVersion=1.9.25" >> gradle.properties
+          echo "suppressKotlinVersionCompatibilityCheck=true" >> gradle.properties
+
+          echo "=== After patch: build.gradle kotlin refs ==="
+          grep -n "1\.9\." build.gradle || echo "(none)"
+          echo "=== After patch: expo-modules-core kotlin refs ==="
+          grep -rn "1\.9\." ../node_modules/expo-modules-core/android/build.gradle 2>/dev/null | head -5 || echo "(none)"
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
@@ -47,9 +89,7 @@ jobs:
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew assembleDebug \
-            -Pandroid.kotlinVersion=1.9.25 \
-            -PkotlinVersion=1.9.25
+          ./gradlew assembleDebug
 
       - name: Upload APK artifact
         uses: actions/upload-artifact@v4
