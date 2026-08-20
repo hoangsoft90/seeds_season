@@ -40,6 +40,13 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
+      - name: Patch Kotlin version (Compose Compiler 1.5.15 needs 1.9.25)
+        run: |
+          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' android/build.gradle || true
+          sed -i 's/kotlin_version = "1\.9\.24"/kotlin_version = "1.9.25"/g' android/build.gradle || true
+          # Also fix variables.gradle if present
+          sed -i 's/kotlinVersion = "1\.9\.24"/kotlinVersion = "1.9.25"/g' android/variables.gradle || true
+
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
