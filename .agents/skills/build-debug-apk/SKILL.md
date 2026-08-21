@@ -4,7 +4,7 @@
 - **Repo URL:** `https://github.com/hoangsoft90/seeds_season`
 - **Workflow:** `.github/workflows/build-debug-apk.yml`
 - **Trigger:** Push to `main` or manual dispatch
-- **Output:** Standalone debug APK artifact (~40MB)
+- **Output:** Standalone debug APK artifact (~140MB with embedded JS)
 
 ## How to Trigger Build
 1. Make changes → commit → push to `main`
@@ -24,25 +24,37 @@ git push origin main
 
 ## Build Process (in workflow)
 1. `npm install` + `npm test`
-2. Patch Kotlin version: `1.9.24` → `1.9.25` in `node_modules/react-native/gradle/libs.versions.toml`
-3. `npx expo prebuild --platform android --no-install --clean` — generates `android/` folder
-4. **Key fix:** `sed -i 's|// debuggableVariants = ["debug"]|debuggableVariants = []|' android/app/build.gradle` — makes debug variant also bundle JS (standalone, no Metro)
-5. `./gradlew assembleDebug` — builds APK with embedded JS bundle
+2. Patch Kotlin version: `1.9.24` → `1.9.25` in version catalogs
+3. `npx expo prebuild --platform android --no-install --clean`
+4. **Key fix:** `sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle`
+5. `./gradlew assembleDebug`
 6. Upload artifact
 
 ## Important: Standalone APK (No Metro)
-The APK must be standalone — no dependency on Metro dev server.
-- Default Expo: `debuggableVariants = ["debug"]` → debug skips JS bundling
-- Fix: `debuggableVariants = []` → ALL variants bundle JS
-- **DO NOT use `bundleInDebug = true`** — property does not exist in React Native Gradle Plugin
-
-## Known Issues
-- **Kotlin version mismatch:** `expo-modules-core` needs Kotlin 1.9.25 but RN defaults to 1.9.24 → patch version catalogs in node_modules
-- **Node.js 22+ required:** Capacitor 8 / Expo SDK 52 needs Node 22
-- **No local Android build:** Do NOT build locally — only via GitHub Actions
-- **APK size:** ~40MB (includes Hermes engine + JS bundle + assets)
+- Default: `debuggableVariants` includes debug → debug skips JS bundling → white screen
+- Fix: `debuggableVariants = []` → ALL variants bundle JS → standalone APK
+- **DO NOT** use `bundleInDebug = true` (property doesn't exist)
+- **DO NOT** use `// debuggableVariants = ["debug"]` sed pattern (Expo generates different format)
+- Correct sed: `sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|'`
 
 ## Installing APK on Phone
 ```bash
-adb install -r app-debug.apk
+# Uninstall old version first (signature mismatch)
+adb uninstall com.tronggihomnay.app
+
+# Push APK to device (slow over WiFi, ~7 min for 140MB)
+adb push app-debug.apk /data/local/tmp/app-debug.apk
+
+# Install from device
+adb shell pm install /data/local/tmp/app-debug.apk
+
+# Launch
+adb shell am start -n com.tronggihomnay.app/.MainActivity
 ```
+
+## Known Issues
+- **Kotlin version mismatch:** Patch version catalogs in node_modules
+- **Node.js 22+ required:** Expo SDK 52
+- **No local Android build:** Only via GitHub Actions
+- **APK size:** ~140MB (includes Hermes + JS bundle + assets)
+- **WiFi ADB push is slow:** ~7 min for 140MB
