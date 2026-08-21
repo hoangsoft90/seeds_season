@@ -54,7 +54,7 @@ jobs:
           echo "Patched debuggableVariants to [] (all variants bundle JS)"
           grep "debuggableVariants" android/app/build.gradle
 
-      - name: Force kotlin-stdlib to 1.9.25 for AdMob compatibility
+      - name: Force play-services-ads to 23.x for Kotlin 1.9.x compat
         run: |
           ROOT_BUILD="android/build.gradle"
           if [ ! -f "$ROOT_BUILD" ]; then
@@ -66,10 +66,12 @@ jobs:
             exit 0
           fi
           echo "" >> "$ROOT_BUILD"
-          echo "// Force kotlin-stdlib 1.9.25 — AdMob pulls 2.1.0 incompatible with Kotlin 1.9.x" >> "$ROOT_BUILD"
+          echo "// Force play-services-ads to 23.x — v24.6.0 compiled with Kotlin 2.1.0" >> "$ROOT_BUILD"
+          echo "// incompatible with React Native SDK 52 Kotlin 1.9.x compiler" >> "$ROOT_BUILD"
           echo "allprojects {" >> "$ROOT_BUILD"
           echo "    configurations.all {" >> "$ROOT_BUILD"
           echo "        resolutionStrategy {" >> "$ROOT_BUILD"
+          echo "            force \"com.google.android.gms:play-services-ads:23.6.0\"" >> "$ROOT_BUILD"
           echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
           echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
           echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
