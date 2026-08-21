@@ -62,6 +62,25 @@ jobs:
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
+      - name: Force kotlin-stdlib to 1.9.25 for compatibility
+        run: |
+          # react-native-google-mobile-ads pulls kotlin-stdlib:2.1.0
+          # but Kotlin compiler 1.9.x can only read metadata up to 2.0.0
+          # Force downgrade in all build.gradle files
+          find android -name "build.gradle" -exec grep -l "dependencies" {} \; | while read f; do
+            if ! grep -q "resolutionStrategy" "$f"; then
+              sed -i '/^dependencies {/i \configurations.all {
+  resolutionStrategy {
+    force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
+    force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
+    force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
+  }
+}
+' "$f"
+              echo "Patched: $f"
+            fi
+          done
+
       - name: Build debug APK (with embedded JS bundle)
         run: |
           cd android
