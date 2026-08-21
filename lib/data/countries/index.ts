@@ -11,11 +11,15 @@ import type { CountryConfig, CountryId } from "./types";
 import { vietnamConfig } from "./vietnam/config";
 import { thailandConfig } from "./thailand/config";
 import { indonesiaConfig } from "./indonesia/config";
+import { usaConfig } from "./usa/config";
+import { ukConfig } from "./uk/config";
 
 const countryConfigs: Record<CountryId, CountryConfig> = {
   vietnam: vietnamConfig,
   thailand: thailandConfig,
   indonesia: indonesiaConfig,
+  usa: usaConfig,
+  uk: ukConfig,
 };
 
 /** Get config for a specific country */

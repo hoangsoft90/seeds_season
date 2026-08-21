@@ -14,6 +14,8 @@ import type { CountryId } from "./countries/types";
 import vietnamCrops from "./countries/vietnam/crops.json";
 import thailandCrops from "./countries/thailand/crops.json";
 import indonesiaCrops from "./countries/indonesia/crops.json";
+import usaCrops from "./countries/usa/crops.json";
+import ukCrops from "./countries/uk/crops.json";
 
 // Registry: countryId → crop dataset
 // Note: JSON imports have number[] for tuples — cast through unknown to satisfy TS
@@ -21,6 +23,8 @@ const CROP_DATASETS: Record<CountryId, CropsDataset> = {
   vietnam: vietnamCrops as unknown as CropsDataset,
   thailand: thailandCrops as unknown as CropsDataset,
   indonesia: indonesiaCrops as unknown as CropsDataset,
+  usa: usaCrops as unknown as CropsDataset,
+  uk: ukCrops as unknown as CropsDataset,
 };
 
 // Cache for parsed crops

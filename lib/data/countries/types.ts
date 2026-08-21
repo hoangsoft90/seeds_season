@@ -45,4 +45,4 @@ export interface CountryConfig {
   month_names: string[];
 }
 
-export type CountryId = "vietnam" | "thailand" | "indonesia";
+export type CountryId = "vietnam" | "thailand" | "indonesia" | "usa" | "uk";

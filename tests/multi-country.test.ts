@@ -15,11 +15,13 @@ import { getAllCountries, getCountryConfig } from "../lib/data/countries";
 import type { RecommendationContext } from "../lib/recommendation-engine/types";
 
 describe("Multi-Country Support", () => {
-  it("supports 3 countries with crop data", () => {
+  it("supports 5 countries with crop data", () => {
     const countries = getSupportedCropCountryIds();
     expect(countries).toContain("vietnam");
     expect(countries).toContain("thailand");
     expect(countries).toContain("indonesia");
+    expect(countries).toContain("usa");
+    expect(countries).toContain("uk");
   });
 
   it("each country has at least 5 crops", () => {
@@ -153,6 +155,81 @@ describe("Multi-Country Support", () => {
     // terong (25cm) and tomat (25cm) should be excluded
     expect(excluded).toContain("terong");
     expect(excluded).toContain("tomat");
+  });
+
+  // USA
+  it("USA: northeast in spring recommends cool-season crops", () => {
+    const crops = getCropsForCountry("usa");
+    const ctx: RecommendationContext = {
+      country: "usa",
+      region: "northeast",
+      month: 5, // May
+      location_type: "balcony",
+      sunlight_hours: 6,
+      pot_depth_cm: 20,
+    };
+    const result = getRecommendations(ctx, crops);
+    expect(result.status).toBe("ok");
+    expect(result.recommendations.length).toBeGreaterThan(0);
+
+    // Should include USA-specific crops
+    const ids = result.recommendations.map((r) => r.crop.crop_base.id);
+    const hasUSACrop = ids.some((id) =>
+      ["tomato", "lettuce", "basil", "cherry_tomato", "zucchini"].includes(id)
+    );
+    expect(hasUSACrop).toBe(true);
+  });
+
+  it("USA: winter in northeast has fewer viable crops", () => {
+    const crops = getCropsForCountry("usa");
+    const ctx: RecommendationContext = {
+      country: "usa",
+      region: "northeast",
+      month: 1, // January
+      location_type: "balcony",
+      sunlight_hours: 4,
+      pot_depth_cm: 20,
+    };
+    const result = getRecommendations(ctx, crops);
+    // Winter should exclude most warm-season crops
+    expect(result.excluded.length).toBeGreaterThan(0);
+  });
+
+  // UK
+  it("UK: south England in summer recommends temperate crops", () => {
+    const crops = getCropsForCountry("uk");
+    const ctx: RecommendationContext = {
+      country: "uk",
+      region: "south_england",
+      month: 6, // June
+      location_type: "balcony",
+      sunlight_hours: 6,
+      pot_depth_cm: 20,
+    };
+    const result = getRecommendations(ctx, crops);
+    expect(result.status).toBe("ok");
+    expect(result.recommendations.length).toBeGreaterThan(0);
+
+    const ids = result.recommendations.map((r) => r.crop.crop_base.id);
+    const hasUKCrop = ids.some((id) =>
+      ["lettuce", "basil", "spring_onion", "radish", "mint"].includes(id)
+    );
+    expect(hasUKCrop).toBe(true);
+  });
+
+  it("UK: scotland in winter — most crops excluded", () => {
+    const crops = getCropsForCountry("uk");
+    const ctx: RecommendationContext = {
+      country: "uk",
+      region: "scotland",
+      month: 1, // January
+      location_type: "balcony",
+      sunlight_hours: 2,
+      pot_depth_cm: 15,
+    };
+    const result = getRecommendations(ctx, crops);
+    // Scotland winter: cold + low sunlight = many exclusions
+    expect(result.excluded.length).toBeGreaterThan(3);
   });
 
   // Edge case: unknown region fallback

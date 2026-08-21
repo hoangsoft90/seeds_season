@@ -21,6 +21,73 @@ type MonthlyTempData = { min: number; max: number }[];
 
 /** All temperature data organized by country → region. */
 const COUNTRY_TEMPS: Record<string, Record<string, MonthlyTempData>> = {
+  usa: {
+    // Northeast (NY, Boston) — cold winters, warm summers
+    northeast: [
+      { min: -5, max: 3 }, { min: -3, max: 5 }, { min: 2, max: 10 },
+      { min: 7, max: 16 }, { min: 12, max: 22 }, { min: 17, max: 27 },
+      { min: 20, max: 30 }, { min: 19, max: 29 }, { min: 15, max: 25 },
+      { min: 9, max: 18 }, { min: 4, max: 12 }, { min: -2, max: 5 },
+    ],
+    // Southeast (Atlanta, Miami) — mild winters, hot summers
+    southeast: [
+      { min: 5, max: 15 }, { min: 7, max: 17 }, { min: 10, max: 21 },
+      { min: 14, max: 25 }, { min: 18, max: 29 }, { min: 22, max: 32 },
+      { min: 23, max: 33 }, { min: 23, max: 33 }, { min: 21, max: 31 },
+      { min: 15, max: 26 }, { min: 10, max: 21 }, { min: 6, max: 16 },
+    ],
+    // Midwest (Chicago) — extreme winters, hot summers
+    midwest: [
+      { min: -8, max: -1 }, { min: -6, max: 2 }, { min: 0, max: 9 },
+      { min: 6, max: 16 }, { min: 12, max: 22 }, { min: 17, max: 28 },
+      { min: 19, max: 30 }, { min: 18, max: 29 }, { min: 14, max: 25 },
+      { min: 8, max: 17 }, { min: 2, max: 10 }, { min: -5, max: 1 },
+    ],
+    // West Coast (LA, SF, Seattle) — mild, less variation
+    west_coast: [
+      { min: 8, max: 18 }, { min: 9, max: 19 }, { min: 10, max: 20 },
+      { min: 11, max: 22 }, { min: 13, max: 24 }, { min: 15, max: 27 },
+      { min: 17, max: 30 }, { min: 17, max: 30 }, { min: 16, max: 28 },
+      { min: 13, max: 24 }, { min: 10, max: 20 }, { min: 8, max: 18 },
+    ],
+    // Mountain (Denver) — dry, extreme temp swings
+    mountain: [
+      { min: -7, max: 7 }, { min: -5, max: 10 }, { min: -1, max: 14 },
+      { min: 4, max: 19 }, { min: 9, max: 24 }, { min: 14, max: 30 },
+      { min: 17, max: 32 }, { min: 16, max: 31 }, { min: 11, max: 27 },
+      { min: 5, max: 20 }, { min: -2, max: 12 }, { min: -7, max: 6 },
+    ],
+  },
+  uk: {
+    // South England (London) — mildest in UK
+    south_england: [
+      { min: 2, max: 8 }, { min: 2, max: 8 }, { min: 4, max: 11 },
+      { min: 6, max: 14 }, { min: 9, max: 17 }, { min: 12, max: 20 },
+      { min: 14, max: 23 }, { min: 14, max: 22 }, { min: 11, max: 19 },
+      { min: 8, max: 15 }, { min: 5, max: 11 }, { min: 3, max: 8 },
+    ],
+    // North England (Manchester) — cooler
+    north_england: [
+      { min: 1, max: 6 }, { min: 1, max: 7 }, { min: 2, max: 9 },
+      { min: 4, max: 12 }, { min: 7, max: 15 }, { min: 10, max: 18 },
+      { min: 12, max: 20 }, { min: 12, max: 20 }, { min: 10, max: 17 },
+      { min: 7, max: 13 }, { min: 4, max: 9 }, { min: 2, max: 7 },
+    ],
+    // Scotland (Edinburgh) — coldest in UK
+    scotland: [
+      { min: 0, max: 5 }, { min: 0, max: 6 }, { min: 1, max: 8 },
+      { min: 3, max: 11 }, { min: 6, max: 14 }, { min: 9, max: 16 },
+      { min: 11, max: 18 }, { min: 11, max: 18 }, { min: 9, max: 16 },
+      { min: 6, max: 12 }, { min: 3, max: 8 }, { min: 1, max: 5 },
+    ],
+    // Wales (Cardiff) — similar to south but wetter
+    wales: [
+      { min: 2, max: 7 }, { min: 2, max: 7 }, { min: 3, max: 10 },
+      { min: 5, max: 13 }, { min: 8, max: 16 }, { min: 11, max: 19 },
+      { min: 13, max: 21 }, { min: 13, max: 21 }, { min: 11, max: 18 },
+      { min: 8, max: 14 }, { min: 5, max: 10 }, { min: 3, max: 8 },
+    ],
+  },
   vietnam: {
     // Miền Bắc (Hà Nội): đông rét ~13°C, hè nóng ~33-34°C
     north_vietnam: [
@@ -161,6 +228,17 @@ const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
   sumatra: { lat: -2.9761, lng: 104.7754 }, // Palembang
   bali: { lat: -8.3405, lng: 115.0920 },    // Denpasar
   kalimantan: { lat: -0.5071, lng: 117.1535 }, // Samarinda
+  // USA
+  northeast: { lat: 40.7128, lng: -74.0060 },   // New York
+  southeast: { lat: 33.7490, lng: -84.3880 },    // Atlanta
+  midwest: { lat: 41.8781, lng: -87.6298 },     // Chicago
+  west_coast: { lat: 34.0522, lng: -118.2437 }, // Los Angeles
+  mountain: { lat: 39.7392, lng: -104.9903 },   // Denver
+  // UK
+  south_england: { lat: 51.5074, lng: -0.1278 },  // London
+  north_england: { lat: 53.4808, lng: -2.2426 },  // Manchester
+  scotland: { lat: 55.9533, lng: -3.1883 },       // Edinburgh
+  wales: { lat: 51.4816, lng: -3.1791 },          // Cardiff
 };
 
 /** Weather code từ Open-Meteo → condition string. */
