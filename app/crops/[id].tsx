@@ -19,6 +19,7 @@ import {
   soilLabel,
   REGION_LABELS,
 } from "../../lib/labels";
+import { AppBannerAd } from "../../components/BannerAd";
 
 const DEMO_USER = "demo-user";
 
@@ -174,6 +175,8 @@ export default function CropDetailScreen() {
       >
         <Text style={styles.firstAidText}>🆘 Cây có vấn đề? → Sơ cứu</Text>
       </TouchableOpacity>
+
+      <AppBannerAd />
     </ScrollView>
   );
 }
@@ -189,7 +192,7 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f0fdf4" },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { padding: 16, paddingBottom: 80 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   notFound: { fontSize: 16, color: "#6b7280" },
   link: { fontSize: 14, color: "#22c55e", marginTop: 8 },

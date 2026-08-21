@@ -25,6 +25,7 @@ import type {
 } from "../../lib/recommendation-engine/types";
 import { REGION_LABELS, CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
+import { AppBannerAd } from "../../components/BannerAd";
 
 const REGIONS: Region[] = ["north_vietnam", "south_vietnam", "highland_vietnam"];
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
@@ -204,6 +205,8 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button} onPress={runRecommendation}>
           <Text style={styles.buttonText}>🔍 Gợi ý cho tôi</Text>
         </TouchableOpacity>
+
+        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -269,13 +272,15 @@ export default function HomeScreen() {
           </View>
         </>
       )}
+
+      <AppBannerAd />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f0fdf4" },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { padding: 16, paddingBottom: 80 },
   title: { fontSize: 26, fontWeight: "bold", color: "#166534", marginBottom: 4 },
   subtitle: { fontSize: 15, color: "#4b5563", marginBottom: 20 },
   label: { fontSize: 15, fontWeight: "600", color: "#374151", marginTop: 16, marginBottom: 8 },

@@ -20,6 +20,7 @@ import {
   isQuestion,
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
+import { AppBannerAd } from "../../components/BannerAd";
 
 export default function FirstAidScreen() {
   const router = useRouter();
@@ -80,6 +81,8 @@ export default function FirstAidScreen() {
             </TouchableOpacity>
           ))}
         </View>
+
+        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -101,6 +104,8 @@ export default function FirstAidScreen() {
             <Text style={styles.answerText}>{a.label}</Text>
           </TouchableOpacity>
         ))}
+
+        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -130,13 +135,15 @@ export default function FirstAidScreen() {
       <TouchableOpacity style={styles.homeBtn} onPress={() => router.push("/")}>
         <Text style={styles.homeBtnText}>🏠 Về trang chủ</Text>
       </TouchableOpacity>
+
+      <AppBannerAd />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#fef2f2" },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { padding: 16, paddingBottom: 80 },
   title: { fontSize: 26, fontWeight: "bold", color: "#991b1b", marginBottom: 4 },
   subtitle: { fontSize: 15, color: "#6b7280", marginBottom: 16 },
   symptomGrid: { gap: 12 },

@@ -15,6 +15,7 @@ import { useRouter } from "expo-router";
 import { listGarden, markGhost } from "../../lib/garden/store";
 import type { GhostCause } from "../../lib/garden/types";
 import { GHOST_CAUSE_LABEL } from "../../lib/labels";
+import { AppBannerAd } from "../../components/BannerAd";
 import { getCropById } from "../../lib/data/crops";
 
 const DEMO_USER = "demo-user";
@@ -146,13 +147,15 @@ export default function GardenScreen() {
           )}
         </>
       )}
+
+      <AppBannerAd />
     </ScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: "#f0fdf4" },
-  content: { padding: 16, paddingBottom: 40 },
+  content: { padding: 16, paddingBottom: 80 },
   title: { fontSize: 26, fontWeight: "bold", color: "#166534", marginBottom: 16 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#166534", marginTop: 16, marginBottom: 8 },
   empty: { alignItems: "center", marginTop: 60 },
