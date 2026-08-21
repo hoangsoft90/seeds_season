@@ -48,14 +48,12 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Enable JS bundling in debug builds
+      - name: Make debug builds include JS bundle (standalone, no Metro)
         run: |
-          # Ensure Gradle bundles JS in debug mode too (not just release)
-          # This makes the APK standalone without needing Metro
-          if ! grep -q "bundleInDebug" android/app/build.gradle; then
-            sed -i '/react {/a\            bundleInDebug = true' android/app/build.gradle
-            echo "Added bundleInDebug = true"
-          fi
+          # Default: debuggableVariants = ["debug"] means debug skips JS bundling
+          # Setting to [] means ALL variants bundle JS, making APK standalone
+          sed -i 's|// debuggableVariants = \["debug"\]|debuggableVariants = []|' android/app/build.gradle
+          echo "Patched debuggableVariants to empty (all variants bundle JS)"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -63,7 +61,7 @@ jobs:
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Build debug APK (with embedded JS)
+      - name: Build debug APK (with embedded JS bundle)
         run: |
           cd android
           chmod +x gradlew
