@@ -1,12 +1,12 @@
 /**
- * Home Screen — Onboarding + Recommendations.
+ * Home Screen — Onboarding + Recommendations (Multi-country).
  * 
  * Flow:
- * 1. User picks region + month + location_type + sunlight + pot_depth
- * 2. Engine runs → Top 3 recommendations
+ * 1. User picks country → region → month → location_type → sunlight → pot_depth
+ * 2. Engine runs with country-specific crops → Top 3 recommendations
  * 3. Display with CropCard components
  */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useMemo } from "react";
 import {
   View,
   Text,
@@ -17,17 +17,17 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { getRecommendations } from "../../lib/recommendation-engine/engine";
-import { ALL_CROPS } from "../../lib/data/crops";
+import { getCropsForCountry } from "../../lib/data/crops";
+import { getAllCountries, getCountryConfig } from "../../lib/data/countries";
 import type {
-  Region,
   LocationType,
   RecommendationContext,
 } from "../../lib/recommendation-engine/types";
-import { REGION_LABELS, CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
+import type { CountryConfig } from "../../lib/data/countries/types";
+import { CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
 import { AppBannerAd } from "../../components/BannerAd";
 
-const REGIONS: Region[] = ["north_vietnam", "south_vietnam", "highland_vietnam"];
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 const LOCATION_LABELS: Record<LocationType, string> = {
   window: "🪟 Cửa sổ",
@@ -40,9 +40,14 @@ const MONTHS = [
   "T7", "T8", "T9", "T10", "T11", "T12",
 ];
 
+const COUNTRIES = getAllCountries();
+
 export default function HomeScreen() {
   const router = useRouter();
-  const [selectedRegion, setSelectedRegion] = useState<Region | null>(null);
+
+  // Onboarding state
+  const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
+  const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(
     new Date().getMonth() + 1
   );
@@ -54,13 +59,42 @@ export default function HomeScreen() {
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [recommendations, setRecommendations] = useState<ReturnType<typeof getRecommendations> | null>(null);
 
+  // Get country config for dynamic regions
+  const countryConfig = useMemo(() => {
+    if (!selectedCountry) return null;
+    return getCountryConfig(selectedCountry);
+  }, [selectedCountry]);
+
+  // Get crops for selected country
+  const countryCrops = useMemo(() => {
+    if (!selectedCountry) return [];
+    return getCropsForCountry(selectedCountry);
+  }, [selectedCountry]);
+
+  // Region labels from country config
+  const regionLabels = useMemo(() => {
+    if (!countryConfig) return {};
+    const labels: Record<string, string> = {};
+    for (const r of countryConfig.regions) {
+      labels[r.id] = r.name;
+    }
+    return labels;
+  }, [countryConfig]);
+
+  // Month names from country config
+  const monthNames = useMemo(() => {
+    if (!countryConfig) return MONTHS;
+    return countryConfig.month_names?.map((_, i) => `T${i + 1}`) ?? MONTHS;
+  }, [countryConfig]);
+
   const runRecommendation = useCallback(() => {
-    if (!selectedRegion || !selectedLocation) {
-      Alert.alert("Thiếu thông tin", "Vui lòng chọn vùng và vị trí trồng.");
+    if (!selectedCountry || !selectedRegion || !selectedLocation) {
+      Alert.alert("Thiếu thông tin", "Vui lòng chọn quốc gia, vùng và vị trí trồng.");
       return;
     }
 
     const ctx: RecommendationContext = {
+      country: selectedCountry,
       region: selectedRegion,
       month: selectedMonth,
       location_type: selectedLocation,
@@ -68,10 +102,16 @@ export default function HomeScreen() {
       pot_depth_cm: potDepth,
     };
 
-    const result = getRecommendations(ctx, ALL_CROPS);
+    const result = getRecommendations(ctx, countryCrops);
     setRecommendations(result);
     setShowOnboarding(false);
-  }, [selectedRegion, selectedMonth, selectedLocation, sunlight, potDepth]);
+  }, [selectedCountry, selectedRegion, selectedMonth, selectedLocation, sunlight, potDepth, countryCrops]);
+
+  // Reset region when country changes
+  const handleCountrySelect = useCallback((countryId: string) => {
+    setSelectedCountry(countryId);
+    setSelectedRegion(null); // Reset region
+  }, []);
 
   if (showOnboarding || !recommendations) {
     return (
@@ -81,34 +121,62 @@ export default function HomeScreen() {
           Gợi ý cây trồng phù hợp với ban công của bạn
         </Text>
 
-        {/* Region */}
-        <Text style={styles.label}>Vùng khí hậu:</Text>
+        {/* Country selector */}
+        <Text style={styles.label}>Quốc gia:</Text>
         <View style={styles.row}>
-          {REGIONS.map((r) => (
+          {COUNTRIES.map((c) => (
             <TouchableOpacity
-              key={r}
+              key={c.id}
               style={[
                 styles.chip,
-                selectedRegion === r && styles.chipActive,
+                selectedCountry === c.id && styles.chipActive,
               ]}
-              onPress={() => setSelectedRegion(r)}
+              onPress={() => handleCountrySelect(c.id)}
             >
               <Text
                 style={[
                   styles.chipText,
-                  selectedRegion === r && styles.chipTextActive,
+                  selectedCountry === c.id && styles.chipTextActive,
                 ]}
               >
-                {REGION_LABELS[r]}
+                {c.name_local} ({c.name_en})
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
+        {/* Region (dynamic per country) */}
+        {countryConfig && (
+          <>
+            <Text style={styles.label}>Vùng khí hậu:</Text>
+            <View style={styles.row}>
+              {countryConfig.regions.map((r) => (
+                <TouchableOpacity
+                  key={r.id}
+                  style={[
+                    styles.chip,
+                    selectedRegion === r.id && styles.chipActive,
+                  ]}
+                  onPress={() => setSelectedRegion(r.id)}
+                >
+                  <Text
+                    style={[
+                      styles.chipText,
+                      selectedRegion === r.id && styles.chipTextActive,
+                    ]}
+                  >
+                    {r.name}
+                  </Text>
+                </TouchableOpacity>
+              ))}
+            </View>
+          </>
+        )}
+
         {/* Month */}
         <Text style={styles.label}>Tháng hiện tại:</Text>
         <View style={styles.row}>
-          {MONTHS.map((m, i) => (
+          {monthNames.map((m, i) => (
             <TouchableOpacity
               key={i}
               style={[
@@ -201,6 +269,13 @@ export default function HomeScreen() {
           ))}
         </View>
 
+        {/* Crop count preview */}
+        {selectedCountry && (
+          <Text style={styles.cropCount}>
+            📊 {countryCrops.length} loại cây có sẵn cho {countryConfig?.name_local}
+          </Text>
+        )}
+
         {/* Submit */}
         <TouchableOpacity style={styles.button} onPress={runRecommendation}>
           <Text style={styles.buttonText}>🔍 Gợi ý cho tôi</Text>
@@ -215,6 +290,9 @@ export default function HomeScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>🌱 Kết quả gợi ý</Text>
+      <Text style={styles.subtitle}>
+        {countryConfig?.name_local} · {regionLabels[selectedRegion!] ?? selectedRegion}
+      </Text>
 
       {recommendations.status === "no_match" ? (
         <View style={styles.noMatch}>
@@ -228,7 +306,7 @@ export default function HomeScreen() {
               key={rec.crop.crop_base.id}
               style={styles.cropCard}
               onPress={() =>
-                router.push(`/crops/${rec.crop.crop_base.id}`)
+                router.push(`/crops/${rec.crop.crop_base.id}?country=${selectedCountry}`)
               }
             >
               <View style={styles.cropHeader}>
@@ -249,7 +327,8 @@ export default function HomeScreen() {
                   rec.crop,
                   rec.components,
                   selectedRegion!,
-                  rec.role
+                  rec.role,
+                  { regionLabels }
                 )}
               </Text>
             </TouchableOpacity>
@@ -300,6 +379,7 @@ const styles = StyleSheet.create({
   chipActive: { backgroundColor: "#22c55e" },
   chipText: { fontSize: 13, color: "#374151" },
   chipTextActive: { color: "#fff", fontWeight: "600" },
+  cropCount: { fontSize: 13, color: "#6b7280", marginTop: 12, fontStyle: "italic" },
   button: {
     marginTop: 20,
     backgroundColor: "#22c55e",

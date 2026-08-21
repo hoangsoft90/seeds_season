@@ -5,6 +5,8 @@
  * onboarding chỉ có location + micro-climate), engine dùng `DummyWeatherProvider` —
  * trả giá trị TRUNG BÌNH THEO MÙA theo vùng + tháng. Phase 2 chỉ cần implement
  * `WeatherProvider` bằng API thật và swap vào, engine KHÔNG phải refactor.
+ *
+ * Multi-country: MONTHLY_TEMPS is now per-country with fallback to tropical default.
  */
 
 import type { RecommendationContext, Region, WeatherInfo } from "./types";
@@ -14,63 +16,120 @@ export interface WeatherProvider {
   getWeather(context: RecommendationContext): WeatherInfo;
 }
 
-/** Nhiệt độ trung bình theo tháng (min/max, °C) cho từng vùng khí hậu — giá trị tham khảo khí hậu VN. */
-const MONTHLY_TEMPS: Record<Region, { min: number; max: number }[]> = {
-  // Miền Bắc (Hà Nội): đông rét ~13°C, hè nóng ~33-34°C
-  north_vietnam: [
-    { min: 13, max: 19 }, // T1
-    { min: 15, max: 21 }, // T2
-    { min: 18, max: 24 }, // T3
-    { min: 21, max: 28 }, // T4
-    { min: 23, max: 31 }, // T5
-    { min: 25, max: 33 }, // T6
-    { min: 26, max: 34 }, // T7
-    { min: 25, max: 33 }, // T8
-    { min: 24, max: 31 }, // T9
-    { min: 21, max: 28 }, // T10
-    { min: 17, max: 25 }, // T11
-    { min: 14, max: 21 }, // T12
-  ],
-  // Miền Nam (TP.HCM): nóng quanh năm; mùa khô (12-4) dịu hơn mùa mưa (5-11) một chút
-  south_vietnam: [
-    { min: 23, max: 31 }, // T1
-    { min: 23, max: 31 }, // T2
-    { min: 23, max: 31 }, // T3
-    { min: 23, max: 31 }, // T4
-    { min: 24, max: 32 }, // T5
-    { min: 24, max: 32 }, // T6
-    { min: 24, max: 32 }, // T7
-    { min: 24, max: 32 }, // T8
-    { min: 24, max: 32 }, // T9
-    { min: 24, max: 32 }, // T10
-    { min: 24, max: 32 }, // T11
-    { min: 23, max: 31 }, // T12
-  ],
-  // Vùng cao (Đà Lạt): mát quanh năm, không có mùa nóng gắt
-  highland_vietnam: [
-    { min: 13, max: 24 }, // T1
-    { min: 14, max: 25 }, // T2
-    { min: 15, max: 26 }, // T3
-    { min: 16, max: 27 }, // T4
-    { min: 17, max: 27 }, // T5
-    { min: 17, max: 26 }, // T6
-    { min: 17, max: 26 }, // T7
-    { min: 17, max: 26 }, // T8
-    { min: 16, max: 26 }, // T9
-    { min: 15, max: 25 }, // T10
-    { min: 14, max: 24 }, // T11
-    { min: 13, max: 23 }, // T12
-  ],
+/** Temperature data per region — { min, max } per month (1-indexed). */
+type MonthlyTempData = { min: number; max: number }[];
+
+/** All temperature data organized by country → region. */
+const COUNTRY_TEMPS: Record<string, Record<string, MonthlyTempData>> = {
+  vietnam: {
+    // Miền Bắc (Hà Nội): đông rét ~13°C, hè nóng ~33-34°C
+    north_vietnam: [
+      { min: 13, max: 19 }, { min: 15, max: 21 }, { min: 18, max: 24 },
+      { min: 21, max: 28 }, { min: 23, max: 31 }, { min: 25, max: 33 },
+      { min: 26, max: 34 }, { min: 25, max: 33 }, { min: 24, max: 31 },
+      { min: 21, max: 28 }, { min: 17, max: 25 }, { min: 14, max: 21 },
+    ],
+    // Miền Nam (TP.HCM): nóng quanh năm
+    south_vietnam: [
+      { min: 23, max: 31 }, { min: 23, max: 31 }, { min: 23, max: 31 },
+      { min: 23, max: 31 }, { min: 24, max: 32 }, { min: 24, max: 32 },
+      { min: 24, max: 32 }, { min: 24, max: 32 }, { min: 24, max: 32 },
+      { min: 24, max: 32 }, { min: 24, max: 32 }, { min: 23, max: 31 },
+    ],
+    // Vùng cao (Đà Lạt)
+    highland_vietnam: [
+      { min: 13, max: 24 }, { min: 14, max: 25 }, { min: 15, max: 26 },
+      { min: 16, max: 27 }, { min: 17, max: 27 }, { min: 17, max: 26 },
+      { min: 17, max: 26 }, { min: 17, max: 26 }, { min: 16, max: 26 },
+      { min: 15, max: 25 }, { min: 14, max: 24 }, { min: 13, max: 23 },
+    ],
+    central_vietnam: [
+      { min: 18, max: 24 }, { min: 19, max: 26 }, { min: 21, max: 28 },
+      { min: 24, max: 30 }, { min: 26, max: 33 }, { min: 27, max: 34 },
+      { min: 27, max: 34 }, { min: 27, max: 34 }, { min: 26, max: 32 },
+      { min: 24, max: 30 }, { min: 21, max: 26 }, { min: 19, max: 23 },
+    ],
+  },
+  thailand: {
+    // Bangkok area — hot year-round
+    central_thailand: [
+      { min: 21, max: 32 }, { min: 23, max: 33 }, { min: 25, max: 35 },
+      { min: 26, max: 36 }, { min: 26, max: 35 }, { min: 26, max: 34 },
+      { min: 25, max: 33 }, { min: 25, max: 33 }, { min: 25, max: 33 },
+      { min: 24, max: 32 }, { min: 22, max: 31 }, { min: 20, max: 30 },
+    ],
+    // Chiang Mai area — cooler in winter
+    north_thailand: [
+      { min: 15, max: 28 }, { min: 17, max: 30 }, { min: 20, max: 33 },
+      { min: 23, max: 35 }, { min: 24, max: 34 }, { min: 24, max: 32 },
+      { min: 23, max: 31 }, { min: 23, max: 31 }, { min: 23, max: 31 },
+      { min: 22, max: 30 }, { min: 19, max: 28 }, { min: 16, max: 27 },
+    ],
+    // Isan — hot and dry
+    northeast_thailand: [
+      { min: 16, max: 30 }, { min: 19, max: 32 }, { min: 22, max: 35 },
+      { min: 24, max: 36 }, { min: 24, max: 35 }, { min: 24, max: 34 },
+      { min: 23, max: 33 }, { min: 23, max: 32 }, { min: 23, max: 32 },
+      { min: 22, max: 31 }, { min: 19, max: 30 }, { min: 16, max: 29 },
+    ],
+    // South — humid, less variation
+    south_thailand: [
+      { min: 23, max: 31 }, { min: 23, max: 32 }, { min: 24, max: 33 },
+      { min: 25, max: 33 }, { min: 25, max: 33 }, { min: 25, max: 32 },
+      { min: 24, max: 32 }, { min: 24, max: 32 }, { min: 24, max: 32 },
+      { min: 24, max: 31 }, { min: 23, max: 31 }, { min: 23, max: 31 },
+    ],
+  },
+  indonesia: {
+    // Java — tropical, wet/dry seasons
+    java: [
+      { min: 24, max: 30 }, { min: 24, max: 30 }, { min: 24, max: 31 },
+      { min: 24, max: 32 }, { min: 24, max: 32 }, { min: 23, max: 32 },
+      { min: 23, max: 32 }, { min: 23, max: 32 }, { min: 24, max: 32 },
+      { min: 24, max: 32 }, { min: 24, max: 31 }, { min: 24, max: 30 },
+    ],
+    // Sumatra — similar to Java
+    sumatra: [
+      { min: 23, max: 31 }, { min: 23, max: 31 }, { min: 23, max: 32 },
+      { min: 24, max: 33 }, { min: 24, max: 33 }, { min: 23, max: 33 },
+      { min: 23, max: 33 }, { min: 23, max: 33 }, { min: 23, max: 32 },
+      { min: 23, max: 32 }, { min: 23, max: 31 }, { min: 23, max: 31 },
+    ],
+    // Bali — slightly cooler due to elevation
+    bali: [
+      { min: 23, max: 30 }, { min: 23, max: 30 }, { min: 23, max: 31 },
+      { min: 23, max: 32 }, { min: 23, max: 32 }, { min: 22, max: 31 },
+      { min: 22, max: 31 }, { min: 22, max: 31 }, { min: 23, max: 31 },
+      { min: 23, max: 31 }, { min: 23, max: 30 }, { min: 23, max: 30 },
+    ],
+    // Kalimantan — hot and humid
+    kalimantan: [
+      { min: 24, max: 30 }, { min: 24, max: 31 }, { min: 24, max: 32 },
+      { min: 24, max: 33 }, { min: 25, max: 33 }, { min: 24, max: 33 },
+      { min: 24, max: 33 }, { min: 24, max: 33 }, { min: 24, max: 32 },
+      { min: 24, max: 32 }, { min: 24, max: 31 }, { min: 24, max: 30 },
+    ],
+  },
 };
+
+/** Default tropical temperatures for unknown regions. */
+const TROPICAL_DEFAULT: MonthlyTempData = [
+  { min: 24, max: 31 }, { min: 24, max: 31 }, { min: 24, max: 32 },
+  { min: 24, max: 33 }, { min: 24, max: 33 }, { min: 24, max: 33 },
+  { min: 24, max: 33 }, { min: 24, max: 33 }, { min: 24, max: 32 },
+  { min: 24, max: 32 }, { min: 24, max: 31 }, { min: 24, max: 31 },
+];
 
 /**
  * Dummy provider — trả nhiệt độ trung bình theo mùa của vùng + tháng.
- * Chỉ để engine chạy được ngay từ Phase 1; KHÔNG phải dự báo thật.
+ * Multi-country: looks up by country → region, falls back to tropical default.
  */
 export class DummyWeatherProvider implements WeatherProvider {
   getWeather(context: RecommendationContext): WeatherInfo {
     const month = clampMonth(context.month);
-    const t = MONTHLY_TEMPS[context.region]?.[month - 1] ?? MONTHLY_TEMPS.north_vietnam[month - 1];
+    const countryTemps = COUNTRY_TEMPS[context.country ?? "vietnam"];
+    const regionTemps = countryTemps?.[context.region] ?? TROPICAL_DEFAULT;
+    const t = regionTemps[month - 1] ?? TROPICAL_DEFAULT[month - 1];
     return {
       forecast_temp_max_c: t.max,
       forecast_temp_min_c: t.min,
@@ -86,11 +145,22 @@ function clampMonth(month: number): number {
 
 // ── Open-Meteo real weather provider (Phase 2) ──────────────────────────
 
-/** Tọa độ thành phố VN dùng cho Open-Meteo API (chỉ khi user chọn city cụ thể). */
-const CITY_COORDS: Record<Region, { lat: number; lng: number }> = {
+/** Tọa độ thành phố dùng cho Open-Meteo API (multi-country). */
+const CITY_COORDS: Record<string, { lat: number; lng: number }> = {
+  // Vietnam
   north_vietnam: { lat: 21.0285, lng: 105.8542 },   // Hà Nội
   south_vietnam: { lat: 10.8231, lng: 106.6297 },   // TP.HCM
   highland_vietnam: { lat: 11.9465, lng: 108.4419 }, // Đà Lạt
+  // Thailand
+  central_thailand: { lat: 13.7563, lng: 100.5018 },  // Bangkok
+  north_thailand: { lat: 18.7883, lng: 98.9853 },     // Chiang Mai
+  northeast_thailand: { lat: 16.4322, lng: 102.8236 }, // Khon Kaen
+  south_thailand: { lat: 7.8804, lng: 98.3923 },      // Phuket
+  // Indonesia
+  java: { lat: -6.2088, lng: 106.8456 },    // Jakarta
+  sumatra: { lat: -2.9761, lng: 104.7754 }, // Palembang
+  bali: { lat: -8.3405, lng: 115.0920 },    // Denpasar
+  kalimantan: { lat: -0.5071, lng: 117.1535 }, // Samarinda
 };
 
 /** Weather code từ Open-Meteo → condition string. */
@@ -149,6 +219,7 @@ export class OpenMeteoWeatherProvider {
 
     const coords = CITY_COORDS[context.region];
     if (!coords) return this.dummy.getWeather(context);
+    // Note: OpenMeteo is free, no API key needed. Works for any coordinates globally.
 
     try {
       const url =

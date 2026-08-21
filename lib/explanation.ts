@@ -9,7 +9,7 @@
 
 import type { ComponentScores } from "./recommendation-engine/scoring";
 import type { Crop, Region } from "./recommendation-engine/types";
-import { GHOST_CAUSE_LABEL, REGION_LABELS } from "./labels";
+import { GHOST_CAUSE_LABEL } from "./labels";
 
 /** Một lần thất bại trong quá khứ (từ ghost history của user). */
 export interface GhostHistoryEntry {
@@ -25,6 +25,8 @@ export interface WhyOptions {
   ghostHistory?: GhostHistoryEntry[];
   /** Tên các cây khác đang được gợi ý — dùng làm phương án thay thế. */
   alternativeNames?: string[];
+  /** Dynamic region labels from CountryConfig. Falls back to hardcoded Vietnam labels. */
+  regionLabels?: Record<string, string>;
 }
 
 /** Hai tháng được coi là "tương tự" nếu lệch ≤1 (vòng quanh năm, Dec↔Jan gần nhau). */
@@ -50,10 +52,13 @@ export function buildWhyText(
     );
   }
 
+  // Use dynamic region labels if provided, otherwise fall back to region string
+  const regionLabel = opts.regionLabels?.[region] ?? region;
+
   if (components.season >= 80) {
-    parts.push(`đang đúng thời vụ ở ${REGION_LABELS[region].toLowerCase()}`);
+    parts.push(`đang đúng thời vụ ở ${regionLabel.toLowerCase()}`);
   } else if (components.season < 40) {
-    parts.push(`hơi trái mùa ở ${REGION_LABELS[region].toLowerCase()}, trồng thử vẫn được nhưng cần chú ý hơn`);
+    parts.push(`hơi trái mùa ở ${regionLabel.toLowerCase()}, trồng thử vẫn được nhưng cần chú ý hơn`);
   }
 
   if (components.temperature >= 70) {

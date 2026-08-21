@@ -1,20 +1,64 @@
 /**
- * Crop data loader — import crops_data.json and provide typed access.
+ * Country-aware Data Loader — loads crops for a specific country.
+ * 
+ * Architecture:
+ * - Each country has its own crops.json in lib/data/countries/<country>/
+ * - This module loads and caches crops per country
+ * - The recommendation engine uses getCropsForCountry() instead of getAllCrops()
  */
+
 import type { Crop, CropsDataset } from "../recommendation-engine/types";
-import cropsDataJson from "./crops_data.json";
+import type { CountryId } from "./countries/types";
 
-const dataset = cropsDataJson as CropsDataset;
+// Import crop data per country
+import vietnamCrops from "./countries/vietnam/crops.json";
+import thailandCrops from "./countries/thailand/crops.json";
+import indonesiaCrops from "./countries/indonesia/crops.json";
 
-/** All crops loaded from JSON data. */
-export const ALL_CROPS: Crop[] = dataset.crops;
+// Registry: countryId → crop dataset
+// Note: JSON imports have number[] for tuples — cast through unknown to satisfy TS
+const CROP_DATASETS: Record<CountryId, CropsDataset> = {
+  vietnam: vietnamCrops as unknown as CropsDataset,
+  thailand: thailandCrops as unknown as CropsDataset,
+  indonesia: indonesiaCrops as unknown as CropsDataset,
+};
 
-/** Get all crops (for tests + engine). */
-export function getAllCrops(): Crop[] {
-  return ALL_CROPS;
+// Cache for parsed crops
+const cropCache: Record<CountryId, Crop[]> = {} as Record<CountryId, Crop[]>;
+
+/**
+ * Get all crops for a specific country.
+ * Returns empty array if country not found.
+ */
+export function getCropsForCountry(countryId: string): Crop[] {
+  const cid = countryId as CountryId;
+  if (cropCache[cid]) return cropCache[cid];
+
+  const dataset = CROP_DATASETS[cid];
+  if (!dataset) return [];
+
+  cropCache[cid] = dataset.crops;
+  return dataset.crops;
 }
 
-/** Get a single crop by ID. */
-export function getCropById(id: string): Crop | undefined {
-  return ALL_CROPS.find((c) => c.crop_base.id === id);
+/**
+ * Get a specific crop by ID within a country.
+ */
+export function getCropById(countryId: string, cropId: string): Crop | undefined {
+  const crops = getCropsForCountry(countryId);
+  return crops.find((c) => c.crop_base.id === cropId);
+}
+
+/**
+ * Get all crops across all countries (for testing/comparison).
+ */
+export function getAllCropsGlobal(): Crop[] {
+  return Object.values(CROP_DATASETS).flatMap((ds) => ds.crops);
+}
+
+/**
+ * Get supported country IDs that have crop data.
+ */
+export function getSupportedCropCountryIds(): string[] {
+  return Object.keys(CROP_DATASETS);
 }

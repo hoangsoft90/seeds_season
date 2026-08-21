@@ -11,22 +11,33 @@ import {
   Alert,
 } from "react-native";
 import { getCropById } from "../../lib/data/crops";
+import { getCountryConfig } from "../../lib/data/countries";
 import { addPlant } from "../../lib/garden/store";
 import {
   CATEGORY_LABEL,
   DIFFICULTY_LABEL,
   WATER_LABEL,
   soilLabel,
-  REGION_LABELS,
 } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
 
 const DEMO_USER = "demo-user";
 
 export default function CropDetailScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
+  const { id, country } = useLocalSearchParams<{ id: string; country?: string }>();
   const router = useRouter();
-  const crop = getCropById(id ?? "");
+  const cropId = id ?? "";
+  const countryId = country ?? "vietnam";
+  const crop = getCropById(countryId, cropId);
+  const countryConfig = getCountryConfig(countryId);
+
+  // Build region labels from country config
+  const regionLabels: Record<string, string> = {};
+  if (countryConfig) {
+    for (const r of countryConfig.regions) {
+      regionLabels[r.id] = r.name;
+    }
+  }
 
   if (!crop) {
     return (
@@ -133,7 +144,7 @@ export default function CropDetailScreen() {
             return (
               <View key={region} style={styles.regionBlock}>
                 <Text style={styles.regionTitle}>
-                  {REGION_LABELS[region as keyof typeof REGION_LABELS] ?? region}
+                  {regionLabels[region] ?? region}
                 </Text>
                 {rule.planting_windows.map((w, i) => (
                   <Text key={i} style={styles.text}>

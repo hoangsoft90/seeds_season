@@ -1,0 +1,402 @@
+{
+  "schema_version": "2.0",
+  "country": "indonesia",
+  "notes": "Indonesian balcony garden crops — common urban plants for terrace/pot growing.",
+  "crops": [
+    {
+      "crop_base": {
+        "id": "kangkung",
+        "names": {
+          "canonical_vi": "Rau muống",
+          "canonical_en": "Water Spinach / Kangkung",
+          "scientific": "Ipomoea aquatica",
+          "synonyms_vi": ["Rau muống"],
+          "search_aliases": ["kangkung", "water spinach", "kangkung darat"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "heat_tolerant", "flood_tolerant", "regrow_from_cuttings"],
+        "timeline_base": {
+          "germination_days": [3, 5],
+          "days_to_harvest": [20, 30],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 5] },
+            { "stage": "seedling", "day_range": [5, 12] },
+            { "stage": "vegetative", "day_range": [12, 20] },
+            { "stage": "harvest", "day_range": [20, 30] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Extremely heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 12, "reason": "Stops growing below 12°C.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 10
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 2, "optimal": 5 }, "water": "high_tolerates_waterlogged", "soil": "any_well_fertilized" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round tropical vegetable, staple in Indonesian cuisine." },
+          "bali": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round in Bali's tropical climate." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "high", "forgiveness_underwatering": "medium", "disease_resistance": "high", "visibility_of_success": "high", "notes": "Almost impossible to kill. Best starter plant for Indonesian beginners." }
+    },
+    {
+      "crop_base": {
+        "id": "kemangi",
+        "names": {
+          "canonical_vi": "Húng quế Indonesia",
+          "canonical_en": "Lemon Basil",
+          "scientific": "Ocimum × citriodorum",
+          "synonyms_vi": [],
+          "search_aliases": ["kemangi", "lemon basil", "kemangi hijau"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["fragrant", "warm_season", "sun_loving"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [25, 35],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 18] },
+            { "stage": "vegetative", "day_range": [18, 30] },
+            { "stage": "harvest", "day_range": [25, 35] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "min_sunlight_hours": 4,
+        "min_pot_depth_cm": 12
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 22, "optimal_max": 32, "max": 35 }, "sunlight_hours": { "min": 4, "optimal": 6 }, "water": "moderate_moist", "soil": "well_draining_loamy" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round in Java's tropical climate." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "medium", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Essential for lalapan (raw vegetable side dish). Very rewarding." }
+    },
+    {
+      "crop_base": {
+        "id": "cabai",
+        "names": {
+          "canonical_vi": "Ớt",
+          "canonical_en": "Chili Pepper",
+          "scientific": "Capsicum annuum",
+          "synonyms_vi": ["Ớt cay"],
+          "search_aliases": ["cabai", "chili", "chilli", "cabe"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "sun_loving", "long_harvest_window", "perennial_in_warm_climate"],
+        "timeline_base": {
+          "germination_days": [10, 21],
+          "days_to_harvest": [75, 100],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 21] },
+            { "stage": "seedling", "day_range": [21, 40] },
+            { "stage": "flowering", "day_range": [40, 65] },
+            { "stage": "harvest", "day_range": [75, 100] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 25
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 22, "optimal_max": 32, "max": 35 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "moderate_consistent", "soil": "well_draining_fertile" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 9, 10, 11] }], "local_anomaly_flags": { "peak_rainy": "Fungal risk during heavy rain months." }, "regional_notes": "Plant at start of dry season for best harvest." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "medium", "disease_resistance": "medium", "visibility_of_success": "medium", "notes": "Very rewarding if successful — fresh cabai is expensive in Indonesia." }
+    },
+    {
+      "crop_base": {
+        "id": "bayam",
+        "names": {
+          "canonical_vi": "Rau dền",
+          "canonical_en": "Spinach / Amaranth",
+          "scientific": "Amaranthus spp.",
+          "synonyms_vi": ["Rau dền"],
+          "search_aliases": ["bayam", "spinach", "amaranth", "bayam hijau"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "heat_tolerant"],
+        "timeline_base": {
+          "germination_days": [4, 7],
+          "days_to_harvest": [20, 30],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 7] },
+            { "stage": "seedling", "day_range": [7, 14] },
+            { "stage": "vegetative", "day_range": [14, 22] },
+            { "stage": "harvest", "day_range": [20, 30] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Very heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 15, "reason": "Stops growing below 15°C.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 3,
+        "min_pot_depth_cm": 10
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 3, "optimal": 6 }, "water": "moderate_moist", "soil": "any_fertile" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round, very fast growing." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "high", "forgiveness_underwatering": "medium", "disease_resistance": "high", "visibility_of_success": "high", "notes": "Fastest harvest. Great for showing kids how plants grow." }
+    },
+    {
+      "crop_base": {
+        "id": "tomat",
+        "names": {
+          "canonical_vi": "Cà chua",
+          "canonical_en": "Tomato",
+          "scientific": "Solanum lycopersicum",
+          "synonyms_vi": ["Cà chua"],
+          "search_aliases": ["tomat", "tomato", "tomat ceri"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "sun_loving", "long_harvest_window"],
+        "timeline_base": {
+          "germination_days": [7, 14],
+          "days_to_harvest": [60, 80],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 14] },
+            { "stage": "seedling", "day_range": [14, 30] },
+            { "stage": "flowering", "day_range": [30, 50] },
+            { "stage": "fruiting", "day_range": [50, 70] },
+            { "stage": "harvest", "day_range": [60, 80] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 35, "reason": "Flowers drop above 35°C.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 8, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 25
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 21, "optimal_max": 29, "max": 32 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "consistent_moist", "soil": "rich_well_draining" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [4, 5, 6, 9, 10] }], "local_anomaly_flags": { "peak_rainy": "Fungal disease risk." }, "regional_notes": "Best during transition months between wet and dry seasons." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "medium", "disease_resistance": "low", "visibility_of_success": "high", "notes": "Challenging but very rewarding when it works." }
+    },
+    {
+      "crop_base": {
+        "id": "terong",
+        "names": {
+          "canonical_vi": "Cà tím",
+          "canonical_en": "Eggplant",
+          "scientific": "Solanum melongena",
+          "synonyms_vi": ["Cà tím"],
+          "search_aliases": ["terong", "eggplant", "brinjal"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "heat_tolerant", "long_harvest_window"],
+        "timeline_base": {
+          "germination_days": [7, 14],
+          "days_to_harvest": [65, 85],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 14] },
+            { "stage": "seedling", "day_range": [14, 30] },
+            { "stage": "flowering", "day_range": [30, 55] },
+            { "stage": "fruiting", "day_range": [55, 75] },
+            { "stage": "harvest", "day_range": [65, 85] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 25
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 24, "optimal_max": 32, "max": 35 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "moderate_consistent", "soil": "rich_well_draining" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [4, 5, 6, 9, 10] }], "local_anomaly_flags": { "peak_rainy": "Watch for fruit borers." }, "regional_notes": "Best during dry season start." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "medium", "forgiveness_underwatering": "medium", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Important vegetable in Indonesian cuisine (balado, terong goreng)." }
+    },
+    {
+      "crop_base": {
+        "id": "kacang_panjang",
+        "names": {
+          "canonical_vi": "Đậu đũa",
+          "canonical_en": "Yardlong Bean",
+          "scientific": "Vigna unguiculata subsp. sesquipedalis",
+          "synonyms_vi": ["Đậu đũa"],
+          "search_aliases": ["kacang panjang", "yardlong bean", "long bean"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "heat_tolerant", "needs_trellis"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [50, 65],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 20] },
+            { "stage": "flowering", "day_range": [20, 40] },
+            { "stage": "harvest", "day_range": [50, 65] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Very heat tolerant.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 12, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 20
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "moderate_consistent", "soil": "well_draining_fertile" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 10, 11, 12] }], "local_anomaly_flags": { "peak_rainy": "Fungal risk." }, "regional_notes": "Best in dry season." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Needs trellis but grows fast and visibly." }
+    },
+    {
+      "crop_base": {
+        "id": "sawi",
+        "names": {
+          "canonical_vi": "Cải则a",
+          "canonical_en": "Chinese Mustard Greens",
+          "scientific": "Brassica juncea var. rugosa",
+          "synonyms_vi": ["Cải"],
+          "search_aliases": ["sawi", "mustard greens", "sawi hijau"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "partial_shade_tolerant"],
+        "timeline_base": {
+          "germination_days": [3, 7],
+          "days_to_harvest": [25, 35],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 7] },
+            { "stage": "seedling", "day_range": [7, 15] },
+            { "stage": "vegetative", "day_range": [15, 30] },
+            { "stage": "harvest", "day_range": [25, 35] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 33, "reason": "Bolts in high heat.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 2, "reason": "Tolerates cool weather.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 3,
+        "min_pot_depth_cm": 12
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 15, "optimal_min": 18, "optimal_max": 27, "max": 30 }, "sunlight_hours": { "min": 3, "optimal": 5 }, "water": "consistent_moist", "soil": "well_draining_loamy_rich" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [6, 7, 8, 9] }], "local_anomaly_flags": { "hot_season": "Bolts quickly." }, "regional_notes": "Best during cooler months or with afternoon shade." },
+          "bali": { "planting_windows": [{ "months": [5, 6, 7, 8, 9] }], "local_anomaly_flags": {}, "regional_notes": "Higher altitude in Bali helps." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "medium", "forgiveness_underwatering": "low", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Fast growing but needs consistent moisture." }
+    },
+    {
+      "crop_base": {
+        "id": "mentimun",
+        "names": {
+          "canonical_vi": "Dưa chuột",
+          "canonical_en": "Cucumber",
+          "scientific": "Cucumis sativus",
+          "synonyms_vi": ["Dưa chuột", "Dưa leo"],
+          "search_aliases": ["mentimun", "cucumber", "timun"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "sun_loving", "needs_trellis", "high_water_need"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [45, 60],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 20] },
+            { "stage": "flowering", "day_range": [20, 35] },
+            { "stage": "harvest", "day_range": [45, 60] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 35, "reason": "Flowers drop above 35°C.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 12, "reason": "Cold sensitive.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 25
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 22, "optimal_max": 30, "max": 33 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "high_consistent", "soil": "rich_well_draining" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [4, 5, 6, 9, 10] }], "local_anomaly_flags": { "peak_rainy": "Fungal disease risk." }, "regional_notes": "Best in dry season. Needs trellis." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "low", "visibility_of_success": "high", "notes": "Fast growing but demanding. Needs consistent care." }
+    },
+    {
+      "crop_base": {
+        "id": "seledri",
+        "names": {
+          "canonical_vi": "Cần tây",
+          "canonical_en": "Celery",
+          "scientific": "Apium graveolens",
+          "synonyms_vi": ["Cần tây"],
+          "search_aliases": ["seledri", "celery", "daun seledri"]
+        },
+        "category": "herb",
+        "base_difficulty": "medium",
+        "tags": ["cool_season", "shade_tolerant", "high_water_need"],
+        "timeline_base": {
+          "germination_days": [10, 21],
+          "days_to_harvest": [60, 90],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 21] },
+            { "stage": "seedling", "day_range": [21, 45] },
+            { "stage": "vegetative", "day_range": [45, 75] },
+            { "stage": "harvest", "day_range": [60, 90] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 30, "reason": "Bolts in heat above 30°C.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 2, "reason": "Tolerates cool weather.", "source": { "name": "Indonesian Urban Farming Community", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 15
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 10, "optimal_min": 15, "optimal_max": 22, "max": 26 }, "sunlight_hours": { "min": 2, "optimal": 4 }, "water": "consistent_moist", "soil": "rich_fertile" },
+        "regional_rules": {
+          "java": { "planting_windows": [{ "months": [6, 7, 8] }], "local_anomaly_flags": { "hot_season": "Impossible without shade/AC." }, "regional_notes": "Best during cool dry season. Highland areas like Puncak are ideal." },
+          "kalimantan": { "planting_windows": [] }, "local_anomaly_flags": { "all_months": "Too hot year-round for reliable celery." }, "regional_notes": "Very difficult in lowland Kalimantan."
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "low", "visibility_of_success": "medium", "notes": "Challenging in Indonesian heat. Best for highland areas." }
+    }
+  ]
+}

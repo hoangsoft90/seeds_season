@@ -18,6 +18,9 @@ import { GHOST_CAUSE_LABEL } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
 import { getCropById } from "../../lib/data/crops";
 
+// Default country for garden plants (MVP: all plants stored as Vietnam)
+const DEFAULT_COUNTRY = "vietnam";
+
 const DEMO_USER = "demo-user";
 
 const GHOST_CAUSES: GhostCause[] = ["sun_heat", "pest", "waterlogged", "unknown"];
@@ -69,12 +72,12 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>🌿 Đang trồng ({growing.length})</Text>
               {growing.map((p) => {
-                const crop = getCropById(p.crop_id);
+                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 return (
                   <TouchableOpacity
                     key={p.id}
                     style={styles.card}
-                    onPress={() => router.push(`/crops/${p.crop_id}`)}
+                    onPress={() => router.push(`/crops/${p.crop_id}?country=${DEFAULT_COUNTRY}`)}
                   >
                     <Text style={styles.cardName}>
                       {crop?.crop_base.names.canonical_vi ?? p.crop_id}
@@ -106,7 +109,7 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>🎉 Đã thu hoạch ({harvested.length})</Text>
               {harvested.map((p) => {
-                const crop = getCropById(p.crop_id);
+                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 return (
                   <View key={p.id} style={styles.cardHarvested}>
                     <Text style={styles.cardName}>
@@ -127,7 +130,7 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>👻 Lịch sử ({ghosts.length})</Text>
               {ghosts.map((p) => {
-                const crop = getCropById(p.crop_id);
+                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 const causeLabel = p.cause
                   ? GHOST_CAUSE_LABEL[p.cause as GhostCause] ?? p.cause
                   : "Không rõ";

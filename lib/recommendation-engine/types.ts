@@ -118,8 +118,12 @@ export interface OptimalConditions {
   soil: string;
 }
 
-/** Vùng có regional_rules trong dữ liệu. `highland_vietnam` (TC16) KHÔNG nằm đây → engine phải fallback logic chung. */
-export type RegionKey = "north_vietnam" | "south_vietnam";
+/**
+ * Region key — dynamic per country.
+ * Each country defines its own regions in CountryConfig.
+ * regional_rules in crop data uses these keys.
+ */
+export type RegionKey = string;
 
 export interface PlantingWindow {
   months: number[];
@@ -137,8 +141,8 @@ export interface RegionalRule {
 
 export interface GrowingRules {
   optimal_conditions: OptimalConditions;
-  /** Chỉ chứa vùng có dữ liệu riêng; vùng không có → engine dùng optimal_conditions chung. */
-  regional_rules: Partial<Record<RegionKey, RegionalRule>>;
+  /** Vùng có regional_rules riêng; vùng không có → engine dùng optimal_conditions chung. */
+  regional_rules: Record<string, RegionalRule>;
 }
 
 // ============================================================================
@@ -176,7 +180,8 @@ export interface CropsDataset {
 // RecommendationContext — input của engine (mục 4.3)
 // ============================================================================
 
-export type Region = RegionKey | "highland_vietnam";
+/** Region is now dynamic per country — use string. */
+export type Region = string;
 export type LocationType = "window" | "balcony" | "garden";
 export type UserGoal = "fastest_harvest" | "daily_food" | "easy_care";
 export type UserExperience = "absolute_beginner" | "beginner" | "some_experience";
@@ -190,7 +195,9 @@ export interface WeatherInfo {
 }
 
 export interface RecommendationContext {
-  /** Vùng khí hậu. `highland_vietnam` chưa có regional_rules → engine fallback logic chung. */
+  /** Country ID (e.g. "vietnam", "thailand", "indonesia") */
+  country: string;
+  /** Vùng khí hậu — dynamic per country. Vùng không có regional_rules → engine dùng optimal_conditions chung. */
   region: Region;
   /** Tháng 1-12. */
   month: number;

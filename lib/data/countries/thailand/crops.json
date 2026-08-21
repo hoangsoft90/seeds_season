@@ -1,0 +1,400 @@
+{
+  "schema_version": "2.0",
+  "country": "thailand",
+  "notes": "Thai balcony garden crops — subset of common urban garden plants.",
+  "crops": [
+    {
+      "crop_base": {
+        "id": "kaphrao",
+        "names": {
+          "canonical_vi": "Húng quế Thái",
+          "canonical_en": "Holy Basil",
+          "scientific": "Ocimum tenuiflorum",
+          "synonyms_vi": [],
+          "search_aliases": ["kaphrao", "holy basil", "thai basil"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["fragrant", "warm_season", "sun_loving"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [25, 35],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 18] },
+            { "stage": "vegetative", "day_range": [18, 30] },
+            { "stage": "harvest", "day_range": [25, 35] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant, prefers warm climate.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Very sensitive to cold, dies below 10°C.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "min_sunlight_hours": 4,
+        "min_pot_depth_cm": 15
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 22, "optimal_max": 32, "max": 35 }, "sunlight_hours": { "min": 4, "optimal": 6 }, "water": "moderate_moist_well_drained", "soil": "well_draining_loamy" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round in Bangkok area." },
+          "north_thailand": { "planting_windows": [{ "months": [3, 4, 5, 6, 7, 8, 9, 10] }], "local_anomaly_flags": { "winter": "May not survive cool nights in Chiang Mai." }, "regional_notes": "Best during hot and rainy seasons." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "medium", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Essential herb for Thai cooking (pad krapao). Very rewarding for beginners." }
+    },
+    {
+      "crop_base": {
+        "id": "kangkung",
+        "names": {
+          "canonical_vi": "Rau muống",
+          "canonical_en": "Water Spinach / Kangkung",
+          "scientific": "Ipomoea aquatica",
+          "synonyms_vi": ["Rau muống"],
+          "search_aliases": ["kangkung", "water spinach", "pak boong"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "heat_tolerant", "flood_tolerant", "regrow_from_cuttings"],
+        "timeline_base": {
+          "germination_days": [3, 5],
+          "days_to_harvest": [20, 30],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 5] },
+            { "stage": "seedling", "day_range": [5, 12] },
+            { "stage": "vegetative", "day_range": [12, 20] },
+            { "stage": "harvest", "day_range": [20, 30] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Extremely heat tolerant.", "source": { "name": "Southeast Asian Urban Farming", "confidence": "high" } },
+        "temp_death_min_c": { "value": 12, "reason": "Stops growing and may die below 12°C.", "source": { "name": "Southeast Asian Urban Farming", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 10
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 2, "optimal": 5 }, "water": "high_tolerates_waterlogged", "soil": "any_well_fertilized" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round in tropical Thailand." },
+          "north_thailand": { "planting_windows": [{ "months": [3, 4, 5, 6, 7, 8, 9, 10] }], "local_anomaly_flags": { "cool_season": "Slows down significantly." }, "regional_notes": "Best during warm months." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "high", "forgiveness_underwatering": "medium", "disease_resistance": "high", "visibility_of_success": "high", "notes": "Almost impossible to kill. Can regrow from market cuttings." }
+    },
+    {
+      "crop_base": {
+        "id": "phak_khom",
+        "names": {
+          "canonical_vi": "Rau diếp cá",
+          "canonical_en": "Vietnamese Mint / Laksa Leaf",
+          "scientific": "Persicaria odorata",
+          "synonyms_vi": ["Diếp cá"],
+          "search_aliases": ["phak khom", "laksa leaf", "vietnamese mint"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["shade_tolerant", "water_loving", "regrow_from_cuttings"],
+        "timeline_base": {
+          "germination_days": [7, 14],
+          "days_to_harvest": [30, 40],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 14] },
+            { "stage": "seedling", "day_range": [14, 22] },
+            { "stage": "vegetative", "day_range": [22, 35] },
+            { "stage": "harvest", "day_range": [30, 40] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant.", "source": { "name": "Southeast Asian Urban Farming", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Sensitive to cold.", "source": { "name": "Southeast Asian Urban Farming", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 12
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 24, "optimal_max": 32, "max": 36 }, "sunlight_hours": { "min": 2, "optimal": 4 }, "water": "high_tolerates_waterlogged", "soil": "moist_fertile" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round, loves humidity." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "high", "forgiveness_underwatering": "low", "disease_resistance": "high", "visibility_of_success": "medium", "notes": "Grows fast in water. Great for windowsill with a jar of water." }
+    },
+    {
+      "crop_base": {
+        "id": "tua_fak_yao",
+        "names": {
+          "canonical_vi": "Đậu đũa Thái",
+          "canonical_en": "Yardlong Bean",
+          "scientific": "Vigna unguiculata subsp. sesquipedalis",
+          "synonyms_vi": ["Đậu đũa"],
+          "search_aliases": ["tua fak yao", "yardlong bean", "long bean"]
+        },
+        "category": "fruit_vegetable",
+        "base_difficulty": "medium",
+        "tags": ["step_up_crop", "heat_tolerant", "needs_trellis"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [50, 65],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 20] },
+            { "stage": "flowering", "day_range": [20, 40] },
+            { "stage": "harvest", "day_range": [50, 65] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Very heat tolerant.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 12, "reason": "Cold sensitive.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 5,
+        "min_pot_depth_cm": 20
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 5, "optimal": 7 }, "water": "moderate_consistent", "soil": "well_draining_fertile" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 10, 11, 12] }], "local_anomaly_flags": { "peak_rainy": "Fungal risk during heavy rain." }, "regional_notes": "Best in hot and cool seasons." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Needs trellis but very rewarding — long beans grow fast and visibly." }
+    },
+    {
+      "crop_base": {
+        "id": "phak_bung",
+        "names": {
+          "canonical_vi": "Rau muống",
+          "canonical_en": "Morning Glory",
+          "scientific": "Ipomoea aquatica",
+          "synonyms_vi": ["Rau muống"],
+          "search_aliases": ["phak bung", "morning glory", "pak boong"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "heat_tolerant", "flood_tolerant"],
+        "timeline_base": {
+          "germination_days": [3, 5],
+          "days_to_harvest": [20, 30],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 5] },
+            { "stage": "seedling", "day_range": [5, 12] },
+            { "stage": "vegetative", "day_range": [12, 20] },
+            { "stage": "harvest", "day_range": [20, 30] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Extremely heat tolerant.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 12, "reason": "Cold sensitive.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 10
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 2, "optimal": 5 }, "water": "high_tolerates_waterlogged", "soil": "any_well_fertilized" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round, staple vegetable." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "high", "forgiveness_underwatering": "medium", "disease_resistance": "high", "visibility_of_success": "high", "notes": "Staple Thai vegetable. Pad pak boong fai daeng is the classic dish." }
+    },
+    {
+      "crop_base": {
+        "id": "phak_chi",
+        "names": {
+          "canonical_vi": "Rau mùi",
+          "canonical_en": "Cilantro / Coriander",
+          "scientific": "Coriandrum sativum",
+          "synonyms_vi": ["Ngò rí"],
+          "search_aliases": ["phak chi", "cilantro", "coriander"]
+        },
+        "category": "herb",
+        "base_difficulty": "medium",
+        "tags": ["cool_season", "shade_tolerant", "quick_bolt_in_heat"],
+        "timeline_base": {
+          "germination_days": [7, 14],
+          "days_to_harvest": [30, 45],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 14] },
+            { "stage": "seedling", "day_range": [14, 22] },
+            { "stage": "vegetative", "day_range": [22, 35] },
+            { "stage": "harvest", "day_range": [30, 45] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 30, "reason": "Bolts quickly in heat above 30°C.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 5, "reason": "Tolerates cool weather well.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 12
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 12, "optimal_min": 15, "optimal_max": 24, "max": 28 }, "sunlight_hours": { "min": 2, "optimal": 4 }, "water": "consistent_moist", "soil": "well_draining" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [11, 12, 1] }], "local_anomaly_flags": { "hot_season": "Bolts immediately, avoid." }, "regional_notes": "Only grows well in cool season in Bangkok." },
+          "north_thailand": { "planting_windows": [{ "months": [10, 11, 12, 1, 2] }], "local_anomaly_flags": {}, "regional_notes": "Cooler climate in Chiang Mai suits cilantro better." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "low", "visibility_of_success": "medium", "notes": "Challenging in Thai heat. Best attempted in cool season or air-conditioned areas." }
+    },
+    {
+      "crop_base": {
+        "id": "kha",
+        "names": {
+          "canonical_vi": "Sảurst",
+          "canonical_en": "Galangal",
+          "scientific": "Alpinia galanga",
+          "synonyms_vi": [],
+          "search_aliases": ["kha", "galangal", "blue ginger"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["perennial", "shade_tolerant", "regrow_from_rhizome"],
+        "timeline_base": {
+          "germination_days": [14, 21],
+          "days_to_harvest": [90, 120],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 21] },
+            { "stage": "vegetative", "day_range": [21, 90] },
+            { "stage": "harvest", "day_range": [90, 120] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Very heat tolerant.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 5, "reason": "Tolerates cool weather but grows slowly.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 2,
+        "min_pot_depth_cm": 20
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 20, "optimal_min": 25, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 2, "optimal": 5 }, "water": "moderate_consistent", "soil": "well_draining_fertile" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [3, 4, 5, 6, 7, 8, 9] }], "local_anomaly_flags": {}, "regional_notes": "Plant rhizome pieces during rainy season for best establishment." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "medium", "forgiveness_underwatering": "high", "disease_resistance": "high", "visibility_of_success": "low", "notes": "Slow growing but very hardy. Essential for tom kha and curry pastes." }
+    },
+    {
+      "crop_base": {
+        "id": "khai_frao",
+        "names": {
+          "canonical_vi": "Húng quế",
+          "canonical_en": "Thai Sweet Basil",
+          "scientific": "Ocimum basilicum var. thyrsiflora",
+          "synonyms_vi": ["Húng quế"],
+          "search_aliases": ["khai frao", "thai basil", "sweet basil"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["fragrant", "warm_season", "sun_loving"],
+        "timeline_base": {
+          "germination_days": [5, 10],
+          "days_to_harvest": [25, 35],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 10] },
+            { "stage": "seedling", "day_range": [10, 18] },
+            { "stage": "vegetative", "day_range": [18, 30] },
+            { "stage": "harvest", "day_range": [25, 35] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 38, "reason": "Heat tolerant.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "temp_death_min_c": { "value": 10, "reason": "Cold sensitive.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "min_sunlight_hours": 4,
+        "min_pot_depth_cm": 15
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 22, "optimal_max": 32, "max": 35 }, "sunlight_hours": { "min": 4, "optimal": 6 }, "water": "moderate_moist_well_drained", "soil": "well_draining_loamy" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12], "type": "year_round" }], "local_anomaly_flags": {}, "regional_notes": "Year-round in Bangkok." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "medium", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Fragrant and easy. Essential for pad kra pao when mixed with holy basil." }
+    },
+    {
+      "crop_base": {
+        "id": "ma_krut",
+        "names": {
+          "canonical_vi": "Lá chanh",
+          "canonical_en": "Kaffir Lime Leaves",
+          "scientific": "Citrus hystrix",
+          "synonyms_vi": [],
+          "search_aliases": ["ma krut", "kaffir lime", "makrut"]
+        },
+        "category": "herb",
+        "base_difficulty": "easy",
+        "tags": ["perennial", "fragrant", "sun_loving"],
+        "timeline_base": {
+          "germination_days": [14, 21],
+          "days_to_harvest": [180, 365],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 21] },
+            { "stage": "seedling", "day_range": [21, 90] },
+            { "stage": "vegetative", "day_range": [90, 365] },
+            { "stage": "harvest", "day_range": [180, 365] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 40, "reason": "Heat tolerant citrus.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 5, "reason": "Tolerates cool weather.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 4,
+        "min_pot_depth_cm": 25
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 18, "optimal_min": 24, "optimal_max": 35, "max": 38 }, "sunlight_hours": { "min": 4, "optimal": 6 }, "water": "moderate_moist", "soil": "well_draining_fertile" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [5, 6, 7] }], "local_anomaly_flags": {}, "regional_notes": "Plant during early rainy season. Slow growing but very hardy." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "medium", "forgiveness_underwatering": "high", "disease_resistance": "high", "visibility_of_success": "low", "notes": "Very slow but very hardy. One tree provides leaves for years." }
+    },
+    {
+      "crop_base": {
+        "id": "phak_ruam",
+        "names": {
+          "canonical_vi": "Rau hỗn hợp",
+          "canonical_en": "Mixed Salad Greens",
+          "scientific": "Various",
+          "synonyms_vi": [],
+          "search_aliases": ["phak ruam", "salad mix", "mixed greens"]
+        },
+        "category": "leafy_green",
+        "base_difficulty": "easy",
+        "tags": ["fast_harvest", "cool_season", "shallow_root"],
+        "timeline_base": {
+          "germination_days": [3, 7],
+          "days_to_harvest": [25, 40],
+          "growth_stages": [
+            { "stage": "germination", "day_range": [0, 7] },
+            { "stage": "seedling", "day_range": [7, 15] },
+            { "stage": "vegetative", "day_range": [15, 30] },
+            { "stage": "harvest", "day_range": [25, 40] }
+          ]
+        },
+        "data_provenance": { "created_at": "2026-08-21", "last_verified_at": "2026-08-21", "reviewed_by": "pending_expert_review" }
+      },
+      "hard_constraints": {
+        "temp_death_max_c": { "value": 32, "reason": "Most salad greens bolt in tropical heat.", "source": { "name": "Thai Urban Gardening Community", "confidence": "high" } },
+        "temp_death_min_c": { "value": 2, "reason": "Tolerates cool weather.", "source": { "name": "Thai Urban Gardening Community", "confidence": "medium" } },
+        "min_sunlight_hours": 3,
+        "min_pot_depth_cm": 10
+      },
+      "growing_rules": {
+        "optimal_conditions": { "temperature_c": { "min": 10, "optimal_min": 15, "optimal_max": 24, "max": 28 }, "sunlight_hours": { "min": 3, "optimal": 5 }, "water": "consistent_moist", "soil": "well_draining_loamy" },
+        "regional_rules": {
+          "central_thailand": { "planting_windows": [{ "months": [11, 12, 1] }], "local_anomaly_flags": { "hot_season": "Impossible to grow without AC." }, "regional_notes": "Only viable in cool season. Consider growing indoors with AC." },
+          "north_thailand": { "planting_windows": [{ "months": [10, 11, 12, 1, 2] }], "local_anomaly_flags": {}, "regional_notes": "Better success in cooler Chiang Mai climate." }
+        }
+      },
+      "beginner_success_factors": { "forgiveness_overwatering": "low", "forgiveness_underwatering": "low", "disease_resistance": "medium", "visibility_of_success": "high", "notes": "Challenging in Thai heat. Best for cool season or indoor growing." }
+    }
+  ]
+}

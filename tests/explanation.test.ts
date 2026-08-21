@@ -7,6 +7,9 @@
 import { describe, it, expect } from "vitest";
 import { buildWhyText } from "../lib/explanation";
 import { getCropById } from "../lib/data/crops";
+
+// Default country for tests
+const TEST_COUNTRY = "vietnam";
 import type { ComponentScores } from "../lib/recommendation-engine/scoring";
 
 const COMPONENTS: ComponentScores = {
@@ -17,7 +20,7 @@ const COMPONENTS: ComponentScores = {
   sunspace: 70,
 };
 
-const caiXanh = getCropById("cai_xanh");
+const caiXanh = getCropById(TEST_COUNTRY, "cai_xanh");
 if (!caiXanh) throw new Error("crops_data.json thiếu cai_xanh");
 
 describe("buildWhyText — nudge lịch sử thất bại", () => {

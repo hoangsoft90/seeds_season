@@ -14,7 +14,7 @@
 import { describe, it, expect } from "vitest";
 import golden from "../golden_test_cases.json";
 import { getRecommendations } from "../lib/recommendation-engine/engine";
-import { getAllCrops } from "../lib/data/crops";
+import { getCropsForCountry } from "../lib/data/crops";
 import type { RecommendationContext } from "../lib/recommendation-engine/types";
 import type { RecommendationResult } from "../lib/recommendation-engine/engine";
 
@@ -33,7 +33,7 @@ type GoldenCase = {
 
 const cases = golden.test_cases as unknown as GoldenCase[];
 
-const crops = getAllCrops();
+const crops = getCropsForCountry("vietnam");
 
 function topIds(result: RecommendationResult): string[] {
   return result.recommendations.map((r) => r.crop.crop_base.id);
