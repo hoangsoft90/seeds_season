@@ -50,10 +50,11 @@ jobs:
 
       - name: Make debug builds include JS bundle (standalone, no Metro)
         run: |
-          # Default: debuggableVariants = ["debug"] means debug skips JS bundling
+          # Default: debuggableVariants includes "debug" -> debug skips JS bundling
           # Setting to [] means ALL variants bundle JS, making APK standalone
-          sed -i 's|// debuggableVariants = \["debug"\]|debuggableVariants = []|' android/app/build.gradle
-          echo "Patched debuggableVariants to empty (all variants bundle JS)"
+          sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
+          echo "Patched debuggableVariants to [] (all variants bundle JS)"
+          grep "debuggableVariants" android/app/build.gradle
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
