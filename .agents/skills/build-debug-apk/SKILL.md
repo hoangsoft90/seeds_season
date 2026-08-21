@@ -54,7 +54,33 @@ adb shell am start -n com.tronggihomnay.app/.MainActivity
 
 ## Known Issues
 - **Kotlin version mismatch:** Patch version catalogs in node_modules
+- **kotlin-stdlib version conflict:** AdMob (react-native-google-mobile-ads) pulls kotlin-stdlib:2.1.0 which is incompatible with Kotlin compiler 1.9.x. Fix: append resolutionStrategy to root android/build.gradle AFTER expo prebuild.
 - **Node.js 22+ required:** Expo SDK 52
 - **No local Android build:** Only via GitHub Actions
 - **APK size:** ~140MB (includes Hermes + JS bundle + assets)
 - **WiFi ADB push is slow:** ~7 min for 140MB
+
+## AdMob Build Fix (kotlin-stdlib:2.1.0)
+
+**Root cause:** `react-native-google-mobile-ads@15.8.3` has transitive dep on `kotlin-stdlib:2.1.0`. Kotlin compiler 1.9.x can only read metadata up to 2.0.0 → "Incompatible classes" error.
+
+**Fix (in workflow, AFTER expo prebuild):**
+```bash
+# Append to android/build.gradle (NOT sed — too fragile)
+cat >> android/build.gradle << 'EOF'
+allprojects {
+    configurations.all {
+        resolutionStrategy {
+            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
+            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
+            force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
+        }
+    }
+}
+EOF
+```
+
+**Why this works:** Gradle allows multiple `allprojects` blocks. The appended one forces all Kotlin deps to 1.9.25, overriding the transitive 2.1.0.
+
+**Why NOT sed:** Previous sed approach to patch individual build.gradle files was fragile — different files have different structure, and the `find | while read` pattern was unreliable in CI.

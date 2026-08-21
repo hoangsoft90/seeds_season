@@ -50,59 +50,35 @@ jobs:
 
       - name: Make debug builds include JS bundle (standalone, no Metro)
         run: |
-          # Default: debuggableVariants includes "debug" -> debug skips JS bundling
-          # Setting to [] means ALL variants bundle JS, making APK standalone
           sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
           echo "Patched debuggableVariants to [] (all variants bundle JS)"
           grep "debuggableVariants" android/app/build.gradle
 
       - name: Force kotlin-stdlib to 1.9.25 for AdMob compatibility
         run: |
-          # Root cause: react-native-google-mobile-ads pulls kotlin-stdlib:2.1.0
-          # as transitive dependency, but Kotlin compiler 1.9.x can only read
-          # metadata up to 2.0.0. This causes "Incompatible classes" build error.
-          #
-          # Fix: Add resolutionStrategy in root android/build.gradle allprojects block
-          # to force ALL Kotlin dependencies to 1.9.25.
-          
           ROOT_BUILD="android/build.gradle"
-          
-          # Check if already patched
-          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
-            echo "Already patched, skipping"
-            exit 0
-          fi
-          
           if [ ! -f "$ROOT_BUILD" ]; then
             echo "ERROR: $ROOT_BUILD not found"
             exit 1
           fi
-          
-          # Show the allprojects block location for debugging
-          echo "=== Current allprojects block ==="
-          grep -n "allprojects" "$ROOT_BUILD" || echo "allprojects not found"
-          
-          # Strategy: add a new allprojects block BEFORE the existing one
-          # (Gradle allows multiple allprojects blocks, last one wins for same keys)
-          cat >> "$ROOT_BUILD" << 'GRADLE_EOF'
-
-// Force kotlin-stdlib to 1.9.25 — AdMob (react-native-google-mobile-ads)
-// pulls kotlin-stdlib:2.1.0 which is incompatible with Kotlin compiler 1.9.x
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
-        }
-    }
-}
-GRADLE_EOF
-          
-          echo "Patched $ROOT_BUILD with kotlin-stdlib resolutionStrategy"
-          echo "=== Last 20 lines ==="
-          tail -20 "$ROOT_BUILD"
+          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
+            echo "Already patched, skipping"
+            exit 0
+          fi
+          echo "" >> "$ROOT_BUILD"
+          echo "// Force kotlin-stdlib 1.9.25 — AdMob pulls 2.1.0 incompatible with Kotlin 1.9.x" >> "$ROOT_BUILD"
+          echo "allprojects {" >> "$ROOT_BUILD"
+          echo "    configurations.all {" >> "$ROOT_BUILD"
+          echo "        resolutionStrategy {" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25\"" >> "$ROOT_BUILD"
+          echo "        }" >> "$ROOT_BUILD"
+          echo "    }" >> "$ROOT_BUILD"
+          echo "}" >> "$ROOT_BUILD"
+          echo "Patched $ROOT_BUILD"
+          tail -15 "$ROOT_BUILD"
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
