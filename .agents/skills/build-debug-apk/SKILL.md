@@ -60,27 +60,30 @@ adb shell am start -n com.tronggihomnay.app/.MainActivity
 - **APK size:** ~140MB (includes Hermes + JS bundle + assets)
 - **WiFi ADB push is slow:** ~7 min for 140MB
 
-## AdMob Build Fix (kotlin-stdlib:2.1.0)
+## AdMob Build Fix (play-services-ads Kotlin version conflict)
 
-**Root cause:** `react-native-google-mobile-ads@15.8.3` has transitive dep on `kotlin-stdlib:2.1.0`. Kotlin compiler 1.9.x can only read metadata up to 2.0.0 → "Incompatible classes" error.
+**Root cause:** `react-native-google-mobile-ads@15.8.3` pulls `play-services-ads:24.6.0` which was compiled with Kotlin 2.1.0. Kotlin compiler 1.9.x (React Native SDK 52) can only read metadata up to 2.0.0 → "Incompatible classes" error.
 
 **Fix (in workflow, AFTER expo prebuild):**
 ```bash
-# Append to android/build.gradle (NOT sed — too fragile)
-cat >> android/build.gradle << 'EOF'
-allprojects {
-    configurations.all {
-        resolutionStrategy {
-            force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
-            force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
-        }
-    }
-}
-EOF
+# Append to android/build.gradle
+ROOT_BUILD="android/build.gradle"
+echo "" >> "$ROOT_BUILD"
+echo "// Force play-services-ads to 23.x — v24.6.0 compiled with Kotlin 2.1.0" >> "$ROOT_BUILD"
+echo "// incompatible with React Native SDK 52 Kotlin 1.9.x compiler" >> "$ROOT_BUILD"
+echo "allprojects {" >> "$ROOT_BUILD"
+echo "    configurations.all {" >> "$ROOT_BUILD"
+echo "        resolutionStrategy {" >> "$ROOT_BUILD"
+echo "            force \"com.google.android.gms:play-services-ads:23.6.0\"" >> "$ROOT_BUILD"
+echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
+echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
+echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
+echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25\"" >> "$ROOT_BUILD"
+echo "        }" >> "$ROOT_BUILD"
+echo "    }" >> "$ROOT_BUILD"
+echo "}" >> "$ROOT_BUILD"
 ```
 
-**Why this works:** Gradle allows multiple `allprojects` blocks. The appended one forces all Kotlin deps to 1.9.25, overriding the transitive 2.1.0.
+**Why this works:** Forces `play-services-ads` to 23.6.0 (compiled with Kotlin 1.9.x) AND forces all Kotlin stdlib to 1.9.25.
 
-**Why NOT sed:** Previous sed approach to patch individual build.gradle files was fragile — different files have different structure, and the `find | while read` pattern was unreliable in CI.
+**Why NOT sed/cat heredoc:** Heredoc (`<< 'EOF'`) inside YAML `run: |` breaks the YAML parser. Use individual `echo` statements instead.
