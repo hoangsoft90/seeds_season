@@ -8,6 +8,7 @@
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { randomUUID } from "../utils/uuid";
 import type { GardenPlant, GhostCause } from "./types";
+import { t } from "../i18n";
 
 const STORAGE_KEY = "@seeds_season_garden";
 
@@ -45,7 +46,7 @@ export async function listGarden(userId: string): Promise<GardenPlant[]> {
 export async function addPlant(userId: string, cropId: string): Promise<GardenPlant> {
   const plants = await load();
   if (plants.some((p) => p.user_id === userId && p.crop_id === cropId && p.status === "growing")) {
-    throw new Error(`Cây '${cropId}' đã có trong vườn của bạn.`);
+    throw new Error(t("garden.duplicateCrop") || `Plant '${cropId}' already in your garden.`);
   }
   const plant: GardenPlant = {
     id: randomUUID(),

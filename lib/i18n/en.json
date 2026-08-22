@@ -57,7 +57,8 @@
     "ghost": "👻 History ({{count}})",
     "plantedOn": "Planted on {{date}}",
     "harvestedOn": "Harvested on {{date}}",
-    "ghostCause": "Unknown"
+    "ghostCause": "Unknown",
+    "duplicateCrop": "This plant is already in your garden."
   },
   "firstAid": {
     "title": "🆘 Plant First Aid",
@@ -117,6 +118,11 @@
       "high_consistent": "Needs regular water",
       "moderate_tolerates_rain": "Tolerates rain",
       "moderate_consistent": "Regular, moderate"
+    },
+    "level": {
+      "low": "Low",
+      "medium": "Medium",
+      "high": "High"
     },
     "ghost": {
       "sun_heat": "☀️ Sun scorch",

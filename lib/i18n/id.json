@@ -57,7 +57,8 @@
     "ghost": "👻 Riwayat ({{count}})",
     "plantedOn": "Ditanam {{date}}",
     "harvestedOn": "Dipanen {{date}}",
-    "ghostCause": "Tidak diketahui"
+    "ghostCause": "Tidak diketahui",
+    "duplicateCrop": "Tanaman ini sudah ada di kebun Anda."
   },
   "firstAid": {
     "title": "🆘 Pertolongan Pertama Tanaman",
@@ -117,6 +118,11 @@
       "high_consistent": "Perlu air teratur",
       "moderate_tolerates_rain": "Tahan hujan",
       "moderate_consistent": "Siram teratur"
+    },
+    "level": {
+      "low": "Rendah",
+      "medium": "Sedang",
+      "high": "Tinggi"
     },
     "ghost": {
       "sun_heat": "☀️ Kena panas terik",

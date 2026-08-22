@@ -57,7 +57,8 @@
     "ghost": "👻 ประวัติ ({{count}})",
     "plantedOn": "ปลูกเมื่อ {{date}}",
     "harvestedOn": "เก็บเกี่ยวเมื่อ {{date}}",
-    "ghostCause": "ไม่ทราบ"
+    "ghostCause": "ไม่ทราบ",
+    "duplicateCrop": "พืชนี้อยู่ในสวนของคุณแล้ว"
   },
   "firstAid": {
     "title": "🆘 ปฐมพยาบาลต้นไม้",
@@ -117,6 +118,11 @@
       "high_consistent": "ต้องการน้ำสม่ำเสมอ",
       "moderate_tolerates_rain": "ทนฝนได้",
       "moderate_consistent": "รดสม่ำเสมอ"
+    },
+    "level": {
+      "low": "ต่ำ",
+      "medium": "ปานกลาง",
+      "high": "สูง"
     },
     "ghost": {
       "sun_heat": "☀️ แดดเผา",

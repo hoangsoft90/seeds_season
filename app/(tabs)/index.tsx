@@ -11,7 +11,7 @@ import {
   Alert,
   BackHandler,
 } from "react-native";
-import { useRouter, useNavigation } from "expo-router";
+import { useRouter } from "expo-router";
 import { getRecommendations } from "../../lib/recommendation-engine/engine";
 import { getCropsForCountry } from "../../lib/data/crops";
 import { getAllCountries, getCountryConfig } from "../../lib/data/countries";
@@ -37,7 +37,6 @@ const COUNTRIES = getAllCountries();
 
 export default function HomeScreen() {
   const router = useRouter();
-  const navigation = useNavigation();
   const backPressCount = useRef(0);
 
   // Safe back handler — double-tap to exit on Home tab
@@ -230,7 +229,7 @@ export default function HomeScreen() {
 
         {selectedCountry ? (
           <Text style={styles.cropCount}>
-            📊 {countryCrops.length} loại cây có sẵn cho {countryConfig?.name_local ?? selectedCountry}
+            📊 {t("onboarding.cropCount", { count: countryCrops.length, country: countryConfig?.name_local ?? selectedCountry })}
           </Text>
         ) : null}
 
@@ -282,7 +281,8 @@ export default function HomeScreen() {
                   rec.components,
                   selectedRegion!,
                   rec.role,
-                  { regionLabels }
+                  { regionLabels },
+                  t
                 )}
               </Text>
             </TouchableOpacity>

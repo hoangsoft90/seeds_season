@@ -1,6 +1,6 @@
 /**
- * Label tiếng Việt dùng chung cho UI — nguồn duy nhất để tránh lệch nhãn giữa
- * các màn hình (crop card, crop detail...).
+ * Labels — i18n-aware translations for all UI labels.
+ * Uses t() from i18n for multi-language support.
  */
 
 import type { GhostCause } from "./garden/types";
@@ -8,39 +8,31 @@ import type {
   BaseDifficulty,
   CropCategory,
   ForgivenessLevel,
-  Region,
   WaterNeed,
 } from "./recommendation-engine/types";
+import { t } from "./i18n";
 
-export const CATEGORY_LABEL: Record<CropCategory, string> = {
-  leafy_green: "Rau lá",
-  herb: "Gia vị",
-  root_vegetable: "Củ",
-  fruit_vegetable: "Quả",
-};
+/** Category label — returns translated string. */
+export function categoryLabel(cat: CropCategory): string {
+  return t(`labels.categories.${cat}`) || cat;
+}
 
-export const DIFFICULTY_LABEL: Record<BaseDifficulty, string> = {
-  easy: "Dễ",
-  medium: "Trung bình",
-  hard: "Khó",
-};
+/** Difficulty label — returns translated string. */
+export function difficultyLabel(diff: BaseDifficulty): string {
+  return t(`labels.difficulty.${diff}`) || diff;
+}
 
-export const LEVEL_LABEL: Record<ForgivenessLevel, string> = {
-  low: "Thấp",
-  medium: "Vừa",
-  high: "Cao",
-};
+/** Forgiveness level label. */
+export function levelLabel(level: ForgivenessLevel): string {
+  return t(`labels.level.${level}`) || level;
+}
 
-export const WATER_LABEL: Record<WaterNeed, string> = {
-  consistent_moist: "Giữ ẩm đều",
-  high_tolerates_waterlogged: "Ưa ẩm cao, chịu ngập tốt",
-  moderate_moist: "Ẩm vừa phải",
-  moderate_moist_well_drained: "Ẩm vừa, thoát nước tốt",
-  high_consistent: "Cần nước đều và nhiều",
-  moderate_tolerates_rain: "Chịu mưa vừa phải",
-  moderate_consistent: "Tưới đều, vừa phải",
-};
+/** Water need label — returns translated string. */
+export function waterLabel(water: WaterNeed): string {
+  return t(`labels.water.${water}`) || water;
+}
 
+/** Soil label (still Vietnamese — soil terms are technical). */
 const SOIL_LABELS: Record<string, string> = {
   well_draining_loamy_rich: "Đất tơi xốp, giàu dinh dưỡng, thoát nước tốt",
   any_well_fertilized: "Đất nào cũng được, miễn bón phân tốt",
@@ -57,25 +49,46 @@ export function soilLabel(soil: string): string {
   return SOIL_LABELS[soil] ?? soil;
 }
 
-export const REGION_LABELS: Record<Region, string> = {
-  north_vietnam: "Miền Bắc",
-  south_vietnam: "Miền Nam",
-  highland_vietnam: "Vùng cao (Đà Lạt)",
+/** Ghost cause label — returns translated string. */
+export function ghostCauseLabel(cause: GhostCause): string {
+  return t(`labels.ghost.${cause}`) || cause;
+}
+
+/** Window type label — returns translated string. */
+export function windowTypeLabel(type: string): string {
+  return t(`labels.window.${type}`) || type;
+}
+
+// Backward-compatible static exports (deprecated — use functions above)
+// These are kept for code that hasn't been migrated yet.
+export const CATEGORY_LABEL: Record<CropCategory, string> = {
+  leafy_green: t("labels.categories.leafy_green") || "Leafy greens",
+  herb: t("labels.categories.herb") || "Herbs",
+  root_vegetable: t("labels.categories.root_vegetable") || "Root veg",
+  fruit_vegetable: t("labels.categories.fruit_vegetable") || "Fruit veg",
 };
 
-export const WINDOW_TYPE_LABEL: Record<string, string> = {
-  primary: "Vụ chính",
-  primary_dry_season: "Mùa khô chính",
-  year_round: "Quanh năm",
-  late_spring_risky: "Cuối xuân (rủi ro)",
+export const DIFFICULTY_LABEL: Record<BaseDifficulty, string> = {
+  easy: t("labels.difficulty.easy") || "Easy",
+  medium: t("labels.difficulty.medium") || "Medium",
+  hard: t("labels.difficulty.hard") || "Hard",
 };
 
-/** Nguyên nhân cây chết (Ghost Plant — change my-garden). Emoji đi kèm để chọn nhanh. */
+export const WATER_LABEL: Record<WaterNeed, string> = {
+  consistent_moist: t("labels.water.consistent_moist") || "Keep moist",
+  high_tolerates_waterlogged: t("labels.water.high_tolerates_waterlogged") || "Likes water",
+  moderate_moist: t("labels.water.moderate_moist") || "Moderate moisture",
+  moderate_moist_well_drained: t("labels.water.moderate_moist_well_drained") || "Moderate, well-drained",
+  high_consistent: t("labels.water.high_consistent") || "Needs regular water",
+  moderate_tolerates_rain: t("labels.water.moderate_tolerates_rain") || "Tolerates rain",
+  moderate_consistent: t("labels.water.moderate_consistent") || "Regular, moderate",
+};
+
 export const GHOST_CAUSE_LABEL: Record<GhostCause, string> = {
-  sun_heat: "☀️ Nắng gắt / héo",
-  pest: "🐛 Sâu bệnh",
-  waterlogged: "🌊 Úng nước",
-  unknown: "❓ Không rõ",
+  sun_heat: t("labels.ghost.sun_heat") || "☀️ Sun scorch",
+  pest: t("labels.ghost.pest") || "🐛 Pests",
+  waterlogged: t("labels.ghost.waterlogged") || "🌊 Root rot",
+  unknown: t("labels.ghost.unknown") || "❓ Unknown",
 };
 
 /** Harvest Brag Card — giá trị sản lượng quy đổi (change harvest-brag-card). */

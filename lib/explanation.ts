@@ -9,7 +9,6 @@
 
 import type { ComponentScores } from "./recommendation-engine/scoring";
 import type { Crop, Region } from "./recommendation-engine/types";
-import { GHOST_CAUSE_LABEL } from "./labels";
 
 /** Một lần thất bại trong quá khứ (từ ghost history của user). */
 export interface GhostHistoryEntry {
@@ -42,40 +41,40 @@ export function buildWhyText(
   region: Region,
   role: "easy" | "step_up",
   opts: WhyOptions = {},
+  /** Optional i18n translation function. Falls back to hardcoded Vietnamese if not provided. */
+  tFn: (key: string, params?: Record<string, string | number>) => string = (key) => key,
 ): string {
   const name = crop.crop_base.names.canonical_vi;
   const parts: string[] = [];
 
   if (role === "step_up") {
-    parts.push(
-      `${name} là cây "bước lên" — khó hơn rau lá một chút, nhưng nếu thành công bạn sẽ có quả ăn thật!`,
-    );
+    parts.push(tFn("explanation.stepUp", { name }));
   }
 
   // Use dynamic region labels if provided, otherwise fall back to region string
   const regionLabel = opts.regionLabels?.[region] ?? region;
 
   if (components.season >= 80) {
-    parts.push(`đang đúng thời vụ ở ${regionLabel.toLowerCase()}`);
+    parts.push(tFn("explanation.inSeason", { region: regionLabel }));
   } else if (components.season < 40) {
-    parts.push(`hơi trái mùa ở ${regionLabel.toLowerCase()}, trồng thử vẫn được nhưng cần chú ý hơn`);
+    parts.push(tFn("explanation.offSeason", { region: regionLabel }));
   }
 
   if (components.temperature >= 70) {
-    parts.push("nhiệt độ đang thuận lợi");
+    parts.push(tFn("explanation.goodTemp"));
   } else {
-    parts.push("nhiệt độ không lý tưởng, cần che chắn bớt");
+    parts.push(tFn("explanation.badTemp"));
   }
 
   if (components.beginner >= 70) {
-    parts.push("rất dễ trồng, phù hợp người mới bắt đầu");
+    parts.push(tFn("explanation.easyGrow"));
   }
 
   const [minDays, maxDays] = crop.crop_base.timeline_base.days_to_harvest;
   if (components.fast_harvest >= 70) {
-    parts.push(`thu hoạch nhanh trong khoảng ${minDays}-${maxDays} ngày`);
+    parts.push(tFn("explanation.fastHarvest", { min: minDays, max: maxDays }));
   } else {
-    parts.push(`cần kiên nhẫn (${minDays}-${maxDays} ngày mới thu hoạch)`);
+    parts.push(tFn("explanation.slowHarvest", { min: minDays, max: maxDays }));
   }
 
   // Nudge theo lịch sử thất bại (data moat — plan mục 6): user từng trồng cây này
@@ -84,16 +83,12 @@ export function buildWhyText(
     (g) => g.cropId === crop.crop_base.id && opts.month !== undefined && similarMonth(g.month, opts.month),
   );
   if (ghost) {
-    const causeLabel = GHOST_CAUSE_LABEL[ghost.cause as keyof typeof GHOST_CAUSE_LABEL] ?? ghost.cause;
+    const causeLbl = tFn(`labels.ghost.${ghost.cause}`) || ghost.cause;
     const alternative = opts.alternativeNames?.find((n) => n !== name);
     if (alternative) {
-      parts.push(
-        `Lần trước (tháng ${ghost.month}) bạn trồng ${name} nhưng ${causeLabel.toLowerCase()}. Tháng này thử ${alternative} thay thế nhé!`,
-      );
+      parts.push(tFn("explanation.ghostFailAlt", { month: ghost.month, name, cause: causeLbl, alternative }));
     } else {
-      parts.push(
-        `Lần trước (tháng ${ghost.month}) bạn trồng ${name} nhưng ${causeLabel.toLowerCase()}. Trồng lại thì chú ý hơn nhé!`,
-      );
+      parts.push(tFn("explanation.ghostFail", { month: ghost.month, name, cause: causeLbl }));
     }
   }
 

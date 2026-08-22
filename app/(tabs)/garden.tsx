@@ -15,14 +15,11 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { listGarden, markGhost } from "../../lib/garden/store";
-import type { GhostCause } from "../../lib/garden/types";
+import type { GardenPlant, GhostCause } from "../../lib/garden/types";
 import { GHOST_CAUSE_LABEL } from "../../lib/labels";
-import { getCropById } from "../../lib/data/crops";
-import { t } from "../../lib/i18n";
+import { getCropById, getSupportedCropCountryIds } from "../../lib/data/crops";
+import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
-
-// Default country for garden plants (MVP: all plants stored as Vietnam)
-const DEFAULT_COUNTRY = "vietnam";
 
 const DEMO_USER = "demo-user";
 
@@ -30,7 +27,7 @@ const GHOST_CAUSES: GhostCause[] = ["sun_heat", "pest", "waterlogged", "unknown"
 
 export default function GardenScreen() {
   const router = useRouter();
-  const [plants, setPlants] = useState<any[]>([]);
+  const [plants, setPlants] = useState<GardenPlant[]>([]);
   const [loaded, setLoaded] = useState(false);
 
   const refresh = useCallback(async () => {
@@ -56,6 +53,25 @@ export default function GardenScreen() {
     const sub = BackHandler.addEventListener("hardwareBackPress", onBackPress);
     return () => sub.remove();
   }, [router]);
+
+  // Find crop across all countries (garden stores crops from any country)
+  const findCrop = useCallback((cropId: string) => {
+    const countryIds = getSupportedCropCountryIds();
+    for (const cid of countryIds) {
+      const found = getCropById(cid, cropId);
+      if (found) return found;
+    }
+    return undefined;
+  }, []);
+
+  // Find country ID for a crop (for deep link navigation)
+  const findCropCountry = useCallback((cropId: string): string => {
+    const countryIds = getSupportedCropCountryIds();
+    for (const cid of countryIds) {
+      if (getCropById(cid, cropId)) return cid;
+    }
+    return "vietnam"; // fallback
+  }, []);
 
   const growing = plants.filter((p) => p.status === "growing");
   const ghosts = plants.filter((p) => p.status === "ghost");
@@ -88,12 +104,12 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>{t("garden.growing", { count: growing.length })}</Text>
               {growing.map((p) => {
-                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
+                const crop = findCrop(p.crop_id);
                 return (
                   <TouchableOpacity
                     key={p.id}
                     style={styles.card}
-                    onPress={() => router.push(`/crops/${p.crop_id}?country=${DEFAULT_COUNTRY}`)}
+                    onPress={() => router.push(`/crops/${p.crop_id}?country=${findCropCountry(p.crop_id)}`)}
                   >
                     <Text style={styles.cardName}>
                       {getCropLocalName(p.crop_id, crop?.crop_base.names.canonical_vi ?? p.crop_id)}
@@ -125,7 +141,7 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>{t("garden.harvested", { count: harvested.length })}</Text>
               {harvested.map((p) => {
-                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
+                const crop = findCrop(p.crop_id);
                 return (
                   <View key={p.id} style={styles.cardHarvested}>
                     <Text style={styles.cardName}>
@@ -145,7 +161,7 @@ export default function GardenScreen() {
             <>
               <Text style={styles.sectionTitle}>{t("garden.ghost", { count: ghosts.length })}</Text>
               {ghosts.map((p) => {
-                const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
+                const crop = findCrop(p.crop_id);
                 const causeLabel = p.cause
                   ? GHOST_CAUSE_LABEL[p.cause as GhostCause] ?? p.cause
                   : t("garden.ghostCause");
@@ -156,7 +172,7 @@ export default function GardenScreen() {
                     </Text>
                     <Text style={styles.cardMeta}>
                       {causeLabel} ·{" "}
-                      {new Date(p.died_at!).toLocaleDateString("vi-VN")}
+                      {new Date(p.died_at!).toLocaleDateString(getCurrentLanguage() === "vi" ? "vi-VN" : getCurrentLanguage() === "th" ? "th-TH" : getCurrentLanguage() === "id" ? "id-ID" : "en-US")}
                     </Text>
                   </View>
                 );

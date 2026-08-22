@@ -14,7 +14,6 @@ import {
 import { useRouter } from "expo-router";
 import {
   getFirstAidSymptoms,
-  getSymptomById,
   getNextNode,
   getNode,
   isDiagnosis,

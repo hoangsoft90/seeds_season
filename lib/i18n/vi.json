@@ -57,7 +57,8 @@
     "ghost": "👻 Lịch sử ({{count}})",
     "plantedOn": "Trồng ngày {{date}}",
     "harvestedOn": "Thu hoạch ngày {{date}}",
-    "ghostCause": "Không rõ"
+    "ghostCause": "Không rõ",
+    "duplicateCrop": "Cây này đã có trong vườn của bạn."
   },
   "firstAid": {
     "title": "🆘 Sơ cứu cây",
@@ -117,6 +118,11 @@
       "high_consistent": "Cần nước đều và nhiều",
       "moderate_tolerates_rain": "Chịu mưa vừa phải",
       "moderate_consistent": "Tưới đều, vừa phải"
+    },
+    "level": {
+      "low": "Thấp",
+      "medium": "Vừa",
+      "high": "Cao"
     },
     "ghost": {
       "sun_heat": "☀️ Nắng gắt / héo",
