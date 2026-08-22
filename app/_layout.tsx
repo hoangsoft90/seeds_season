@@ -24,14 +24,6 @@ function RootLayoutInner() {
             name="crops/[id]"
             options={{ title: "Chi tiết cây", presentation: "card" }}
           />
-          <Stack.Screen
-            name="first-aid"
-            options={{ title: "🆘 Sơ cứu cây", presentation: "card" }}
-          />
-          <Stack.Screen
-            name="garden"
-            options={{ title: "🪴 Vườn của tôi", presentation: "card" }}
-          />
         </Stack>
       </AdMobProvider>
     </GestureHandlerRootView>
