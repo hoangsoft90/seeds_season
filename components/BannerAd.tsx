@@ -1,36 +1,47 @@
 /**
  * BannerAd Component
  *
- * Hiển thị banner ad ở cuối màn hình.
- * Tự ẩn khi test_ads = false và chưa có production ad unit ID.
+ * Hiển thị banner ad ở cuối màn hình (native only).
+ * Returns null on web.
  */
-import React, { useEffect, useState } from 'react';
+import React, { useState } from 'react';
 import { View, StyleSheet, Platform } from 'react-native';
-import {
-  BannerAd,
-  BannerAdSize,
-  TestIds,
-} from 'react-native-google-mobile-ads';
-import { AdUnitIds, TEST_ADS } from '../lib/mobile/admob-config';
 
-// Banner height based on size
-const BANNER_HEIGHT = 60;
+// Native-only: load AdMob modules
+let BannerAdComponent: any = null;
+let BannerAdSize: any = null;
+let TestIds: any = null;
+let admobConfig: any = null;
+
+if (Platform.OS !== 'web') {
+  try {
+    const ads = require('react-native-google-mobile-ads');
+    BannerAdComponent = ads.BannerAd;
+    BannerAdSize = ads.BannerAdSize;
+    TestIds = ads.TestIds;
+    admobConfig = require('../lib/mobile/admob-config');
+  } catch {
+    // AdMob not available
+  }
+}
 
 export function AppBannerAd() {
-  const [loaded, setLoaded] = useState(false);
+  if (Platform.OS === 'web' || !BannerAdComponent) return null;
 
-  // Skip if production ID not set
-  if (!TEST_ADS && AdUnitIds.banner.includes('XXXXXXXXXXXXXXXX')) {
+  const [loaded, setLoaded] = useState(false);
+  const { AdUnitIds, TEST_ADS } = admobConfig || {};
+
+  if (!TEST_ADS && AdUnitIds?.banner?.includes('XXXXXXXXXXXXXXXX')) {
     return null;
   }
 
   return (
     <View style={styles.container}>
-      <BannerAd
+      <BannerAdComponent
         unitId={TEST_ADS ? TestIds.BANNER : AdUnitIds.banner}
         size={BannerAdSize.ANCHORED_ADAPTIVE_BANNER}
         onAdLoaded={() => setLoaded(true)}
-        onAdFailedToLoad={(error) => {
+        onAdFailedToLoad={(error: any) => {
           console.log('Banner ad failed to load:', error);
         }}
       />
@@ -43,6 +54,5 @@ const styles = StyleSheet.create({
     alignItems: 'center',
     justifyContent: 'center',
     backgroundColor: '#f0f0f0',
-    // Bottom safe area padding handled by parent
   },
 });

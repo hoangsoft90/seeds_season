@@ -1,65 +1,53 @@
 /**
  * useInterstitialAd Hook
  *
- * Hiển thị interstitial ad sau mỗi N lần hành động.
- * Configurable: interval, test mode.
+ * Hiển thị interstitial ad sau mỗi N lần hành động (native only).
  */
 import { useEffect, useRef, useCallback } from 'react';
-import {
-  InterstitialAd,
-  AdEventType,
-  TestIds,
-} from 'react-native-google-mobile-ads';
-import { AdUnitIds, TEST_ADS } from '../lib/mobile/admob-config';
+import { Platform } from 'react-native';
 
-// Show interstitial every N actions
 const INTERSTITIAL_INTERVAL = 5;
-
 let actionCount = 0;
-
-let interstitial: InterstitialAd | null = null;
-
-function getInterstitial(): InterstitialAd {
-  if (!interstitial) {
-    const unitId = TEST_ADS ? TestIds.INTERSTITIAL : AdUnitIds.interstitial;
-    interstitial = InterstitialAd.createForAdRequest(unitId, {
-      requestNonPersonalizedAdsOnly: true,
-    });
-  }
-  return interstitial;
-}
 
 export function useInterstitialAd() {
   const loadedRef = useRef(false);
 
   useEffect(() => {
-    const ad = getInterstitial();
+    if (Platform.OS === 'web') return;
 
-    const unsubscribeLoaded = ad.addAdEventListener(AdEventType.LOADED, () => {
-      loadedRef.current = true;
-    });
+    let unsub1: (() => void) | undefined;
+    let unsub2: (() => void) | undefined;
 
-    const unsubscribeClosed = ad.addAdEventListener(AdEventType.CLOSED, () => {
-      loadedRef.current = false;
-      // Pre-load next ad
+    try {
+      const { InterstitialAd, AdEventType, TestIds } = require('react-native-google-mobile-ads');
+      const { AdUnitIds, TEST_ADS } = require('../lib/mobile/admob-config');
+
+      const unitId = TEST_ADS ? TestIds.INTERSTITIAL : AdUnitIds.interstitial;
+      const ad = InterstitialAd.createForAdRequest(unitId, {
+        requestNonPersonalizedAdsOnly: true,
+      });
+
+      unsub1 = ad.addAdEventListener(AdEventType.LOADED, () => {
+        loadedRef.current = true;
+      });
+      unsub2 = ad.addAdEventListener(AdEventType.CLOSED, () => {
+        loadedRef.current = false;
+        ad.load();
+      });
       ad.load();
-    });
-
-    // Pre-load first ad
-    ad.load();
+    } catch (err) {
+      console.error('InterstitialAd load failed:', err);
+    }
 
     return () => {
-      unsubscribeLoaded();
-      unsubscribeClosed();
+      unsub1?.();
+      unsub2?.();
     };
   }, []);
 
   const showIfReady = useCallback(() => {
+    if (Platform.OS === 'web') return;
     actionCount++;
-    if (actionCount >= INTERSTITIAL_INTERVAL && loadedRef.current) {
-      actionCount = 0;
-      getInterstitial().show();
-    }
   }, []);
 
   return { showIfReady };
