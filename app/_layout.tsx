@@ -3,9 +3,11 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { AdMobProvider } from "../components/AdMobProvider";
+import * as Sentry from "@sentry/react-native";
+import "../sentry.config"; // Initialize Sentry on app start
 import "../lib/i18n"; // Initialize i18n on app start
 
-export default function RootLayout() {
+function RootLayoutInner() {
   return (
     <GestureHandlerRootView style={styles.root}>
       <AdMobProvider>
@@ -35,6 +37,8 @@ export default function RootLayout() {
     </GestureHandlerRootView>
   );
 }
+
+export default Sentry.wrap(RootLayoutInner);
 
 const styles = StyleSheet.create({
   root: { flex: 1 },

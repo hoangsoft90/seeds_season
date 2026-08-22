@@ -37,7 +37,8 @@
           "sk_ad_network_items": []
         }
       ],
-      "expo-localization"
+      "expo-localization",
+      "@sentry/react-native"
     ]
   }
 }

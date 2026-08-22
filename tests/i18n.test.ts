@@ -9,6 +9,7 @@ vi.mock("expo-localization", () => ({
 }));
 
 import i18n, { setLanguage, getCurrentLanguage, t, type LanguageCode } from "../lib/i18n";
+import { getCropLocalName } from "../lib/i18n/crops-i18n";
 
 describe("i18n translations", () => {
   const languages: LanguageCode[] = ["vi", "en", "th", "id"];
@@ -93,13 +94,8 @@ describe("i18n translations", () => {
 });
 
 describe("crop names i18n", () => {
-  // Dynamic import to avoid module resolution issues in Vitest
-  let getCropLocalName: (cropId: string, canonicalVi: string) => string;
-
-  beforeEach(async () => {
+  beforeEach(() => {
     setLanguage("vi");
-    const mod = await import("../lib/i18n/crops-i18n");
-    getCropLocalName = mod.getCropLocalName;
   });
 
   it("returns Vietnamese name for vi locale", () => {
