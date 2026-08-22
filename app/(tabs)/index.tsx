@@ -29,7 +29,6 @@ import { buildWhyText } from "../../lib/explanation";
 import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 import { LanguageSwitcher } from "../../components/LanguageSwitcher";
-import { AppBannerAd } from "../../components/BannerAd";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 const LOCATION_LABELS: Record<LocationType, string> = {
@@ -285,7 +284,6 @@ export default function HomeScreen() {
           <Text style={styles.buttonText}>{t("onboarding.submit")}</Text>
         </TouchableOpacity>
 
-        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -355,7 +353,6 @@ export default function HomeScreen() {
         </>
       )}
 
-      <AppBannerAd />
     </ScrollView>
   );
 }
