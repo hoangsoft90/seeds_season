@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "🌱 Hari Ini Tanam Apa"
+  },
+  "common": {
+    "back": "← Kembali",
+    "loading": "Memuat...",
+    "error": "Kesalahan",
+    "ok": "OK",
+    "cancel": "Batal",
+    "confirm": "Konfirmasi",
+    "success": "Berhasil",
+    "noData": "Tidak ada data"
+  },
+  "onboarding": {
+    "title": "🌱 Hari Ini Tanam Apa",
+    "subtitle": "Saran tanaman untuk balkon Anda",
+    "country": "Negara:",
+    "region": "Zona iklim:",
+    "month": "Bulan saat ini:",
+    "location": "Lokasi menanam:",
+    "sunlight": "Sinar matahari/hari: {{hours}}j",
+    "potDepth": "Kedalaman pot: {{depth}}cm",
+    "cropCount": "📊 {{count}} tanaman tersedia untuk {{country}}",
+    "submit": "🔍 Sarankan untuk saya",
+    "missingInfo": "Informasi kurang",
+    "missingInfoMsg": "Silakan pilih negara, wilayah, dan lokasi menanam."
+  },
+  "location": {
+    "window": "🪟 Jendela",
+    "balcony": "🌿 Balkon",
+    "garden": "🌳 Taman"
+  },
+  "results": {
+    "title": "🌱 Hasil Rekomendasi",
+    "bestForYou": "🪴 Terbaik untuk Anda",
+    "easy": "🟢 Mudah",
+    "stepUp": "🟡 Naik level",
+    "rechoose": "🔄 Pilih ulang",
+    "myGarden": "🪴 Kebun Saya"
+  },
+  "garden": {
+    "title": "🪴 Kebun Saya",
+    "empty": "Belum ada tanaman di kebun",
+    "emptyIcon": "🌱",
+    "findPlants": "🔍 Cari tanaman",
+    "growing": "🌿 Sedang tumbuh ({{count}})",
+    "harvested": "🎉 Sudah dipanen ({{count}})",
+    "ghost": "👻 Riwayat ({{count}})",
+    "plantedOn": "Ditanam {{date}}",
+    "harvestedOn": "Dipanen {{date}}",
+    "ghostCause": "Tidak diketahui"
+  },
+  "firstAid": {
+    "title": "🆘 Pertolongan Pertama Tanaman",
+    "subtitle": "Pilih gejala yang dialami tanaman Anda:",
+    "back": "← Kembali",
+    "diagnosis": "📋 Diagnosis",
+    "remedy": "🔧 Cara mengatasi:",
+    "restart": "🔁 Mulai ulang",
+    "home": "🏠 Beranda"
+  },
+  "cropDetail": {
+    "notFound": "Tanaman tidak ditemukan",
+    "back": "← Kembali",
+    "timeline": "📅 Timeline",
+    "germination": "Perkecambahan: {{min}}-{{max}} hari",
+    "harvest": "Panen: {{min}}-{{max}} hari",
+    "stages": "🌱 Tahap pertumbuhan",
+    "conditions": "🌡️ Kondisi ideal",
+    "temperature": "Suhu: {{min}}-{{max}}°C (min {{deathMin}}°C, maks {{deathMax}}°C)",
+    "sunlight": "Sinar matahari: ≥{{min}}j, ideal {{optimal}}j/hari",
+    "constraints": "⚠️ Batas kelangsungan hidup",
+    "maxTemp": "Maksimum: {{value}}°C ({{reason}})",
+    "minTemp": "Minimum: {{value}}°C ({{reason}})",
+    "minSun": "Sinar matahari minimum: {{value}}j/hari",
+    "minPot": "Kedalaman pot minimum: {{value}}cm",
+    "regional": "🌍 Aturan regional",
+    "window": "Musim {{type}}: bulan {{months}}",
+    "beginner": "👤 Cocok untuk pemula",
+    "overwatering": "Tahan siram banyak: {{value}}",
+    "underwatering": "Tahan kurang air: {{value}}",
+    "disease": "Ketahanan penyakit: {{value}}",
+    "addToGarden": "🪴 Tambah ke kebun",
+    "addedSuccess": "{{name}} ditambahkan ke kebun!",
+    "firstAidLink": "🆘 Tanaman bermasalah? → Pertolongan Pertama"
+  },
+  "labels": {
+    "categories": {
+      "leafy_green": "Sayuran daun",
+      "herb": "Rempah",
+      "root_vegetable": "Umbi",
+      "fruit_vegetable": "Buah sayur"
+    },
+    "difficulty": {
+      "easy": "Mudah",
+      "medium": "Sedang",
+      "hard": "Sulit"
+    },
+    "water": {
+      "consistent_moist": "Jaga kelembaban",
+      "high_tolerates_waterlogged": "Suka air, tahan tergenang",
+      "moderate_moist": "Kelembaban sedang",
+      "moderate_moist_well_drained": "Sedang, drainase baik",
+      "high_consistent": "Perlu air teratur",
+      "moderate_tolerates_rain": "Tahan hujan",
+      "moderate_consistent": "Siram teratur"
+    },
+    "ghost": {
+      "sun_heat": "☀️ Kena panas terik",
+      "pest": "🐛 Hama",
+      "waterlogged": "🌊 Akar busuk",
+      "unknown": "❓ Tidak diketahui"
+    },
+    "window": {
+      "primary": "Musim utama",
+      "primary_dry_season": "Musim kemarau",
+      "year_round": "Sepanjang tahun",
+      "late_spring_risky": "Akhir musim semi (berisiko)"
+    }
+  },
+  "explanation": {
+    "stepUp": "{{name}} adalah tanaman \"naik level\" — sedikit lebih sulit dari sayuran daun, tapi jika berhasil Anda akan dapat buah sungguhan!",
+    "inSeason": "sedang musim di {{region}}",
+    "offSeason": "agak di luar musim di {{region}}, masih layak coba tapi perlu perhatian ekstra",
+    "goodTemp": "suhu sedang menguntungkan",
+    "badTemp": "suhu tidak ideal, perlu teduh sebagian",
+    "easyGrow": "sangat mudah tumbuh, cocok untuk pemula",
+    "fastHarvest": "panen cepat dalam {{min}}-{{max}} hari",
+    "slowHarvest": "perlu kesabaran ({{min}}-{{max}} hari baru panen)",
+    "ghostFail": "Terakhir (bulan {{month}}) Anda menanam {{name}} tapi {{cause}}. Coba lagi dengan lebih hati-hati!",
+    "ghostFailAlt": "Terakhir (bulan {{month}}) Anda menanam {{name}} tapi {{cause}}. Bulan ini coba {{alternative}} sebagai gantinya!"
+  }
+}

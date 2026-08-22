@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "🌱 Trồng Gì Hôm Nay"
+  },
+  "common": {
+    "back": "← Quay lại",
+    "loading": "Đang tải...",
+    "error": "Lỗi",
+    "ok": "OK",
+    "cancel": "Hủy",
+    "confirm": "Xác nhận",
+    "success": "Thành công",
+    "noData": "Không có dữ liệu"
+  },
+  "onboarding": {
+    "title": "🌱 Trồng Gì Hôm Nay",
+    "subtitle": "Gợi ý cây trồng phù hợp với ban công của bạn",
+    "country": "Quốc gia:",
+    "region": "Vùng khí hậu:",
+    "month": "Tháng hiện tại:",
+    "location": "Vị trí trồng:",
+    "sunlight": "Giờ nắng/ngày: {{hours}}h",
+    "potDepth": "Độ sâu chậu: {{depth}}cm",
+    "cropCount": "📊 {{count}} loại cây có sẵn cho {{country}}",
+    "submit": "🔍 Gợiý cho tôi",
+    "missingInfo": "Thiếu thông tin",
+    "missingInfoMsg": "Vui lòng chọn quốc gia, vùng và vị trí trồng."
+  },
+  "location": {
+    "window": "🪟 Cửa sổ",
+    "balcony": "🌿 Ban công",
+    "garden": "🌳 Sân vườn"
+  },
+  "results": {
+    "title": "🌱 Kết quả gợi ý",
+    "bestForYou": "🪴 Gợi ý tốt nhất cho bạn",
+    "easy": "🟢 Dễ",
+    "stepUp": "🟡 Bước lên",
+    "rechoose": "🔄 Chọn lại",
+    "myGarden": "🪴 Vườn của tôi"
+  },
+  "garden": {
+    "title": "🪴 Vườn của tôi",
+    "empty": "Chưa có cây nào trong vườn",
+    "emptyIcon": "🌱",
+    "findPlants": "🔍 Tìm cây trồng",
+    "growing": "🌿 Đang trồng ({{count}})",
+    "harvested": "🎉 Đã thu hoạch ({{count}})",
+    "ghost": "👻 Lịch sử ({{count}})",
+    "plantedOn": "Trồng ngày {{date}}",
+    "harvestedOn": "Thu hoạch ngày {{date}}",
+    "ghostCause": "Không rõ"
+  },
+  "firstAid": {
+    "title": "🆘 Sơ cứu cây",
+    "subtitle": "Chọn triệu chứng mà cây đang gặp phải:",
+    "back": "← Quay lại",
+    "diagnosis": "📋 Chẩn đoán",
+    "remedy": "🔧 Cách xử lý:",
+    "restart": "🔁 Bắt đầu lại",
+    "home": "🏠 Về trang chủ"
+  },
+  "cropDetail": {
+    "notFound": "Không tìm thấy loại cây này",
+    "back": "← Quay lại",
+    "timeline": "📅 Thời gian生长",
+    "germination": "Nảy mầm: {{min}}-{{max}} ngày",
+    "harvest": "Thu hoạch: {{min}}-{{max}} ngày",
+    "stages": "🌱 Giai đoạn生长",
+    "conditions": "🌡️ Điều kiện lý tưởng",
+    "temperature": "Nhiệt度: {{min}}-{{max}}°C (tối thiểu {{deathMin}}°C, tối đa {{deathMax}}°C)",
+    "sunlight": "Nắng: ≥{{min}}h, lý tưởng {{optimal}}h/ngày",
+    "constraints": "⚠️ Ngưỡng sống-chết",
+    "maxTemp": "Tối đa: {{value}}°C ({{reason}})",
+    "minTemp": "Tối thiểu: {{value}}°C ({{reason}})",
+    "minSun": "Nắng tối thiểu: {{value}}h/ngày",
+    "minPot": "Chậu tối thiểu: {{value}}cm",
+    "regional": "🌍 Quy tắc vùng miền",
+    "window": "Vụ {{type}}: tháng {{months}}",
+    "beginner": "👤 Phù hợp người mới",
+    "overwatering": "Chịu tưới nhiều: {{value}}",
+    "underwatering": "Chịu thiếu nước: {{value}}",
+    "disease": "Kháng bệnh: {{value}}",
+    "addToGarden": "🪴 Thêm vào vườn",
+    "addedSuccess": "Đã thêm {{name}} vào vườn!",
+    "firstAidLink": "🆘 Cây có vấn đề? → Sơ cứu"
+  },
+  "labels": {
+    "categories": {
+      "leafy_green": "Rau lá",
+      "herb": "Gia vị",
+      "root_vegetable": "Củ",
+      "fruit_vegetable": "Quả"
+    },
+    "difficulty": {
+      "easy": "Dễ",
+      "medium": "Trung bình",
+      "hard": "Khó"
+    },
+    "water": {
+      "consistent_moist": "Giữ ẩm đều",
+      "high_tolerates_waterlogged": "Ưa ẩm cao, chịu ngập tốt",
+      "moderate_moist": "Ẩm vừa phải",
+      "moderate_moist_well_drained": "Ẩm vừa, thoát nước tốt",
+      "high_consistent": "Cần nước đều và nhiều",
+      "moderate_tolerates_rain": "Chịu mưa vừa phải",
+      "moderate_consistent": "Tưới đều, vừa phải"
+    },
+    "ghost": {
+      "sun_heat": "☀️ Nắng gắt / héo",
+      "pest": "🐛 Sâu bệnh",
+      "waterlogged": "🌊 Úng nước",
+      "unknown": "❓ Không rõ"
+    },
+    "window": {
+      "primary": "Vụ chính",
+      "primary_dry_season": "Mùa khô chính",
+      "year_round": "Quanh năm",
+      "late_spring_risky": "Cuối xuân (rủi ro)"
+    }
+  },
+  "explanation": {
+    "stepUp": "{{name}} là cây \"bước lên\" — khó hơn rau lá một chút, nhưng nếu thành công bạn sẽ có quả ăn thật!",
+    "inSeason": "đang đúng thời vụ ở {{region}}",
+    "offSeason": "hơi trái mùa ở {{region}}, trồng thử vẫn được nhưng cần chú ý hơn",
+    "goodTemp": "nhiệt độ đang thuận lợi",
+    "badTemp": "nhiệt độ không lý tưởng, cần che chắn bớt",
+    "easyGrow": "rất dễ trồng, phù hợp người mới bắt đầu",
+    "fastHarvest": "thu hoạch nhanh trong khoảng {{min}}-{{max}} ngày",
+    "slowHarvest": "cần kiên nhẫn ({{min}}-{{max}} ngày mới thu hoạch)",
+    "ghostFail": "Lần trước (tháng {{month}}) bạn trồng {{name}} nhưng {{cause}}. Trồng lại thì chú ý hơn nhé!",
+    "ghostFailAlt": "Lần trước (tháng {{month}}) bạn trồng {{name}} nhưng {{cause}}. Tháng này thử {{alternative}} thay thế nhé!"
+  }
+}

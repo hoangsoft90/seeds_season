@@ -21,6 +21,7 @@ import {
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
 import { AppBannerAd } from "../../components/BannerAd";
+import { t } from "../../lib/i18n";
 
 export default function FirstAidScreen() {
   const router = useRouter();
@@ -66,8 +67,8 @@ export default function FirstAidScreen() {
   if (!selectedSymptom || !currentNode) {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>🆘 Sơ cứu cây</Text>
-        <Text style={styles.subtitle}>Chọn triệu chứng mà cây đang gặp phải:</Text>
+        <Text style={styles.title}>{t("firstAid.title")}</Text>
+        <Text style={styles.subtitle}>{t("firstAid.subtitle")}</Text>
         <View style={styles.symptomGrid}>
           {symptoms.map((s) => (
             <TouchableOpacity
@@ -92,7 +93,7 @@ export default function FirstAidScreen() {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
-          <Text style={styles.backBtnText}>← Quay lại</Text>
+          <Text style={styles.backBtnText}>{t("firstAid.back")}</Text>
         </TouchableOpacity>
         <Text style={styles.questionText}>{currentNode.question}</Text>
         {currentNode.answers.map((a) => (
@@ -114,10 +115,10 @@ export default function FirstAidScreen() {
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.diagnosisCard}>
-        <Text style={styles.diagnosisTitle}>📋 Chẩn đoán</Text>
+        <Text style={styles.diagnosisTitle}>{t("firstAid.diagnosis")}</Text>
         <Text style={styles.diagnosisText}>{currentNode.diagnosis}</Text>
 
-        <Text style={styles.remedyTitle}>🔧 Cách xử lý:</Text>
+        <Text style={styles.remedyTitle}>{t("firstAid.remedy")}</Text>
         {currentNode.remedy.map((step, i) => (
           <Text key={i} style={styles.remedyStep}>
             {i + 1}. {step}
@@ -130,10 +131,10 @@ export default function FirstAidScreen() {
       </View>
 
       <TouchableOpacity style={styles.restartBtn} onPress={handleRestart}>
-        <Text style={styles.restartBtnText}>🔁 Bắt đầu lại</Text>
+        <Text style={styles.restartBtnText}>{t("firstAid.restart")}</Text>
       </TouchableOpacity>
       <TouchableOpacity style={styles.homeBtn} onPress={() => router.push("/")}>
-        <Text style={styles.homeBtnText}>🏠 Về trang chủ</Text>
+        <Text style={styles.homeBtnText}>{t("firstAid.home")}</Text>
       </TouchableOpacity>
 
       <AppBannerAd />

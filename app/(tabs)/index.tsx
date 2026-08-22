@@ -26,13 +26,16 @@ import type {
 import type { CountryConfig } from "../../lib/data/countries/types";
 import { CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
+import { t, getCurrentLanguage } from "../../lib/i18n";
+import { getCropLocalName } from "../../lib/i18n/crops-i18n";
+import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import { AppBannerAd } from "../../components/BannerAd";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 const LOCATION_LABELS: Record<LocationType, string> = {
-  window: "🪟 Cửa sổ",
-  balcony: "🌿 Ban công",
-  garden: "🌳 Sân vườn",
+  window: t("location.window"),
+  balcony: t("location.balcony"),
+  garden: t("location.garden"),
 };
 
 const MONTHS = [
@@ -89,7 +92,7 @@ export default function HomeScreen() {
 
   const runRecommendation = useCallback(() => {
     if (!selectedCountry || !selectedRegion || !selectedLocation) {
-      Alert.alert("Thiếu thông tin", "Vui lòng chọn quốc gia, vùng và vị trí trồng.");
+      Alert.alert(t("onboarding.missingInfo"), t("onboarding.missingInfoMsg"));
       return;
     }
 
@@ -116,13 +119,14 @@ export default function HomeScreen() {
   if (showOnboarding || !recommendations) {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-        <Text style={styles.title}>🌱 Trồng Gì Hôm Nay</Text>
+        <Text style={styles.title}>{t("onboarding.title")}</Text>
         <Text style={styles.subtitle}>
-          Gợi ý cây trồng phù hợp với ban công của bạn
+          {t("onboarding.subtitle")}
         </Text>
+        <LanguageSwitcher />
 
         {/* Country selector */}
-        <Text style={styles.label}>Quốc gia:</Text>
+        <Text style={styles.label}>{t("onboarding.country")}</Text>
         <View style={styles.row}>
           {COUNTRIES.map((c) => (
             <TouchableOpacity
@@ -148,7 +152,7 @@ export default function HomeScreen() {
         {/* Region (dynamic per country) */}
         {countryConfig && (
           <>
-            <Text style={styles.label}>Vùng khí hậu:</Text>
+            <Text style={styles.label}>{t("onboarding.region")}</Text>
             <View style={styles.row}>
               {countryConfig.regions.map((r) => (
                 <TouchableOpacity
@@ -174,7 +178,7 @@ export default function HomeScreen() {
         )}
 
         {/* Month */}
-        <Text style={styles.label}>Tháng hiện tại:</Text>
+        <Text style={styles.label}>{t("onboarding.month")}</Text>
         <View style={styles.row}>
           {monthNames.map((m, i) => (
             <TouchableOpacity
@@ -198,7 +202,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Location type */}
-        <Text style={styles.label}>Vị trí trồng:</Text>
+        <Text style={styles.label}>{t("onboarding.location")}</Text>
         <View style={styles.row}>
           {LOCATION_TYPES.map((lt) => (
             <TouchableOpacity
@@ -222,7 +226,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Sunlight */}
-        <Text style={styles.label}>Giờ nắng/ngày: {sunlight}h</Text>
+        <Text style={styles.label}>{t("onboarding.sunlight", { hours: sunlight })}</Text>
         <View style={styles.row}>
           {[2, 4, 6, 8].map((h) => (
             <TouchableOpacity
@@ -246,7 +250,7 @@ export default function HomeScreen() {
         </View>
 
         {/* Pot depth */}
-        <Text style={styles.label}>Độ sâu chậu: {potDepth}cm</Text>
+        <Text style={styles.label}>{t("onboarding.potDepth", { depth: potDepth })}</Text>
         <View style={styles.row}>
           {[10, 15, 20, 30].map((d) => (
             <TouchableOpacity
@@ -278,7 +282,7 @@ export default function HomeScreen() {
 
         {/* Submit */}
         <TouchableOpacity style={styles.button} onPress={runRecommendation}>
-          <Text style={styles.buttonText}>🔍 Gợi ý cho tôi</Text>
+          <Text style={styles.buttonText}>{t("onboarding.submit")}</Text>
         </TouchableOpacity>
 
         <AppBannerAd />
@@ -288,8 +292,7 @@ export default function HomeScreen() {
 
   // Show recommendations
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>🌱 Kết quả gợi ý</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>        <Text style={styles.title}>{t("results.title")}</Text>
       <Text style={styles.subtitle}>
         {countryConfig?.name_local} · {regionLabels[selectedRegion!] ?? selectedRegion}
       </Text>
@@ -300,7 +303,7 @@ export default function HomeScreen() {
         </View>
       ) : (
         <>
-          <Text style={styles.sectionTitle}>🪴 Gợi ý tốt nhất cho bạn</Text>
+          <Text style={styles.sectionTitle}>{t("results.bestForYou")}</Text>
           {recommendations.recommendations.map((rec, i) => (
             <TouchableOpacity
               key={rec.crop.crop_base.id}
@@ -311,10 +314,10 @@ export default function HomeScreen() {
             >
               <View style={styles.cropHeader}>
                 <Text style={styles.cropName}>
-                  {rec.crop.crop_base.names.canonical_vi}
+                  {getCropLocalName(rec.crop.crop_base.id, rec.crop.crop_base.names.canonical_vi)}
                 </Text>
                 <Text style={styles.cropRole}>
-                  {rec.role === "easy" ? "🟢 Dễ" : "🟡 Bước lên"}
+                  {rec.role === "easy" ? t("results.easy") : t("results.stepUp")}
                 </Text>
               </View>
               <Text style={styles.cropMeta}>
@@ -340,13 +343,13 @@ export default function HomeScreen() {
               style={styles.buttonOutline}
               onPress={() => setShowOnboarding(true)}
             >
-              <Text style={styles.buttonOutlineText}>🔄 Chọn lại</Text>
+              <Text style={styles.buttonOutlineText}>{t("results.rechoose")}</Text>
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
               onPress={() => router.push("/garden")}
             >
-              <Text style={styles.buttonText}>🪴 Vườn của tôi</Text>
+              <Text style={styles.buttonText}>{t("results.myGarden")}</Text>
             </TouchableOpacity>
           </View>
         </>

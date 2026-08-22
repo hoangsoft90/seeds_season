@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "🌱 วันนี้ปลูกอะไรดี"
+  },
+  "common": {
+    "back": "← กลับ",
+    "loading": "กำลังโหลด...",
+    "error": "ข้อผิดพลาด",
+    "ok": "ตกลง",
+    "cancel": "ยกเลิก",
+    "confirm": "ยืนยัน",
+    "success": "สำเร็จ",
+    "noData": "ไม่มีข้อมูล"
+  },
+  "onboarding": {
+    "title": "🌱 วันนี้ปลูกอะไรดี",
+    "subtitle": "แนะนำผักผลไม้สำหรับระเบียงของคุณ",
+    "country": "ประเทศ:",
+    "region": "เขตภูมิอากาศ:",
+    "month": "เดือนปัจจุบัน:",
+    "location": "ตำแหน่งปลูก:",
+    "sunlight": "แดด/วัน: {{hours}}ชม.",
+    "potDepth": "ความลึกกระถาง: {{depth}}ซม.",
+    "cropCount": "📊 มีพืช {{count}} ชนิดสำหรับ{{country}}",
+    "submit": "🔍 แนะนำให้ฉัน",
+    "missingInfo": "ข้อมูลไม่ครบ",
+    "missingInfoMsg": "กรุณาเลือกประเทศ เขต และตำแหน่งปลูก"
+  },
+  "location": {
+    "window": "🪟 หน้าต่าง",
+    "balcony": "🌿 ระเบียง",
+    "garden": "🌳 สวน"
+  },
+  "results": {
+    "title": "🌱 ผลการแนะนำ",
+    "bestForYou": "🪴 ดีที่สุดสำหรับคุณ",
+    "easy": "🟢 ง่าย",
+    "stepUp": "🟡 ท้าทายขึ้น",
+    "rechoose": "🔄 เลือกใหม่",
+    "myGarden": "🪴 สวนของฉัน"
+  },
+  "garden": {
+    "title": "🪴 สวนของฉัน",
+    "empty": "ยังไม่มีต้นไม้ในสวน",
+    "emptyIcon": "🌱",
+    "findPlants": "🔍 หาต้นไม้ปลูก",
+    "growing": "🌿 กำลังปลูก ({{count}})",
+    "harvested": "🎉 เก็บเกี่ยวแล้ว ({{count}})",
+    "ghost": "👻 ประวัติ ({{count}})",
+    "plantedOn": "ปลูกเมื่อ {{date}}",
+    "harvestedOn": "เก็บเกี่ยวเมื่อ {{date}}",
+    "ghostCause": "ไม่ทราบ"
+  },
+  "firstAid": {
+    "title": "🆘 ปฐมพยาบาลต้นไม้",
+    "subtitle": "เลือกอาการที่ต้นไม้กำลังเป็น:",
+    "back": "← กลับ",
+    "diagnosis": "📋 การวินิจฉัย",
+    "remedy": "🔧 วิธีแก้ไข:",
+    "restart": "🔁 เริ่มใหม่",
+    "home": "🏠 หน้าแรก"
+  },
+  "cropDetail": {
+    "notFound": "ไม่พบพืชชนิดนี้",
+    "back": "← กลับ",
+    "timeline": "📅 ไทม์ไลน์",
+    "germination": "งอก: {{min}}-{{max}} วัน",
+    "harvest": "เก็บเกี่ยว: {{min}}-{{max}} วัน",
+    "stages": "🌱 ระยะการเจริญเติบโต",
+    "conditions": "🌡️ สภาพที่เหมาะสม",
+    "temperature": "อุณหภูมิ: {{min}}-{{max}}°C (ต่ำสุด {{deathMin}}°C, สูงสุด {{deathMax}}°C)",
+    "sunlight": "แดด: ≥{{min}}ชม. เหมาะสม {{optimal}}ชม./วัน",
+    "constraints": "⚠️ ขีดจำกัดการอยู่รอด",
+    "maxTemp": "สูงสุด: {{value}}°C ({{reason}})",
+    "minTemp": "ต่ำสุด: {{value}}°C ({{reason}})",
+    "minSun": "แดดขั้นต่ำ: {{value}}ชม./วัน",
+    "minPot": "กระถางขั้นต่ำ: {{value}}ซม.",
+    "regional": "🌍 กฎระเบียบตามภูมิภาค",
+    "window": "ฤดูกาล {{type}}: เดือน {{months}}",
+    "beginner": "👤 เหมาะสำหรับมือใหม่",
+    "overwatering": "ทนรดน้ำมาก: {{value}}",
+    "underwatering": "ทนขาดน้ำ: {{value}}",
+    "disease": "ทนโรค: {{value}}",
+    "addToGarden": "🪴 เพิ่มลงสวน",
+    "addedSuccess": "เพิ่ม {{name}} ลงสวนแล้ว!",
+    "firstAidLink": "🆘 ต้นไม้มีปัญหา? → ปฐมพยาบาล"
+  },
+  "labels": {
+    "categories": {
+      "leafy_green": "ผักใบเขียว",
+      "herb": "สมุนไพร",
+      "root_vegetable": "หัว",
+      "fruit_vegetable": "ผลไม้"
+    },
+    "difficulty": {
+      "easy": "ง่าย",
+      "medium": "ปานกลาง",
+      "hard": "ยาก"
+    },
+    "water": {
+      "consistent_moist": "รักษาความชื้น",
+      "high_tolerates_waterlogged": "ชอบน้ำ ทนน้ำขัง",
+      "moderate_moist": "ชื้นปานกลาง",
+      "moderate_moist_well_drained": "ชื้นพอควร ระบายน้ำดี",
+      "high_consistent": "ต้องการน้ำสม่ำเสมอ",
+      "moderate_tolerates_rain": "ทนฝนได้",
+      "moderate_consistent": "รดสม่ำเสมอ"
+    },
+    "ghost": {
+      "sun_heat": "☀️ แดดเผา",
+      "pest": "🐛 แมลงศัตรูพืช",
+      "waterlogged": "🌊 รากเน่า",
+      "unknown": "❓ ไม่ทราบ"
+    },
+    "window": {
+      "primary": "ฤดูหลัก",
+      "primary_dry_season": "ฤดูแล้ง",
+      "year_round": "ตลอดปี",
+      "late_spring_risky": "ปลายฤดูใบไม้ผลิ (เสี่ยง)"
+    }
+  },
+  "explanation": {
+    "stepUp": "{{name}} เป็นพืช \"ก้าวข้าม\" — ยากกว่าผักใบเล็กน้อย แต่ถ้าสำเร็จจะได้ผลไม้จริง!",
+    "inSeason": "อยู่ในฤดูกาลที่ {{region}}",
+    "offSeason": "นอกฤดูเล็กน้อยที่ {{region}} ยังลองปลูกได้แต่ต้องดูแลมากขึ้น",
+    "goodTemp": "อุณหภูมิเอื้ออำนวย",
+    "badTemp": "อุณหภูมิไม่เหมาะ ต้องบังแดดบ้าง",
+    "easyGrow": "ง่ายมาก เหมาะสำหรับมือใหม่",
+    "fastHarvest": "เก็บเกี่ยวเร็วใน {{min}}-{{max}} วัน",
+    "slowHarvest": "ต้องอดใจรอ ({{min}}-{{max}} วันถึงเก็บเกี่ยว)",
+    "ghostFail": "ครั้งก่อน (เดือน {{month}}) คุณปลูก {{name}} แต่{{cause}} ลองปลูกอีกครั้งด้วยความระวัง!",
+    "ghostFailAlt": "ครั้งก่อน (เดือน {{month}}) คุณปลูก {{name}} แต่{{cause}} เดือนนี้ลอง {{alternative}} แทน!"
+  }
+}

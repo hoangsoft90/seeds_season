@@ -20,6 +20,8 @@ import {
   soilLabel,
 } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
+import { t } from "../../lib/i18n";
+import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 
 const DEMO_USER = "demo-user";
 
@@ -42,9 +44,9 @@ export default function CropDetailScreen() {
   if (!crop) {
     return (
       <View style={styles.center}>
-        <Text style={styles.notFound}>Không tìm thấy loại cây này</Text>
+        <Text style={styles.notFound}>{t("cropDetail.notFound")}</Text>
         <TouchableOpacity onPress={() => router.back()}>
-          <Text style={styles.link}>← Quay lại</Text>
+          <Text style={styles.link}>{t("cropDetail.back")}</Text>
         </TouchableOpacity>
       </View>
     );
@@ -60,19 +62,19 @@ export default function CropDetailScreen() {
   const handleAddToGarden = async () => {
     try {
       await addPlant(DEMO_USER, base.id);
-      Alert.alert("Thành công", `Đã thêm ${base.names.canonical_vi} vào vườn!`, [
+      Alert.alert(t("common.success"), t("cropDetail.addedSuccess", { name: getCropLocalName(base.id, base.names.canonical_vi) }), [
         { text: "Xem vườn", onPress: () => router.push("/garden") },
         { text: "OK" },
       ]);
     } catch (e: any) {
-      Alert.alert("Lỗi", e.message);
+      Alert.alert(t("common.error"), e.message);
     }
   };
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
-      <Text style={styles.name}>{base.names.canonical_vi}</Text>
+      <Text style={styles.name}>{getCropLocalName(base.id, base.names.canonical_vi)}</Text>
       <Text style={styles.scientific}>{base.names.scientific}</Text>
       <View style={styles.metaRow}>
         <Text style={styles.metaChip}>{CATEGORY_LABEL[base.category]}</Text>
@@ -80,18 +82,18 @@ export default function CropDetailScreen() {
       </View>
 
       {/* Timeline */}
-      <Section title="📅 Thời gian生长">
+      <Section title={t("cropDetail.timeline")}>
         <Text style={styles.text}>
-          Nảy mầm: {minGerm}-{maxGerm} ngày
+          {t("cropDetail.germination", { min: minGerm, max: maxGerm })}
         </Text>
         <Text style={styles.text}>
-          Thu hoạch: {minDays}-{maxDays} ngày
+          {t("cropDetail.harvest", { min: minDays, max: maxDays })}
         </Text>
       </Section>
 
       {/* Growing Stages */}
       {base.timeline_base.growth_stages.length > 0 && (
-        <Section title="🌱 Giai đoạn生长">
+        <Section title={t("cropDetail.stages")}>
           {base.timeline_base.growth_stages.map((stage, i) => (
             <Text key={i} style={styles.text}>
               • {stage.stage}: ngày {stage.day_range[0]}-{stage.day_range[1]}
@@ -101,7 +103,7 @@ export default function CropDetailScreen() {
       )}
 
       {/* Optimal conditions */}
-      <Section title="🌡️ Điều kiện lý tưởng">
+      <Section title={t("cropDetail.conditions")}>
         <Text style={styles.text}>
           Nhiệt độ: {rules.optimal_conditions.temperature_c.optimal_min}-
           {rules.optimal_conditions.temperature_c.optimal_max}°C
@@ -121,7 +123,7 @@ export default function CropDetailScreen() {
       </Section>
 
       {/* Hard constraints */}
-      <Section title="⚠️ Ngưỡng sống-chết">
+      <Section title={t("cropDetail.constraints")}>
         <Text style={styles.text}>
           Tối đa: {hc.temp_death_max_c.value}°C ({hc.temp_death_max_c.reason})
         </Text>
@@ -138,7 +140,7 @@ export default function CropDetailScreen() {
 
       {/* Regional rules */}
       {Object.keys(rules.regional_rules).length > 0 && (
-        <Section title="🌍 Quy tắc vùng miền">
+        <Section title={t("cropDetail.regional")}>
           {Object.entries(rules.regional_rules).map(([region, rule]) => {
             if (!rule) return null;
             return (
@@ -161,7 +163,7 @@ export default function CropDetailScreen() {
       )}
 
       {/* Beginner factors */}
-      <Section title="👤 Phù hợp người mới">
+      <Section title={t("cropDetail.beginner")}>
         <Text style={styles.text}>
           Chịu tưới nhiều: {beg.forgiveness_overwatering}
         </Text>
@@ -176,7 +178,7 @@ export default function CropDetailScreen() {
 
       {/* Add to garden */}
       <TouchableOpacity style={styles.addButton} onPress={handleAddToGarden}>
-        <Text style={styles.addButtonText}>🪴 Thêm vào vườn</Text>
+        <Text style={styles.addButtonText}>{t("cropDetail.addToGarden")}</Text>
       </TouchableOpacity>
 
       {/* First Aid link */}
@@ -184,7 +186,7 @@ export default function CropDetailScreen() {
         style={styles.firstAidLink}
         onPress={() => router.push("/first-aid")}
       >
-        <Text style={styles.firstAidText}>🆘 Cây có vấn đề? → Sơ cứu</Text>
+        <Text style={styles.firstAidText}>{t("cropDetail.firstAidLink")}</Text>
       </TouchableOpacity>
 
       <AppBannerAd />

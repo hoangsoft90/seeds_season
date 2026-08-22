@@ -1,0 +1,134 @@
+{
+  "app": {
+    "name": "🌱 What to Grow Today"
+  },
+  "common": {
+    "back": "← Back",
+    "loading": "Loading...",
+    "error": "Error",
+    "ok": "OK",
+    "cancel": "Cancel",
+    "confirm": "Confirm",
+    "success": "Success",
+    "noData": "No data"
+  },
+  "onboarding": {
+    "title": "🌱 What to Grow Today",
+    "subtitle": "Plant suggestions for your balcony",
+    "country": "Country:",
+    "region": "Climate zone:",
+    "month": "Current month:",
+    "location": "Growing location:",
+    "sunlight": "Sunlight/day: {{hours}}h",
+    "potDepth": "Pot depth: {{depth}}cm",
+    "cropCount": "📊 {{count}} plants available for {{country}}",
+    "submit": "🔍 Suggest for me",
+    "missingInfo": "Missing info",
+    "missingInfoMsg": "Please select country, region, and growing location."
+  },
+  "location": {
+    "window": "🪟 Window",
+    "balcony": "🌿 Balcony",
+    "garden": "🌳 Garden"
+  },
+  "results": {
+    "title": "🌱 Recommendations",
+    "bestForYou": "🪴 Best for you",
+    "easy": "🟢 Easy",
+    "stepUp": "🟡 Step up",
+    "rechoose": "🔄 Choose again",
+    "myGarden": "🪴 My Garden"
+  },
+  "garden": {
+    "title": "🪴 My Garden",
+    "empty": "No plants in your garden yet",
+    "emptyIcon": "🌱",
+    "findPlants": "🔍 Find plants",
+    "growing": "🌿 Growing ({{count}})",
+    "harvested": "🎉 Harvested ({{count}})",
+    "ghost": "👻 History ({{count}})",
+    "plantedOn": "Planted on {{date}}",
+    "harvestedOn": "Harvested on {{date}}",
+    "ghostCause": "Unknown"
+  },
+  "firstAid": {
+    "title": "🆘 Plant First Aid",
+    "subtitle": "Select the symptom your plant has:",
+    "back": "← Back",
+    "diagnosis": "📋 Diagnosis",
+    "remedy": "🔧 How to fix:",
+    "restart": "🔁 Start over",
+    "home": "🏠 Home"
+  },
+  "cropDetail": {
+    "notFound": "Plant not found",
+    "back": "← Back",
+    "timeline": "📅 Timeline",
+    "germination": "Germination: {{min}}-{{max}} days",
+    "harvest": "Harvest: {{min}}-{{max}} days",
+    "stages": "🌱 Growth stages",
+    "conditions": "🌡️ Ideal conditions",
+    "temperature": "Temperature: {{min}}-{{max}}°C (min {{deathMin}}°C, max {{deathMax}}°C)",
+    "sunlight": "Sunlight: ≥{{min}}h, ideal {{optimal}}h/day",
+    "constraints": "⚠️ Survival limits",
+    "maxTemp": "Maximum: {{value}}°C ({{reason}})",
+    "minTemp": "Minimum: {{value}}°C ({{reason}})",
+    "minSun": "Minimum sunlight: {{value}}h/day",
+    "minPot": "Minimum pot depth: {{value}}cm",
+    "regional": "🌍 Regional rules",
+    "window": "Season {{type}}: months {{months}}",
+    "beginner": "👤 Beginner friendly",
+    "overwatering": "Overwater tolerance: {{value}}",
+    "underwatering": "Underwater tolerance: {{value}}",
+    "disease": "Disease resistance: {{value}}",
+    "addToGarden": "🪴 Add to garden",
+    "addedSuccess": "Added {{name}} to your garden!",
+    "firstAidLink": "🆘 Plant problems? → First Aid"
+  },
+  "labels": {
+    "categories": {
+      "leafy_green": "Leafy greens",
+      "herb": "Herbs",
+      "root_vegetable": "Root veg",
+      "fruit_vegetable": "Fruit veg"
+    },
+    "difficulty": {
+      "easy": "Easy",
+      "medium": "Medium",
+      "hard": "Hard"
+    },
+    "water": {
+      "consistent_moist": "Keep moist",
+      "high_tolerates_waterlogged": "Likes water, tolerates soggy",
+      "moderate_moist": "Moderate moisture",
+      "moderate_moist_well_drained": "Moderate, well-drained",
+      "high_consistent": "Needs regular water",
+      "moderate_tolerates_rain": "Tolerates rain",
+      "moderate_consistent": "Regular, moderate"
+    },
+    "ghost": {
+      "sun_heat": "☀️ Sun scorch",
+      "pest": "🐛 Pests",
+      "waterlogged": "🌊 Root rot",
+      "unknown": "❓ Unknown"
+    },
+    "window": {
+      "primary": "Main season",
+      "primary_dry_season": "Dry season",
+      "year_round": "Year-round",
+      "late_spring_risky": "Late spring (risky)"
+    }
+  },
+  "explanation": {
+    "stepUp": "{{name}} is a \"step up\" crop — a bit harder than leafy greens, but success means real fruit!",
+    "inSeason": "right in season in {{region}}",
+    "offSeason": "slightly off-season in {{region}}, still worth trying but needs extra care",
+    "goodTemp": "temperature is favorable",
+    "badTemp": "temperature is not ideal, needs some shading",
+    "easyGrow": "very easy to grow, perfect for beginners",
+    "fastHarvest": "quick harvest in {{min}}-{{max}} days",
+    "slowHarvest": "needs patience ({{min}}-{{max}} days to harvest)",
+    "ghostFail": "Last time (month {{month}}) you grew {{name}} but {{cause}}. Try again with more care!",
+    "ghostFailAlt": "Last time (month {{month}}) you grew {{name}} but {{cause}}. Try {{alternative}} instead this month!"
+  }
+}

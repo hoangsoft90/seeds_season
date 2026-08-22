@@ -3,6 +3,7 @@ import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
 import { AdMobProvider } from "../components/AdMobProvider";
+import "../lib/i18n"; // Initialize i18n on app start
 
 export default function RootLayout() {
   return (

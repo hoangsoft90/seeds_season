@@ -17,6 +17,8 @@ import type { GhostCause } from "../../lib/garden/types";
 import { GHOST_CAUSE_LABEL } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
 import { getCropById } from "../../lib/data/crops";
+import { t } from "../../lib/i18n";
+import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 
 // Default country for garden plants (MVP: all plants stored as Vietnam)
 const DEFAULT_COUNTRY = "vietnam";
@@ -52,17 +54,17 @@ export default function GardenScreen() {
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
-      <Text style={styles.title}>🪴 Vườn của tôi</Text>
+      <Text style={styles.title}>{t("garden.title")}</Text>
 
       {plants.length === 0 ? (
         <View style={styles.empty}>
-          <Text style={styles.emptyIcon}>🌱</Text>
-          <Text style={styles.emptyText}>Chưa có cây nào trong vườn</Text>
+          <Text style={styles.emptyIcon}>{t("garden.emptyIcon")}</Text>
+          <Text style={styles.emptyText}>{t("garden.empty")}</Text>
           <TouchableOpacity
             style={styles.button}
             onPress={() => router.push("/")}
           >
-            <Text style={styles.buttonText}>🔍 Tìm cây trồng</Text>
+            <Text style={styles.buttonText}>{t("garden.findPlants")}</Text>
           </TouchableOpacity>
         </View>
       ) : (
@@ -70,7 +72,7 @@ export default function GardenScreen() {
           {/* Growing section */}
           {growing.length > 0 && (
             <>
-              <Text style={styles.sectionTitle}>🌿 Đang trồng ({growing.length})</Text>
+              <Text style={styles.sectionTitle}>{t("garden.growing", { count: growing.length })}</Text>
               {growing.map((p) => {
                 const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 return (
@@ -80,10 +82,10 @@ export default function GardenScreen() {
                     onPress={() => router.push(`/crops/${p.crop_id}?country=${DEFAULT_COUNTRY}`)}
                   >
                     <Text style={styles.cardName}>
-                      {crop?.crop_base.names.canonical_vi ?? p.crop_id}
+                      {getCropLocalName(p.crop_id, crop?.crop_base.names.canonical_vi ?? p.crop_id)}
                     </Text>
                     <Text style={styles.cardMeta}>
-                      Trồng ngày {new Date(p.planted_at).toLocaleDateString("vi-VN")}
+                      {t("garden.plantedOn", { date: new Date(p.planted_at).toLocaleDateString() })}
                     </Text>
                     <View style={styles.ghostButtons}>
                       {GHOST_CAUSES.map((cause) => (
@@ -107,17 +109,16 @@ export default function GardenScreen() {
           {/* Harvested section */}
           {harvested.length > 0 && (
             <>
-              <Text style={styles.sectionTitle}>🎉 Đã thu hoạch ({harvested.length})</Text>
+              <Text style={styles.sectionTitle}>{t("garden.harvested", { count: harvested.length })}</Text>
               {harvested.map((p) => {
                 const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 return (
                   <View key={p.id} style={styles.cardHarvested}>
                     <Text style={styles.cardName}>
-                      {crop?.crop_base.names.canonical_vi ?? p.crop_id}
+                      {getCropLocalName(p.crop_id, crop?.crop_base.names.canonical_vi ?? p.crop_id)}
                     </Text>
                     <Text style={styles.cardMeta}>
-                      Thu hoạch ngày{" "}
-                      {new Date(p.harvested_at!).toLocaleDateString("vi-VN")}
+                      {t("garden.harvestedOn", { date: new Date(p.harvested_at!).toLocaleDateString() })}
                     </Text>
                   </View>
                 );
@@ -128,16 +129,16 @@ export default function GardenScreen() {
           {/* Ghost section */}
           {ghosts.length > 0 && (
             <>
-              <Text style={styles.sectionTitle}>👻 Lịch sử ({ghosts.length})</Text>
+              <Text style={styles.sectionTitle}>{t("garden.ghost", { count: ghosts.length })}</Text>
               {ghosts.map((p) => {
                 const crop = getCropById(DEFAULT_COUNTRY, p.crop_id);
                 const causeLabel = p.cause
                   ? GHOST_CAUSE_LABEL[p.cause as GhostCause] ?? p.cause
-                  : "Không rõ";
+                  : t("garden.ghostCause");
                 return (
                   <View key={p.id} style={styles.cardGhost}>
                     <Text style={styles.cardName}>
-                      {crop?.crop_base.names.canonical_vi ?? p.crop_id}
+                      {getCropLocalName(p.crop_id, crop?.crop_base.names.canonical_vi ?? p.crop_id)}
                     </Text>
                     <Text style={styles.cardMeta}>
                       {causeLabel} ·{" "}
