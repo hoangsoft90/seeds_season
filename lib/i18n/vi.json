@@ -2,6 +2,12 @@
   "app": {
     "name": "🌱 Trồng Gì Hôm Nay"
   },
+  "tabs": {
+    "home": "🏠 Trang chủ",
+    "garden": "🪴 Vườn",
+    "firstAid": "🆘 Sơ cứu",
+    "cropDetail": "📋 Chi tiết cây"
+  },
   "common": {
     "back": "← Quay lại",
     "loading": "Đang tải...",
@@ -83,7 +89,11 @@
     "disease": "Kháng bệnh: {{value}}",
     "addToGarden": "🪴 Thêm vào vườn",
     "addedSuccess": "Đã thêm {{name}} vào vườn!",
-    "firstAidLink": "🆘 Cây có vấn đề? → Sơ cứu"
+    "viewGarden": "Xem vườn",
+    "firstAidLink": "🆘 Cây có vấn đề? → Sơ cứu",
+    "days": "ngày",
+    "water": "Nước",
+    "soil": "Đất"
   },
   "labels": {
     "categories": {

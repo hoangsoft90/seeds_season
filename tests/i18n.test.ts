@@ -63,7 +63,7 @@ describe("i18n translations", () => {
 
   it("switches language correctly", () => {
     setLanguage("en");
-    expect(t("app.name")).toBe("🌱 What to Grow Today");
+    expect(t("app.name")).toBe("🌱 Seeds Season");
 
     setLanguage("th");
     expect(t("app.name")).toBe("🌱 วันนี้ปลูกอะไรดี");

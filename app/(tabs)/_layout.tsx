@@ -1,5 +1,6 @@
 import { Tabs } from "expo-router";
 import { Text } from "react-native";
+import { t } from "../../lib/i18n";
 
 export default function TabLayout() {
   return (
@@ -14,21 +15,21 @@ export default function TabLayout() {
       <Tabs.Screen
         name="index"
         options={{
-          title: "Trang chủ",
+          title: t("tabs.home"),
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🏠</Text>,
         }}
       />
       <Tabs.Screen
         name="garden"
         options={{
-          title: "Vườn",
+          title: t("tabs.garden"),
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🪴</Text>,
         }}
       />
       <Tabs.Screen
         name="first-aid"
         options={{
-          title: "Sơ cứu",
+          title: t("tabs.firstAid"),
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🆘</Text>,
         }}
       />

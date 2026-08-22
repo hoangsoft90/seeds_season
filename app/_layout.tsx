@@ -1,4 +1,5 @@
 import { Stack } from "expo-router";
+import { t } from "../lib/i18n";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import { StyleSheet } from "react-native";
@@ -24,7 +25,7 @@ function RootLayoutInner() {
         <Stack.Screen name="(tabs)" options={{ headerShown: false }} />
         <Stack.Screen
           name="crops/[id]"
-          options={{ title: "Chi tiết cây", presentation: "card" }}
+          options={{ title: t("tabs.cropDetail"), presentation: "card" }}
         />
       </Stack>
     </GestureHandlerRootView>

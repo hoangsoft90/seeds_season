@@ -2,6 +2,12 @@
   "app": {
     "name": "🌱 วันนี้ปลูกอะไรดี"
   },
+  "tabs": {
+    "home": "🏠 หน้าแรก",
+    "garden": "🪴 สวน",
+    "firstAid": "🆘 ปฐมพยาบาล",
+    "cropDetail": "📋 รายละเอียดพืช"
+  },
   "common": {
     "back": "← กลับ",
     "loading": "กำลังโหลด...",
@@ -83,7 +89,11 @@
     "disease": "ทนโรค: {{value}}",
     "addToGarden": "🪴 เพิ่มลงสวน",
     "addedSuccess": "เพิ่ม {{name}} ลงสวนแล้ว!",
-    "firstAidLink": "🆘 ต้นไม้มีปัญหา? → ปฐมพยาบาล"
+    "viewGarden": "ดูสวน",
+    "firstAidLink": "🆘 ต้นไม้มีปัญหา? → ปฐมพยาบาล",
+    "days": "วัน",
+    "water": "น้ำ",
+    "soil": "ดิน"
   },
   "labels": {
     "categories": {

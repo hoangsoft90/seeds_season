@@ -27,7 +27,7 @@ export const LANGUAGES: { code: LanguageCode; label: string; flag: string }[] = 
 const i18n = new I18n(
   { vi, en, th, id },
   {
-    defaultLocale: "vi",
+    defaultLocale: "en",
     enableFallback: true,
   },
 );
@@ -41,7 +41,7 @@ function detectLocale(): LanguageCode {
   if (deviceLocale in { vi: 1, en: 1, th: 1, id: 1 }) {
     return deviceLocale as LanguageCode;
   }
-  return "vi";
+  return "en";
 }
 
 i18n.locale = detectLocale();

@@ -1,6 +1,12 @@
 {
   "app": {
-    "name": "🌱 What to Grow Today"
+    "name": "🌱 Seeds Season"
+  },
+  "tabs": {
+    "home": "🏠 Home",
+    "garden": "🪴 Garden",
+    "firstAid": "🆘 First Aid",
+    "cropDetail": "📋 Plant Detail"
   },
   "common": {
     "back": "← Back",
@@ -83,7 +89,11 @@
     "disease": "Disease resistance: {{value}}",
     "addToGarden": "🪴 Add to garden",
     "addedSuccess": "Added {{name}} to your garden!",
-    "firstAidLink": "🆘 Plant problems? → First Aid"
+    "viewGarden": "View garden",
+    "firstAidLink": "🆘 Plant problems? → First Aid",
+    "days": "days",
+    "water": "Water",
+    "soil": "Soil"
   },
   "labels": {
     "categories": {

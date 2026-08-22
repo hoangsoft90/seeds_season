@@ -2,6 +2,12 @@
   "app": {
     "name": "🌱 Hari Ini Tanam Apa"
   },
+  "tabs": {
+    "home": "🏠 Beranda",
+    "garden": "🪴 Kebun",
+    "firstAid": "🆘 Pertolongan Pertama",
+    "cropDetail": "📋 Detail Tanaman"
+  },
   "common": {
     "back": "← Kembali",
     "loading": "Memuat...",
@@ -83,7 +89,11 @@
     "disease": "Ketahanan penyakit: {{value}}",
     "addToGarden": "🪴 Tambah ke kebun",
     "addedSuccess": "{{name}} ditambahkan ke kebun!",
-    "firstAidLink": "🆘 Tanaman bermasalah? → Pertolongan Pertama"
+    "viewGarden": "Lihat kebun",
+    "firstAidLink": "🆘 Tanaman bermasalah? → Pertolongan Pertama",
+    "days": "hari",
+    "water": "Air",
+    "soil": "Tanah"
   },
   "labels": {
     "categories": {

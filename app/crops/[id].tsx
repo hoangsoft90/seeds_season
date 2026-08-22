@@ -63,7 +63,7 @@ export default function CropDetailScreen() {
     try {
       await addPlant(DEMO_USER, base.id);
       Alert.alert(t("common.success"), t("cropDetail.addedSuccess", { name: getCropLocalName(base.id, base.names.canonical_vi) }), [
-        { text: "Xem vườn", onPress: () => router.push("/garden") },
+        { text: t("cropDetail.viewGarden"), onPress: () => router.push("/garden") },
         { text: "OK" },
       ]);
     } catch (e: any) {
@@ -96,7 +96,7 @@ export default function CropDetailScreen() {
         <Section title={t("cropDetail.stages")}>
           {base.timeline_base.growth_stages.map((stage, i) => (
             <Text key={i} style={styles.text}>
-              • {stage.stage}: ngày {stage.day_range[0]}-{stage.day_range[1]}
+              • {stage.stage}: {t("cropDetail.days")} {stage.day_range[0]}-{stage.day_range[1]}
             </Text>
           ))}
         </Section>
@@ -105,36 +105,40 @@ export default function CropDetailScreen() {
       {/* Optimal conditions */}
       <Section title={t("cropDetail.conditions")}>
         <Text style={styles.text}>
-          Nhiệt độ: {rules.optimal_conditions.temperature_c.optimal_min}-
-          {rules.optimal_conditions.temperature_c.optimal_max}°C
-          (tối thiểu {rules.optimal_conditions.temperature_c.min}°C, tối đa{" "}
-          {rules.optimal_conditions.temperature_c.max}°C)
+          {t("cropDetail.temperature", {
+            min: rules.optimal_conditions.temperature_c.optimal_min,
+            max: rules.optimal_conditions.temperature_c.optimal_max,
+            deathMin: rules.optimal_conditions.temperature_c.min,
+            deathMax: rules.optimal_conditions.temperature_c.max,
+          })}
         </Text>
         <Text style={styles.text}>
-          Nắng: ≥{rules.optimal_conditions.sunlight_hours.min}h, lý tưởng{" "}
-          {rules.optimal_conditions.sunlight_hours.optimal}h/ngày
+          {t("cropDetail.sunlight", {
+            min: rules.optimal_conditions.sunlight_hours.min,
+            optimal: rules.optimal_conditions.sunlight_hours.optimal,
+          })}
         </Text>
         <Text style={styles.text}>
-          Nước: {WATER_LABEL[rules.optimal_conditions.water] ?? rules.optimal_conditions.water}
+          {t("cropDetail.water")}: {WATER_LABEL[rules.optimal_conditions.water] ?? rules.optimal_conditions.water}
         </Text>
         <Text style={styles.text}>
-          Đất: {soilLabel(rules.optimal_conditions.soil)}
+          {t("cropDetail.soil")}: {soilLabel(rules.optimal_conditions.soil)}
         </Text>
       </Section>
 
       {/* Hard constraints */}
       <Section title={t("cropDetail.constraints")}>
         <Text style={styles.text}>
-          Tối đa: {hc.temp_death_max_c.value}°C ({hc.temp_death_max_c.reason})
+          {t("cropDetail.maxTemp", { value: hc.temp_death_max_c.value, reason: hc.temp_death_max_c.reason })}
         </Text>
         <Text style={styles.text}>
-          Tối thiểu: {hc.temp_death_min_c.value}°C ({hc.temp_death_min_c.reason})
+          {t("cropDetail.minTemp", { value: hc.temp_death_min_c.value, reason: hc.temp_death_min_c.reason })}
         </Text>
         <Text style={styles.text}>
-          Nắng tối thiểu: {hc.min_sunlight_hours}h/ngày
+          {t("cropDetail.minSun", { value: hc.min_sunlight_hours })}
         </Text>
         <Text style={styles.text}>
-          Chậu tối thiểu: {hc.min_pot_depth_cm}cm
+          {t("cropDetail.minPot", { value: hc.min_pot_depth_cm })}
         </Text>
       </Section>
 
@@ -150,12 +154,10 @@ export default function CropDetailScreen() {
                 </Text>
                 {rule.planting_windows.map((w, i) => (
                   <Text key={i} style={styles.text}>
-                    • Vụ {w.type ?? "chính"}: tháng {w.months.join(", ")}
+                    • {t("cropDetail.window", { type: w.type ?? "primary", months: w.months.join(", ") })}
                   </Text>
                 ))}
-                {rule.regional_notes && (
-                  <Text style={styles.text}>📝 {rule.regional_notes}</Text>
-                )}
+                {rule.regional_notes && <Text style={styles.text}>📝 {rule.regional_notes}</Text>}
               </View>
             );
           })}
@@ -165,13 +167,13 @@ export default function CropDetailScreen() {
       {/* Beginner factors */}
       <Section title={t("cropDetail.beginner")}>
         <Text style={styles.text}>
-          Chịu tưới nhiều: {beg.forgiveness_overwatering}
+          {t("cropDetail.overwatering", { value: beg.forgiveness_overwatering })}
         </Text>
         <Text style={styles.text}>
-          Chịu thiếu nước: {beg.forgiveness_underwatering}
+          {t("cropDetail.underwatering", { value: beg.forgiveness_underwatering })}
         </Text>
         <Text style={styles.text}>
-          Kháng bệnh: {beg.disease_resistance}
+          {t("cropDetail.disease", { value: beg.disease_resistance })}
         </Text>
         {beg.notes && <Text style={styles.text}>📝 {beg.notes}</Text>}
       </Section>
