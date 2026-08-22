@@ -87,3 +87,29 @@ echo "}" >> "$ROOT_BUILD"
 **Why this works:** Forces `play-services-ads` to 23.6.0 (compiled with Kotlin 1.9.x) AND forces all Kotlin stdlib to 1.9.25.
 
 **Why NOT sed/cat heredoc:** Heredoc (`<< 'EOF'`) inside YAML `run: |` breaks the YAML parser. Use individual `echo` statements instead.
+
+---
+
+## AdMob Expo Plugin Config Keys (camelCase — CRITICAL)
+
+`react-native-google-mobile-ads` expo plugin expects **camelCase** keys in `app.json`, NOT snake_case:
+
+**WRONG** (snake_case → crash on launch):
+```json
+"android_app_id": "ca-app-pub-..."
+"ios_app_id": "ca-app-pub-..."
+```
+
+**RIGHT** (camelCase → works):
+```json
+"androidAppId": "ca-app-pub-..."
+"iosAppId": "ca-app-pub-..."
+```
+
+If wrong keys are used, `expo prebuild` generates manifest **without** `com.google.android.gms.ads.APPLICATION_ID` → app crashes immediately on launch with "Invalid application ID".
+
+**Verify after prebuild:**
+```bash
+grep "APPLICATION_ID" android/app/src/main/AndroidManifest.xml
+# Should show: <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" .../>
+```
