@@ -3,6 +3,7 @@
  * Uses AsyncStorage-based store.
  */
 import { useState, useCallback } from "react";
+import { useFocusEffect } from "expo-router";
 import {
   View,
   Text,
@@ -38,10 +39,12 @@ export default function GardenScreen() {
     setLoaded(true);
   }, []);
 
-  // Load on mount (simplified — no useEffect in this MVP)
-  if (!loaded) {
-    refresh();
-  }
+  // Refresh every time the tab is focused (e.g. after adding a plant)
+  useFocusEffect(
+    useCallback(() => {
+      refresh();
+    }, [refresh])
+  );
 
   const growing = plants.filter((p) => p.status === "growing");
   const ghosts = plants.filter((p) => p.status === "ghost");
