@@ -84,6 +84,7 @@ export default function CropDetailScreen() {
   };
 
   return (
+    <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       {/* Header */}
       <Text style={styles.name}>{getCropLocalName(base.id, base.names.canonical_vi)}</Text>
@@ -203,8 +204,13 @@ export default function CropDetailScreen() {
         <Text style={styles.firstAidText}>{t("cropDetail.firstAidLink")}</Text>
       </TouchableOpacity>
 
-      <AppBannerAd />
+      {/* Spacer so content doesn't overlap fixed bottom ad */}
+      <View style={styles.adSpacer} />
     </ScrollView>
+
+    {/* Fixed bottom ad — never inside ScrollView */}
+    <AppBannerAd />
+    </View>
   );
 }
 
@@ -218,8 +224,10 @@ function Section({ title, children }: { title: string; children: React.ReactNode
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#f0fdf4" },
   container: { flex: 1, backgroundColor: "#f0fdf4" },
   content: { padding: 16, paddingBottom: 80 },
+  adSpacer: { height: 60 },
   center: { flex: 1, justifyContent: "center", alignItems: "center" },
   notFound: { fontSize: 16, color: "#6b7280" },
   link: { fontSize: 14, color: "#22c55e", marginTop: 8 },

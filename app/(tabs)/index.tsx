@@ -25,6 +25,7 @@ import { buildWhyText } from "../../lib/explanation";
 import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 import { LanguageSwitcher } from "../../components/LanguageSwitcher";
+import { AppBannerAd } from "../../components/BannerAd";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 
@@ -124,6 +125,7 @@ export default function HomeScreen() {
 
   if (showOnboarding || !recommendations) {
     return (
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{t("onboarding.title")}</Text>
         <Text style={styles.subtitle}>{t("onboarding.subtitle")}</Text>
@@ -236,11 +238,15 @@ export default function HomeScreen() {
         <TouchableOpacity style={styles.button} onPress={runRecommendation}>
           <Text style={styles.buttonText}>{t("onboarding.submit")}</Text>
         </TouchableOpacity>
+        <View style={styles.adSpacer} />
       </ScrollView>
+      <AppBannerAd />
+    </View>
     );
   }
 
   return (
+    <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{t("results.title")}</Text>
       <Text style={styles.subtitle}>
@@ -304,13 +310,18 @@ export default function HomeScreen() {
           </View>
         </View>
       )}
+      <View style={styles.adSpacer} />
     </ScrollView>
+    <AppBannerAd />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#f0fdf4" },
   container: { flex: 1, backgroundColor: "#f0fdf4" },
   content: { padding: 16, paddingBottom: 80 },
+  adSpacer: { height: 60 },
   title: { fontSize: 26, fontWeight: "bold", color: "#166534", marginBottom: 4 },
   subtitle: { fontSize: 15, color: "#4b5563", marginBottom: 20 },
   label: { fontSize: 15, fontWeight: "600", color: "#374151", marginTop: 16, marginBottom: 8 },

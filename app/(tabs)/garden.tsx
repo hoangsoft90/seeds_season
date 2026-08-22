@@ -20,6 +20,7 @@ import { GHOST_CAUSE_LABEL } from "../../lib/labels";
 import { getCropById, getSupportedCropCountryIds } from "../../lib/data/crops";
 import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
+import { AppBannerAd } from "../../components/BannerAd";
 
 const DEMO_USER = "demo-user";
 
@@ -83,6 +84,7 @@ export default function GardenScreen() {
   };
 
   return (
+    <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <Text style={styles.title}>{t("garden.title")}</Text>
 
@@ -182,13 +184,18 @@ export default function GardenScreen() {
         </>
       )}
 
+      <View style={styles.adSpacer} />
     </ScrollView>
+    <AppBannerAd />
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#f0fdf4" },
   container: { flex: 1, backgroundColor: "#f0fdf4" },
   content: { padding: 16, paddingBottom: 80 },
+  adSpacer: { height: 60 },
   title: { fontSize: 26, fontWeight: "bold", color: "#166534", marginBottom: 16 },
   sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#166534", marginTop: 16, marginBottom: 8 },
   empty: { alignItems: "center", marginTop: 60 },

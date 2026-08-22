@@ -21,6 +21,7 @@ import {
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
 import { t } from "../../lib/i18n";
+import { AppBannerAd } from "../../components/BannerAd";
 
 export default function FirstAidScreen() {
   const router = useRouter();
@@ -86,6 +87,7 @@ export default function FirstAidScreen() {
   // Show symptom selection
   if (!selectedSymptom || !currentNode) {
     return (
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{t("firstAid.title")}</Text>
         <Text style={styles.subtitle}>{t("firstAid.subtitle")}</Text>
@@ -102,14 +104,17 @@ export default function FirstAidScreen() {
             </TouchableOpacity>
           ))}
         </View>
-
+        <View style={styles.adSpacer} />
       </ScrollView>
+      <AppBannerAd />
+    </View>
     );
   }
 
   // Show question
   if (isQuestion(currentNode)) {
     return (
+    <View style={styles.screen}>
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
           <Text style={styles.backBtnText}>{t("firstAid.back")}</Text>
@@ -124,13 +129,16 @@ export default function FirstAidScreen() {
             <Text style={styles.answerText}>{a.label}</Text>
           </TouchableOpacity>
         ))}
-
+        <View style={styles.adSpacer} />
       </ScrollView>
+      <AppBannerAd />
+    </View>
     );
   }
 
   // Show diagnosis
   return (
+  <View style={styles.screen}>
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.diagnosisCard}>
         <Text style={styles.diagnosisTitle}>{t("firstAid.diagnosis")}</Text>
@@ -154,14 +162,18 @@ export default function FirstAidScreen() {
       <TouchableOpacity style={styles.homeBtn} onPress={() => router.navigate("/(tabs)/index")}>
         <Text style={styles.homeBtnText}>{t("firstAid.home")}</Text>
       </TouchableOpacity>
-
+      <View style={styles.adSpacer} />
     </ScrollView>
+    <AppBannerAd />
+  </View>
   );
 }
 
 const styles = StyleSheet.create({
+  screen: { flex: 1, backgroundColor: "#fef2f2" },
   container: { flex: 1, backgroundColor: "#fef2f2" },
   content: { padding: 16, paddingBottom: 80 },
+  adSpacer: { height: 60 },
   title: { fontSize: 26, fontWeight: "bold", color: "#991b1b", marginBottom: 4 },
   subtitle: { fontSize: 15, color: "#6b7280", marginBottom: 16 },
   symptomGrid: { gap: 12 },
