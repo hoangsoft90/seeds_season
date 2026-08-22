@@ -20,7 +20,6 @@ import {
   isQuestion,
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
-import { AppBannerAd } from "../../components/BannerAd";
 import { t } from "../../lib/i18n";
 
 export default function FirstAidScreen() {
@@ -83,7 +82,6 @@ export default function FirstAidScreen() {
           ))}
         </View>
 
-        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -106,7 +104,6 @@ export default function FirstAidScreen() {
           </TouchableOpacity>
         ))}
 
-        <AppBannerAd />
       </ScrollView>
     );
   }
@@ -137,7 +134,6 @@ export default function FirstAidScreen() {
         <Text style={styles.homeBtnText}>{t("firstAid.home")}</Text>
       </TouchableOpacity>
 
-      <AppBannerAd />
     </ScrollView>
   );
 }

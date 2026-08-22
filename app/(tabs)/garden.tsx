@@ -16,7 +16,6 @@ import { useRouter } from "expo-router";
 import { listGarden, markGhost } from "../../lib/garden/store";
 import type { GhostCause } from "../../lib/garden/types";
 import { GHOST_CAUSE_LABEL } from "../../lib/labels";
-import { AppBannerAd } from "../../components/BannerAd";
 import { getCropById } from "../../lib/data/crops";
 import { t } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
@@ -155,7 +154,6 @@ export default function GardenScreen() {
         </>
       )}
 
-      <AppBannerAd />
     </ScrollView>
   );
 }

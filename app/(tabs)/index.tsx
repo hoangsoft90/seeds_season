@@ -1,10 +1,5 @@
 /**
  * Home Screen — Onboarding + Recommendations (Multi-country).
- * 
- * Flow:
- * 1. User picks country → region → month → location_type → sunlight → pot_depth
- * 2. Engine runs with country-specific crops → Top 3 recommendations
- * 3. Display with CropCard components
  */
 import { useState, useCallback, useMemo } from "react";
 import {
@@ -28,14 +23,8 @@ import { CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
 import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
-import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
-const LOCATION_LABELS: Record<LocationType, string> = {
-  window: t("location.window"),
-  balcony: t("location.balcony"),
-  garden: t("location.garden"),
-};
 
 const MONTHS = [
   "T1", "T2", "T3", "T4", "T5", "T6",
@@ -47,33 +36,27 @@ const COUNTRIES = getAllCountries();
 export default function HomeScreen() {
   const router = useRouter();
 
-  // Onboarding state
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
   const [selectedMonth, setSelectedMonth] = useState<number>(
     new Date().getMonth() + 1
   );
-  const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(
-    null
-  );
+  const [selectedLocation, setSelectedLocation] = useState<LocationType | null>(null);
   const [sunlight, setSunlight] = useState(5);
   const [potDepth, setPotDepth] = useState(20);
   const [showOnboarding, setShowOnboarding] = useState(true);
   const [recommendations, setRecommendations] = useState<ReturnType<typeof getRecommendations> | null>(null);
 
-  // Get country config for dynamic regions
   const countryConfig = useMemo(() => {
     if (!selectedCountry) return null;
     return getCountryConfig(selectedCountry);
   }, [selectedCountry]);
 
-  // Get crops for selected country
   const countryCrops = useMemo(() => {
     if (!selectedCountry) return [];
     return getCropsForCountry(selectedCountry);
   }, [selectedCountry]);
 
-  // Region labels from country config
   const regionLabels = useMemo(() => {
     if (!countryConfig) return {};
     const labels: Record<string, string> = {};
@@ -83,10 +66,9 @@ export default function HomeScreen() {
     return labels;
   }, [countryConfig]);
 
-  // Month names from country config
   const monthNames = useMemo(() => {
     if (!countryConfig) return MONTHS;
-    return countryConfig.month_names?.map((_, i) => `T${i + 1}`) ?? MONTHS;
+    return countryConfig.month_names?.map((_: string, i: number) => `T${i + 1}`) ?? MONTHS;
   }, [countryConfig]);
 
   const runRecommendation = useCallback(() => {
@@ -109,188 +91,135 @@ export default function HomeScreen() {
     setShowOnboarding(false);
   }, [selectedCountry, selectedRegion, selectedMonth, selectedLocation, sunlight, potDepth, countryCrops]);
 
-  // Reset region when country changes
   const handleCountrySelect = useCallback((countryId: string) => {
     setSelectedCountry(countryId);
-    setSelectedRegion(null); // Reset region
+    setSelectedRegion(null);
   }, []);
+
+  const locationLabels: Record<LocationType, string> = {
+    window: t("location.window"),
+    balcony: t("location.balcony"),
+    garden: t("location.garden"),
+  };
 
   if (showOnboarding || !recommendations) {
     return (
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{t("onboarding.title")}</Text>
-        <Text style={styles.subtitle}>
-          {t("onboarding.subtitle")}
-        </Text>
-        <LanguageSwitcher />
+        <Text style={styles.subtitle}>{t("onboarding.subtitle")}</Text>
 
-        {/* Country selector */}
+        {/* LanguageSwitcher REMOVED for debug — may cause Modal text node issue */}
+
         <Text style={styles.label}>{t("onboarding.country")}</Text>
         <View style={styles.row}>
           {COUNTRIES.map((c) => (
             <TouchableOpacity
               key={c.id}
-              style={[
-                styles.chip,
-                selectedCountry === c.id && styles.chipActive,
-              ]}
+              style={[styles.chip, selectedCountry === c.id && styles.chipActive]}
               onPress={() => handleCountrySelect(c.id)}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  selectedCountry === c.id && styles.chipTextActive,
-                ]}
-              >
+              <Text style={[styles.chipText, selectedCountry === c.id && styles.chipTextActive]}>
                 {c.name_local} ({c.name_en})
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Region (dynamic per country) */}
-        {countryConfig && (
-          <>
+        {countryConfig ? (
+          <View>
             <Text style={styles.label}>{t("onboarding.region")}</Text>
             <View style={styles.row}>
               {countryConfig.regions.map((r) => (
                 <TouchableOpacity
                   key={r.id}
-                  style={[
-                    styles.chip,
-                    selectedRegion === r.id && styles.chipActive,
-                  ]}
+                  style={[styles.chip, selectedRegion === r.id && styles.chipActive]}
                   onPress={() => setSelectedRegion(r.id)}
                 >
-                  <Text
-                    style={[
-                      styles.chipText,
-                      selectedRegion === r.id && styles.chipTextActive,
-                    ]}
-                  >
+                  <Text style={[styles.chipText, selectedRegion === r.id && styles.chipTextActive]}>
                     {r.name}
                   </Text>
                 </TouchableOpacity>
               ))}
             </View>
-          </>
-        )}
+          </View>
+        ) : null}
 
-        {/* Month */}
         <Text style={styles.label}>{t("onboarding.month")}</Text>
         <View style={styles.row}>
           {monthNames.map((m, i) => (
             <TouchableOpacity
-              key={i}
-              style={[
-                styles.chipSmall,
-                selectedMonth === i + 1 && styles.chipActive,
-              ]}
+              key={`m${i}`}
+              style={[styles.chipSmall, selectedMonth === i + 1 && styles.chipActive]}
               onPress={() => setSelectedMonth(i + 1)}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  selectedMonth === i + 1 && styles.chipTextActive,
-                ]}
-              >
+              <Text style={[styles.chipText, selectedMonth === i + 1 && styles.chipTextActive]}>
                 {m}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Location type */}
         <Text style={styles.label}>{t("onboarding.location")}</Text>
         <View style={styles.row}>
           {LOCATION_TYPES.map((lt) => (
             <TouchableOpacity
               key={lt}
-              style={[
-                styles.chip,
-                selectedLocation === lt && styles.chipActive,
-              ]}
+              style={[styles.chip, selectedLocation === lt && styles.chipActive]}
               onPress={() => setSelectedLocation(lt)}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  selectedLocation === lt && styles.chipTextActive,
-                ]}
-              >
-                {LOCATION_LABELS[lt]}
+              <Text style={[styles.chipText, selectedLocation === lt && styles.chipTextActive]}>
+                {locationLabels[lt]}
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Sunlight */}
         <Text style={styles.label}>{t("onboarding.sunlight", { hours: sunlight })}</Text>
         <View style={styles.row}>
           {[2, 4, 6, 8].map((h) => (
             <TouchableOpacity
-              key={h}
-              style={[
-                styles.chipSmall,
-                sunlight === h && styles.chipActive,
-              ]}
+              key={`s${h}`}
+              style={[styles.chipSmall, sunlight === h && styles.chipActive]}
               onPress={() => setSunlight(h)}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  sunlight === h && styles.chipTextActive,
-                ]}
-              >
+              <Text style={[styles.chipText, sunlight === h && styles.chipTextActive]}>
                 {h}h
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Pot depth */}
         <Text style={styles.label}>{t("onboarding.potDepth", { depth: potDepth })}</Text>
         <View style={styles.row}>
           {[10, 15, 20, 30].map((d) => (
             <TouchableOpacity
-              key={d}
-              style={[
-                styles.chipSmall,
-                potDepth === d && styles.chipActive,
-              ]}
+              key={`p${d}`}
+              style={[styles.chipSmall, potDepth === d && styles.chipActive]}
               onPress={() => setPotDepth(d)}
             >
-              <Text
-                style={[
-                  styles.chipText,
-                  potDepth === d && styles.chipTextActive,
-                ]}
-              >
+              <Text style={[styles.chipText, potDepth === d && styles.chipTextActive]}>
                 {d}cm
               </Text>
             </TouchableOpacity>
           ))}
         </View>
 
-        {/* Crop count preview */}
-        {selectedCountry && (
+        {selectedCountry ? (
           <Text style={styles.cropCount}>
-            📊 {countryCrops.length} loại cây có sẵn cho {countryConfig?.name_local}
+            📊 {countryCrops.length} loại cây có sẵn cho {countryConfig?.name_local ?? selectedCountry}
           </Text>
-        )}
+        ) : null}
 
-        {/* Submit */}
         <TouchableOpacity style={styles.button} onPress={runRecommendation}>
           <Text style={styles.buttonText}>{t("onboarding.submit")}</Text>
         </TouchableOpacity>
-
       </ScrollView>
     );
   }
 
-  // Show recommendations
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>        <Text style={styles.title}>{t("results.title")}</Text>
+    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+      <Text style={styles.title}>{t("results.title")}</Text>
       <Text style={styles.subtitle}>
         {countryConfig?.name_local} · {regionLabels[selectedRegion!] ?? selectedRegion}
       </Text>
@@ -300,9 +229,9 @@ export default function HomeScreen() {
           <Text style={styles.noMatchText}>{recommendations.message}</Text>
         </View>
       ) : (
-        <>
+        <View>
           <Text style={styles.sectionTitle}>{t("results.bestForYou")}</Text>
-          {recommendations.recommendations.map((rec, i) => (
+          {recommendations.recommendations.map((rec) => (
             <TouchableOpacity
               key={rec.crop.crop_base.id}
               style={styles.cropCard}
@@ -335,7 +264,6 @@ export default function HomeScreen() {
             </TouchableOpacity>
           ))}
 
-          {/* Action buttons */}
           <View style={styles.actions}>
             <TouchableOpacity
               style={styles.buttonOutline}
@@ -350,9 +278,8 @@ export default function HomeScreen() {
               <Text style={styles.buttonText}>{t("results.myGarden")}</Text>
             </TouchableOpacity>
           </View>
-        </>
+        </View>
       )}
-
     </ScrollView>
   );
 }
@@ -364,51 +291,18 @@ const styles = StyleSheet.create({
   subtitle: { fontSize: 15, color: "#4b5563", marginBottom: 20 },
   label: { fontSize: 15, fontWeight: "600", color: "#374151", marginTop: 16, marginBottom: 8 },
   row: { flexDirection: "row", flexWrap: "wrap", gap: 8 },
-  chip: {
-    paddingVertical: 8,
-    paddingHorizontal: 14,
-    borderRadius: 20,
-    backgroundColor: "#e5e7eb",
-  },
-  chipSmall: {
-    paddingVertical: 6,
-    paddingHorizontal: 10,
-    borderRadius: 16,
-    backgroundColor: "#e5e7eb",
-  },
+  chip: { paddingVertical: 8, paddingHorizontal: 14, borderRadius: 20, backgroundColor: "#e5e7eb" },
+  chipSmall: { paddingVertical: 6, paddingHorizontal: 10, borderRadius: 16, backgroundColor: "#e5e7eb" },
   chipActive: { backgroundColor: "#22c55e" },
   chipText: { fontSize: 13, color: "#374151" },
   chipTextActive: { color: "#fff", fontWeight: "600" },
   cropCount: { fontSize: 13, color: "#6b7280", marginTop: 12, fontStyle: "italic" },
-  button: {
-    marginTop: 20,
-    backgroundColor: "#22c55e",
-    paddingVertical: 14,
-    borderRadius: 12,
-    alignItems: "center",
-  },
+  button: { marginTop: 20, backgroundColor: "#22c55e", paddingVertical: 14, borderRadius: 12, alignItems: "center" },
   buttonText: { color: "#fff", fontSize: 16, fontWeight: "bold" },
-  buttonOutline: {
-    marginTop: 12,
-    borderWidth: 2,
-    borderColor: "#22c55e",
-    paddingVertical: 12,
-    borderRadius: 12,
-    alignItems: "center",
-  },
+  buttonOutline: { marginTop: 12, borderWidth: 2, borderColor: "#22c55e", paddingVertical: 12, borderRadius: 12, alignItems: "center" },
   buttonOutlineText: { color: "#22c55e", fontSize: 15, fontWeight: "600" },
   sectionTitle: { fontSize: 18, fontWeight: "bold", color: "#166534", marginBottom: 12 },
-  cropCard: {
-    backgroundColor: "#fff",
-    borderRadius: 12,
-    padding: 16,
-    marginBottom: 12,
-    shadowColor: "#000",
-    shadowOffset: { width: 0, height: 1 },
-    shadowOpacity: 0.1,
-    shadowRadius: 3,
-    elevation: 2,
-  },
+  cropCard: { backgroundColor: "#fff", borderRadius: 12, padding: 16, marginBottom: 12, elevation: 2 },
   cropHeader: { flexDirection: "row", justifyContent: "space-between", alignItems: "center" },
   cropName: { fontSize: 18, fontWeight: "bold", color: "#166534" },
   cropRole: { fontSize: 12, color: "#6b7280" },
