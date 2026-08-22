@@ -1,6 +1,6 @@
 # Google Play Console — Store Listing
 
-> **App:** Trồng Gì Hôm Nay (Seeds Season)
+> **App:** Seeds Season
 > **Package:** `com.tronggihomnay.app`
 > **Version:** 1.0.0 (versionCode: 1)
 > **Min SDK:** 24 (Android 7.0) | **Target SDK:** 36
@@ -13,10 +13,10 @@
 ### App Name (≤30 chars)
 
 ```
-Trồng Gì Hôm Nay - Season
+Seeds Season - Grow Guide
 ```
 
-> 30 ký tự đúng. Kết hợp tên brand (tiếng Việt) + keyword "Season" cho ASO quốc tế.
+> 27 characters. Brand + keyword "Grow Guide" for ASO.
 
 ### Short Description (≤80 chars)
 
@@ -24,12 +24,12 @@ Trồng Gì Hôm Nay - Season
 Smart crop suggestions for your balcony — 5 countries, 4 seasons
 ```
 
-> 67 ký tự. Chứa: benefit (smart crop suggestions), use case (balcony), scale (5 countries).
+> 67 characters. Benefit (smart crop suggestions), use case (balcony), scale (5 countries).
 
 ### Full Description (≤4000 chars)
 
-```markdown
-🌱 Trồng Gì Hôm Nay — Your Personal Garden Advisor
+```
+🌱 Seeds Season — Your Personal Garden Advisor
 
 Not sure what to plant? This app tells you exactly which crops have the
 highest chance of success on YOUR balcony, right NOW.
@@ -40,7 +40,7 @@ highest chance of success on YOUR balcony, right NOW.
 
 ✦ Zero experience needed — designed for first-time growers
 ✦ Personalized picks — based on your location, season & sunlight
-✦ Works in 5 countries — 🇻🇳 Vietnam, 🇹🇭 Thailand, 🇮🇩 Indonesia, 🇺🇸 USA, 🇬🇧 UK
+✦ Works in 5 countries — Vietnam, Thailand, Indonesia, USA, UK
 ✦ 4 languages — Vietnamese, Thai, Indonesian, English
 ✦ Step-by-step growing guides — from seed to harvest
 ✦ First-aid tips — fix common plant problems fast
@@ -53,7 +53,7 @@ highest chance of success on YOUR balcony, right NOW.
 2️⃣ Select current month
 3️⃣ Tell us about your space (balcony, rooftop, windowsill)
 4️⃣ Get your Top 3 crops with success scores
-5️�Tap any crop for a full growing tutorial
+5️⃣ Tap any crop for a full growing tutorial
 
 It's that simple. No sign-up required.
 
@@ -78,18 +78,18 @@ It's that simple. No sign-up required.
 • Preventive care tips
 
 🌍 Multi-Country Support
-• Vietnam: 15 crops across 4 regions (Bắc, Trung, Nam, Cao nguyên)
-• Thailand: 10 crops across 4 regions (Central, North, Isan, South)
-• Indonesia: 10 crops across 4 regions (Java, Sumatra, Bali, Kalimantan)
-• USA: 12 crops across 5 zones (NE, SE, Midwest, West, Mountain)
-• UK: 10 crops across 4 regions (South, North, Scotland, Wales)
+• Vietnam: 15 crops across 4 regions
+• Thailand: 10 crops across 4 regions
+• Indonesia: 10 crops across 4 regions
+• USA: 12 crops across 5 climate zones
+• UK: 10 crops across 4 regions
 
 🪴 My Garden Tracker
 • Add crops to your virtual garden
 • Track planting dates & progress
 • Harvest celebration cards
 
-Kitchen Scraps Tips
+🍳 Kitchen Scraps Tips
 • Regrow green onions, water spinach & more from kitchen waste
 • Zero-cost gardening hacks
 
@@ -122,7 +122,7 @@ Email: haibasoftware@gmail.com
 Download now and discover what to plant today! 🌿
 ```
 
-> ~2,800 ký tự. Dùng emoji headers, bullet points, scannable sections. ASO keywords:
+> ~2,600 characters. Emoji headers, bullet points, scannable sections. ASO keywords:
 > "crop suggestions", "balcony garden", "plant guide", "growing tips", "urban gardening".
 
 ---
@@ -136,8 +136,8 @@ Primary: Lifestyle
 Secondary: Education
 ```
 
-> Lifestyle phù hợp hơn Gardening vì "gardening" không phải category chính trên Play Store.
-> Education phụ vì app có tutorial/growing guides.
+> Lifestyle fits better than Gardening (not a main category on Play Store).
+> Education secondary because app has tutorial/growing guides.
 
 ### 5 Search Tags (ASO Keywords)
 
@@ -152,10 +152,10 @@ Secondary: Education
 ### Content Rating
 
 ```
-Everyone (所有人)
+Everyone
 ```
 
-> Không có nội dung bạo lực, tình dục, gambling. App hoàn toàn an toàn.
+> No violence, sexual content, gambling. Completely safe app.
 
 ### Target Audience
 
@@ -177,12 +177,12 @@ In-app purchases: None
 
 ### Feature Graphic (1024×500 px)
 
-> ✅ Đã tạo: `assets/feature-graphic.png`
+> ✅ Created: `assets/feature-graphic.png`
 
-**Thiết kế hiện tại:**
+**Current design:**
 ```
 ┌──────────────────────────────────────────────────────┐
-│  [Gradient xanh lá #166534 → #22c55e]               │
+│  [Green gradient #166534 → #22c55e]                  │
 │                                                      │
 │  ┌──────────┐   Seeds Season                         │
 │  │          │   Smart crop suggestions               │
@@ -198,19 +198,19 @@ In-app purchases: None
 
 ### App Icon (512×512 px)
 
-> ✅ Đã tạo: `assets/icon-512.png` (resize từ icon.png 1024×1024)
+> ✅ Created: `assets/icon-512.png` (resized from icon.png 1024×1024)
 
-**Ý tưởng thiết kế (nếu muốn làm lại):**
+**Design notes (if redesigning):**
 ```
-- Nền: Tròn xanh lá (#22c55e) bo tròn corners
--中心: Icon cây sprout đơn giản, bold,辨识度 cao
-- Phong cách: Flat design, không có text trên icon
-- Lưu ý: Adaptive icon sẽ tự bo tròn trên Android
+- Background: Green circle (#22c55e) with rounded corners
+- Center: Simple sprout icon, bold, high recognition
+- Style: Flat design, no text on icon
+- Note: Adaptive icon will auto-round on Android
 ```
 
-### Screenshot Ideas (4 ảnh)
+### Screenshot Ideas (4 images)
 
-> Upload lên Play Console, mỗi ảnh 1080×1920 px (hoặc 1080×2400 cho 设计更宽的设备)
+> Upload to Play Console, each 1080×1920 px (or 1080×2400 for wider devices)
 
 #### Screenshot 1 — Hero / Onboarding
 
@@ -219,7 +219,7 @@ Title overlay: "What should I plant today?"
 
 Show: Onboarding flow
 - Country selector (Vietnam, Thailand, Indonesia...)
-- Region picker (Bac, Trung, Nam, Cao nguyen)
+- Region picker
 - Month selector
 
 Bottom text: "Smart suggestions for 5 countries"
@@ -355,7 +355,7 @@ Reviewers can use the app immediately after install.
 ## 5. Version History (First Release)
 
 ```
-Version:    1.0.0
+Version:     1.0.0
 VersionCode: 1
 Release notes:
 
@@ -376,20 +376,20 @@ Release notes:
 ```
 All countries (default)
 Or select specific countries:
-- Vietnam 🇻🇳
-- Thailand 🇹🇭
-- Indonesia 🇮🇩
-- United States 🇺🇸
-- United Kingdom 🇬🇧
+- Vietnam
+- Thailand
+- Indonesia
+- United States
+- United Kingdom
 ```
 
 ---
 
-## File Generated
+## File Info
 
 ```
 Generated:  2026-08-22
 By:         Codebuff (Freebuff)
-Project:    Seeds Season (Trồng Gì Hôm Nay)
+Project:    Seeds Season
 Package:    com.tronggihomnay.app
 ```
