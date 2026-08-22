@@ -16,7 +16,9 @@
     "cancel": "Cancel",
     "confirm": "Confirm",
     "success": "Success",
-    "noData": "No data"
+    "noData": "No data",
+    "exitTitle": "Exit app?",
+    "exitMsg": "Press back again to exit"
   },
   "onboarding": {
     "title": "🌱 What to Grow Today",
@@ -140,5 +142,14 @@
     "slowHarvest": "needs patience ({{min}}-{{max}} days to harvest)",
     "ghostFail": "Last time (month {{month}}) you grew {{name}} but {{cause}}. Try again with more care!",
     "ghostFailAlt": "Last time (month {{month}}) you grew {{name}} but {{cause}}. Try {{alternative}} instead this month!"
+  },
+  "notFound": {
+    "title": "Page Not Found",
+    "message": "The page you're looking for doesn't exist.",
+    "invalidUrl": "Invalid URL",
+    "goHome": "Go to Home"
+  },
+  "languageSwitcher": {
+    "title": "Select Language"
   }
 }

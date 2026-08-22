@@ -2,7 +2,7 @@
  * Garden Screen — My Garden tab (simplified without auth for MVP).
  * Uses AsyncStorage-based store.
  */
-import { useState, useCallback } from "react";
+import { useState, useCallback, useEffect } from "react";
 import { useFocusEffect } from "expo-router";
 import {
   View,
@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from "react-native";
 import { useRouter } from "expo-router";
 import { listGarden, markGhost } from "../../lib/garden/store";
@@ -45,6 +46,17 @@ export default function GardenScreen() {
     }, [refresh])
   );
 
+  // Safe back handler — on Android, hardware back from a tab exits app
+  useEffect(() => {
+    const onBackPress = () => {
+      // Always go to home tab first before exiting
+      router.navigate("/(tabs)/index");
+      return true;
+    };
+    const sub = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => sub.remove();
+  }, [router]);
+
   const growing = plants.filter((p) => p.status === "growing");
   const ghosts = plants.filter((p) => p.status === "ghost");
   const harvested = plants.filter((p) => p.status === "harvested");
@@ -64,7 +76,7 @@ export default function GardenScreen() {
           <Text style={styles.emptyText}>{t("garden.empty")}</Text>
           <TouchableOpacity
             style={styles.button}
-            onPress={() => router.push("/")}
+            onPress={() => router.navigate("/(tabs)/index")}
           >
             <Text style={styles.buttonText}>{t("garden.findPlants")}</Text>
           </TouchableOpacity>

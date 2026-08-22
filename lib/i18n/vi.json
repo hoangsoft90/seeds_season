@@ -16,7 +16,9 @@
     "cancel": "Hủy",
     "confirm": "Xác nhận",
     "success": "Thành công",
-    "noData": "Không có dữ liệu"
+    "noData": "Không có dữ liệu",
+    "exitTitle": "Thoát app?",
+    "exitMsg": "Nhấn lại nút quay lại để thoát"
   },
   "onboarding": {
     "title": "🌱 Trồng Gì Hôm Nay",
@@ -140,5 +142,14 @@
     "slowHarvest": "cần kiên nhẫn ({{min}}-{{max}} ngày mới thu hoạch)",
     "ghostFail": "Lần trước (tháng {{month}}) bạn trồng {{name}} nhưng {{cause}}. Trồng lại thì chú ý hơn nhé!",
     "ghostFailAlt": "Lần trước (tháng {{month}}) bạn trồng {{name}} nhưng {{cause}}. Tháng này thử {{alternative}} thay thế nhé!"
+  },
+  "notFound": {
+    "title": "Không tìm thấy trang",
+    "message": "Trang bạn đang tìm không tồn tại.",
+    "invalidUrl": "Đường dẫn không hợp lệ",
+    "goHome": "Về trang chủ"
+  },
+  "languageSwitcher": {
+    "title": "Chọn ngôn ngữ"
   }
 }

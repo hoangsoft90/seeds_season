@@ -2,13 +2,14 @@
  * First Aid Screen — Sơ cứu cây (client-side, no auth, no API).
  * Wizard: chọn triệu chứng → câu hỏi → diagnosis + remedy.
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
   ScrollView,
   TouchableOpacity,
   StyleSheet,
+  BackHandler,
 } from "react-native";
 import { useRouter } from "expo-router";
 import {
@@ -61,6 +62,27 @@ export default function FirstAidScreen() {
     setCurrentNodeId(null);
     setHistory([]);
   };
+
+  // Safe back handler
+  useEffect(() => {
+    const onBackPress = () => {
+      if (currentNodeId) {
+        // If in a question/diagnosis, go back within wizard
+        if (history.length > 0) {
+          handleBack();
+          return true;
+        }
+        // If at first question, restart
+        handleRestart();
+        return true;
+      }
+      // If at symptom list, go to home tab
+      router.navigate("/(tabs)/index");
+      return true;
+    };
+    const sub = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => sub.remove();
+  }, [router, currentNodeId, history]);
 
   // Show symptom selection
   if (!selectedSymptom || !currentNode) {
@@ -130,7 +152,7 @@ export default function FirstAidScreen() {
       <TouchableOpacity style={styles.restartBtn} onPress={handleRestart}>
         <Text style={styles.restartBtnText}>{t("firstAid.restart")}</Text>
       </TouchableOpacity>
-      <TouchableOpacity style={styles.homeBtn} onPress={() => router.push("/")}>
+      <TouchableOpacity style={styles.homeBtn} onPress={() => router.navigate("/(tabs)/index")}>
         <Text style={styles.homeBtnText}>{t("firstAid.home")}</Text>
       </TouchableOpacity>
 

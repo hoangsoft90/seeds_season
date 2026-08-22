@@ -1,7 +1,7 @@
 /**
  * Home Screen — Onboarding + Recommendations (Multi-country).
  */
-import { useState, useCallback, useMemo } from "react";
+import { useState, useCallback, useMemo, useEffect, useRef } from "react";
 import {
   View,
   Text,
@@ -9,8 +9,9 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from "react-native";
-import { useRouter } from "expo-router";
+import { useRouter, useNavigation } from "expo-router";
 import { getRecommendations } from "../../lib/recommendation-engine/engine";
 import { getCropsForCountry } from "../../lib/data/crops";
 import { getAllCountries, getCountryConfig } from "../../lib/data/countries";
@@ -23,6 +24,7 @@ import { CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
 import { t, getCurrentLanguage } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
+import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 
@@ -35,6 +37,25 @@ const COUNTRIES = getAllCountries();
 
 export default function HomeScreen() {
   const router = useRouter();
+  const navigation = useNavigation();
+  const backPressCount = useRef(0);
+
+  // Safe back handler — double-tap to exit on Home tab
+  useEffect(() => {
+    const onBackPress = () => {
+      if (backPressCount.current === 0) {
+        backPressCount.current = 1;
+        Alert.alert(t("common.exitTitle") || "Exit", t("common.exitMsg") || "Press back again to exit", [
+          { text: "OK", onPress: () => { backPressCount.current = 0; } },
+        ]);
+        setTimeout(() => { backPressCount.current = 0; }, 2000);
+        return true; // prevent default exit
+      }
+      return false; // allow default exit
+    };
+    const sub = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => sub.remove();
+  }, []);
 
   const [selectedCountry, setSelectedCountry] = useState<string | null>(null);
   const [selectedRegion, setSelectedRegion] = useState<string | null>(null);
@@ -108,7 +129,10 @@ export default function HomeScreen() {
         <Text style={styles.title}>{t("onboarding.title")}</Text>
         <Text style={styles.subtitle}>{t("onboarding.subtitle")}</Text>
 
-        {/* LanguageSwitcher REMOVED for debug — may cause Modal text node issue */}
+        <LanguageSwitcher onLanguageChange={() => {
+          // Force re-render on language change
+          setRecommendations((prev) => prev ? { ...prev } : null);
+        }} />
 
         <Text style={styles.label}>{t("onboarding.country")}</Text>
         <View style={styles.row}>
@@ -273,7 +297,7 @@ export default function HomeScreen() {
             </TouchableOpacity>
             <TouchableOpacity
               style={styles.button}
-              onPress={() => router.push("/garden")}
+              onPress={() => router.navigate("/(tabs)/garden")}
             >
               <Text style={styles.buttonText}>{t("results.myGarden")}</Text>
             </TouchableOpacity>

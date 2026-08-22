@@ -2,6 +2,7 @@
  * Crop Detail Screen — shows full crop info with timeline, growing rules, etc.
  */
 import { useLocalSearchParams, useRouter } from "expo-router";
+import { useEffect, useCallback } from "react";
 import {
   View,
   Text,
@@ -9,6 +10,7 @@ import {
   TouchableOpacity,
   StyleSheet,
   Alert,
+  BackHandler,
 } from "react-native";
 import { getCropById } from "../../lib/data/crops";
 import { getCountryConfig } from "../../lib/data/countries";
@@ -41,6 +43,16 @@ export default function CropDetailScreen() {
     }
   }
 
+  // Safe back handler (hardware back button)
+  useEffect(() => {
+    const onBackPress = () => {
+      router.back();
+      return true; // prevent default
+    };
+    const sub = BackHandler.addEventListener("hardwareBackPress", onBackPress);
+    return () => sub.remove();
+  }, [router]);
+
   if (!crop) {
     return (
       <View style={styles.center}>
@@ -63,7 +75,7 @@ export default function CropDetailScreen() {
     try {
       await addPlant(DEMO_USER, base.id);
       Alert.alert(t("common.success"), t("cropDetail.addedSuccess", { name: getCropLocalName(base.id, base.names.canonical_vi) }), [
-        { text: t("cropDetail.viewGarden"), onPress: () => router.push("/garden") },
+        { text: t("cropDetail.viewGarden"), onPress: () => router.navigate("/(tabs)/garden") },
         { text: "OK" },
       ]);
     } catch (e: any) {
@@ -186,7 +198,7 @@ export default function CropDetailScreen() {
       {/* First Aid link */}
       <TouchableOpacity
         style={styles.firstAidLink}
-        onPress={() => router.push("/first-aid")}
+        onPress={() => router.navigate("/(tabs)/first-aid")}
       >
         <Text style={styles.firstAidText}>{t("cropDetail.firstAidLink")}</Text>
       </TouchableOpacity>

@@ -16,7 +16,9 @@
     "cancel": "Batal",
     "confirm": "Konfirmasi",
     "success": "Berhasil",
-    "noData": "Tidak ada data"
+    "noData": "Tidak ada data",
+    "exitTitle": "Keluar dari app?",
+    "exitMsg": "Tekan kembali lagi untuk keluar"
   },
   "onboarding": {
     "title": "🌱 Hari Ini Tanam Apa",
@@ -140,5 +142,14 @@
     "slowHarvest": "perlu kesabaran ({{min}}-{{max}} hari baru panen)",
     "ghostFail": "Terakhir (bulan {{month}}) Anda menanam {{name}} tapi {{cause}}. Coba lagi dengan lebih hati-hati!",
     "ghostFailAlt": "Terakhir (bulan {{month}}) Anda menanam {{name}} tapi {{cause}}. Bulan ini coba {{alternative}} sebagai gantinya!"
+  },
+  "notFound": {
+    "title": "Halaman Tidak Ditemukan",
+    "message": "Halaman yang Anda cari tidak ada.",
+    "invalidUrl": "URL tidak valid",
+    "goHome": "Kembali ke Beranda"
+  },
+  "languageSwitcher": {
+    "title": "Pilih Bahasa"
   }
 }

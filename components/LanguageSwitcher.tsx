@@ -18,6 +18,7 @@ import {
   getCurrentLanguage,
   setLanguage,
   type LanguageCode,
+  t,
 } from "../lib/i18n";
 
 interface Props {
@@ -54,7 +55,7 @@ export function LanguageSwitcher({ onLanguageChange }: Props) {
       >
         <Pressable style={styles.overlay} onPress={() => setVisible(false)}>
           <View style={styles.modal}>
-            <Text style={styles.modalTitle}>🌐 Chọn ngôn ngữ</Text>
+            <Text style={styles.modalTitle}>🌐 {t("languageSwitcher.title") || "Select Language"}</Text>
             {LANGUAGES.map((lang) => (
               <TouchableOpacity
                 key={lang.code}
