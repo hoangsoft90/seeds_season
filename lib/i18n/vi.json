@@ -6,7 +6,8 @@
     "home": "🏠 Trang chủ",
     "garden": "🪴 Vườn",
     "firstAid": "🆘 Sơ cứu",
-    "cropDetail": "📋 Chi tiết cây"
+    "cropDetail": "📋 Chi tiết cây",
+    "settings": "⚙️ Cài đặt"
   },
   "common": {
     "back": "← Quay lại",
@@ -157,5 +158,15 @@
   },
   "languageSwitcher": {
     "title": "Chọn ngôn ngữ"
+  },
+  "settings": {
+    "title": "⚙️ Cài đặt",
+    "language": "🌐 Ngôn ngữ",
+    "languageDesc": "Chọn ngôn ngữ hiển thị",
+    "about": "ℹ️ Về ứng dụng",
+    "appName": "Ứng dụng",
+    "version": "Phiên bản",
+    "currentLang": "Ngôn ngữ hiện tại",
+    "privacyPolicy": "🔒 Chính sách bảo mật"
   }
 }

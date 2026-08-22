@@ -6,7 +6,8 @@
     "home": "🏠 Beranda",
     "garden": "🪴 Kebun",
     "firstAid": "🆘 Pertolongan Pertama",
-    "cropDetail": "📋 Detail Tanaman"
+    "cropDetail": "📋 Detail Tanaman",
+    "settings": "⚙️ Pengaturan"
   },
   "common": {
     "back": "← Kembali",
@@ -157,5 +158,15 @@
   },
   "languageSwitcher": {
     "title": "Pilih Bahasa"
+  },
+  "settings": {
+    "title": "⚙️ Pengaturan",
+    "language": "🌐 Bahasa",
+    "languageDesc": "Pilih bahasa yang Anda inginkan",
+    "about": "ℹ️ Tentang",
+    "appName": "Aplikasi",
+    "version": "Versi",
+    "currentLang": "Bahasa saat ini",
+    "privacyPolicy": "🔒 Kebijakan Privasi"
   }
 }

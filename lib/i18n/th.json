@@ -6,7 +6,8 @@
     "home": "🏠 หน้าแรก",
     "garden": "🪴 สวน",
     "firstAid": "🆘 ปฐมพยาบาล",
-    "cropDetail": "📋 รายละเอียดพืช"
+    "cropDetail": "📋 รายละเอียดพืช",
+    "settings": "⚙️ การตั้งค่า"
   },
   "common": {
     "back": "← กลับ",
@@ -157,5 +158,15 @@
   },
   "languageSwitcher": {
     "title": "เลือกภาษา"
+  },
+  "settings": {
+    "title": "⚙️ การตั้งค่า",
+    "language": "🌐 ภาษา",
+    "languageDesc": "เลือกภาษาที่ต้องการ",
+    "about": "ℹ️ เกี่ยวกับ",
+    "appName": "แอป",
+    "version": "เวอร์ชัน",
+    "currentLang": "ภาษาปัจจุบัน",
+    "privacyPolicy": "🔒 นโยบายความเป็นส่วนตัว"
   }
 }

@@ -24,6 +24,7 @@ export default function TabLayout() {
   const homeTitle = t("tabs.home");
   const gardenTitle = t("tabs.garden");
   const firstAidTitle = t("tabs.firstAid");
+  const settingsTitle = t("tabs.settings") || "Settings";
 
   return (
     <Tabs
@@ -53,6 +54,13 @@ export default function TabLayout() {
         options={{
           title: firstAidTitle,
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🆘</Text>,
+        }}
+      />
+      <Tabs.Screen
+        name="settings"
+        options={{
+          title: settingsTitle,
+          tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>⚙️</Text>,
         }}
       />
     </Tabs>

@@ -6,7 +6,8 @@
     "home": "🏠 Home",
     "garden": "🪴 Garden",
     "firstAid": "🆘 First Aid",
-    "cropDetail": "📋 Plant Detail"
+    "cropDetail": "📋 Plant Detail",
+    "settings": "⚙️ Settings"
   },
   "common": {
     "back": "← Back",
@@ -157,5 +158,15 @@
   },
   "languageSwitcher": {
     "title": "Select Language"
+  },
+  "settings": {
+    "title": "⚙️ Settings",
+    "language": "🌐 Language",
+    "languageDesc": "Choose your preferred language",
+    "about": "ℹ️ About",
+    "appName": "App",
+    "version": "Version",
+    "currentLang": "Current language",
+    "privacyPolicy": "🔒 Privacy Policy"
   }
 }
