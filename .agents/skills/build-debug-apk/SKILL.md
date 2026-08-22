@@ -113,3 +113,51 @@ If wrong keys are used, `expo prebuild` generates manifest **without** `com.goog
 grep "APPLICATION_ID" android/app/src/main/AndroidManifest.xml
 # Should show: <meta-data android:name="com.google.android.gms.ads.APPLICATION_ID" .../>
 ```
+
+---
+
+## Sentry Integration
+
+### Plugin Config in app.json
+```json
+"plugins": [
+  ...,
+  "@sentry/react-native"
+]
+```
+
+### sentry.config.ts (at project root)
+```typescript
+import * as Sentry from "@sentry/react-native";
+
+Sentry.init({
+  dsn: "https://...@o....ingest.us.sentry.io/....",
+  tracesSampleRate: 1.0,
+  enableAutoSessionTracking: true,
+  environment: __DEV__ ? "development" : "production",
+  enableNativeCrashHandling: true,
+  dist: "1.0.0",
+  release: "seeds-season@1.0.0",
+});
+```
+
+### app/_layout.tsx wrapper
+```typescript
+import * as Sentry from "@sentry/react-native";
+import "../sentry.config"; // Init on app start
+
+function RootLayoutInner() {
+  return ( /* ... */ );
+}
+
+export default Sentry.wrap(RootLayoutInner);
+```
+
+### Build notes
+- `@sentry/react-native` auto-added via `npx expo install @sentry/react-native`
+- No extra Gradle config needed (expo plugin handles it)
+- DSN must be set in sentry.config.ts AND optionally in app.json `extra.sentryDsn`
+
+### Sentry Dashboard
+- https://sentry.io → project: seeds-season
+- Crashes, performance, release health
