@@ -29,7 +29,9 @@ export function AppBannerAd() {
   if (Platform.OS === 'web' || !BannerAdComponent) return null;
 
   const [loaded, setLoaded] = useState(false);
-  const { AdUnitIds, TEST_ADS } = admobConfig || {};
+  const { AdUnitIds, TEST_ADS, ENABLE_ADS } = admobConfig || {};
+
+  if (!ENABLE_ADS) return null;
 
   if (!TEST_ADS && AdUnitIds?.banner?.includes('XXXXXXXXXXXXXXXX')) {
     return null;

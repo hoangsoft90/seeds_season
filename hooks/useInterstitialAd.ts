@@ -20,7 +20,9 @@ export function useInterstitialAd() {
 
     try {
       const { InterstitialAd, AdEventType, TestIds } = require('react-native-google-mobile-ads');
-      const { AdUnitIds, TEST_ADS } = require('../lib/mobile/admob-config');
+      const { AdUnitIds, TEST_ADS, ENABLE_ADS } = require('../lib/mobile/admob-config');
+
+      if (!ENABLE_ADS) return;
 
       const unitId = TEST_ADS ? TestIds.INTERSTITIAL : AdUnitIds.interstitial;
       const ad = InterstitialAd.createForAdRequest(unitId, {

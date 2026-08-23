@@ -37,6 +37,10 @@ export function AdMobProvider({ children }: AdMobProviderProps) {
 
     async function initAdMob() {
       try {
+        if (!admobConfig?.ENABLE_ADS) {
+          setInitialized(true);
+          return;
+        }
         await MobileAds.initialize();
         const consentInfo = await AdsConsent.requestInfoUpdate();
         if (consentInfo.isConsentFormAvailable && admobConfig?.TEST_ADS) {
