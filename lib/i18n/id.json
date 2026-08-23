@@ -178,6 +178,11 @@
     "userGuide": "📖 Panduan Pengguna",
     "privacyPolicy": "🔒 Kebijakan Privasi"
   },
+  "weather": {
+    "loading": "Memuat cuaca...",
+    "high": "Tinggi",
+    "low": "Rendah"
+  },
   "engine": {
     "noMatch": "⚠️ Kondisi saat ini cukup keras. Coba lagi dalam 1-2 minggu atau coba tanam dalam ruangan/jamur/tunas.",
     "noMatchDetail": "Saat ini tidak ada tanaman yang cocok dengan kondisi Anda. Lihat alasan pengecualian di bawah."

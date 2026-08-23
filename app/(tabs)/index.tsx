@@ -26,6 +26,7 @@ import { buildWhyText } from "../../lib/explanation";
 import { t, getCurrentLanguage, onLanguageChange } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 import { AppBannerAd } from "../../components/BannerAd";
+import WeatherBadge from "../../components/WeatherBadge";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
 
@@ -176,6 +177,9 @@ export default function HomeScreen() {
                 </TouchableOpacity>
               ))}
             </View>
+            {selectedRegion && (
+              <WeatherBadge region={selectedRegion} country={selectedCountry ?? undefined} />
+            )}
           </View>
         ) : null}
 
@@ -262,6 +266,7 @@ export default function HomeScreen() {
       <Text style={styles.subtitle}>
         {countryConfig?.name_local} · {regionLabels[selectedRegion!] ?? selectedRegion}
       </Text>
+      <WeatherBadge region={selectedRegion!} country={selectedCountry ?? undefined} />
 
       {recommendations.status === "no_match" ? (
         <View style={styles.noMatch}>
