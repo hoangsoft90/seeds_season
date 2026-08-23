@@ -1,12 +1,11 @@
 /**
  * Tab Layout — 4 tabs: Home, Garden, First Aid, Settings.
- * Titles update dynamically when language changes (via event listener).
+ * headerTitle shows full text (no truncation), tab bar shows short emoji labels.
  */
 import { Tabs } from "expo-router";
 import { Text } from "react-native";
-import { useState, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { t, onLanguageChange } from "../../lib/i18n";
-import { useEffect } from "react";
 
 export default function TabLayout() {
   // Force re-render when language changes
@@ -27,13 +26,14 @@ export default function TabLayout() {
         tabBarActiveTintColor: "#22c55e",
         headerStyle: { backgroundColor: "#22c55e" },
         headerTintColor: "#fff",
-        headerTitleStyle: { fontWeight: "bold" },
+        headerTitleStyle: { fontWeight: "bold", fontSize: 18 },
       }}
     >
       <Tabs.Screen
         name="index"
         options={{
           title: homeTitle,
+          headerTitle: t("tabs.homeFull") || "Home",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🏠</Text>,
         }}
       />
@@ -41,6 +41,7 @@ export default function TabLayout() {
         name="garden"
         options={{
           title: gardenTitle,
+          headerTitle: t("tabs.gardenFull") || "My Garden",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🪴</Text>,
         }}
       />
@@ -48,6 +49,7 @@ export default function TabLayout() {
         name="first-aid"
         options={{
           title: firstAidTitle,
+          headerTitle: t("tabs.firstAidFull") || "First Aid",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>🆘</Text>,
         }}
       />
@@ -55,6 +57,7 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: settingsTitle,
+          headerTitle: t("tabs.settingsFull") || "Settings",
           tabBarIcon: ({ color }) => <Text style={{ color, fontSize: 22 }}>⚙️</Text>,
         }}
       />

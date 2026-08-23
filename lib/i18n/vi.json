@@ -7,7 +7,11 @@
     "garden": "🪴 Vườn",
     "firstAid": "🆘 Sơ cứu",
     "cropDetail": "📋 Chi tiết cây",
-    "settings": "⚙️ Cài đặt"
+    "settings": "⚙️ Cài đặt",
+    "homeFull": "🏠 Trang chủ",
+    "gardenFull": "🪴 Vườn của tôi",
+    "firstAidFull": "🆘 Sơ cứu cây",
+    "settingsFull": "⚙️ Cài đặt"
   },
   "common": {
     "back": "← Quay lại",

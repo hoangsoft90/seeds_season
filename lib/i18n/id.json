@@ -7,7 +7,11 @@
     "garden": "🪴 Kebun",
     "firstAid": "🆘 Pertolongan Pertama",
     "cropDetail": "📋 Detail Tanaman",
-    "settings": "⚙️ Pengaturan"
+    "settings": "⚙️ Pengaturan",
+    "homeFull": "🏠 Beranda",
+    "gardenFull": "🪴 Kebun Saya",
+    "firstAidFull": "🆘 Pertolongan Pertama Tanaman",
+    "settingsFull": "⚙️ Pengaturan"
   },
   "common": {
     "back": "← Kembali",
