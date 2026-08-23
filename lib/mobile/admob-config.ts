@@ -16,7 +16,7 @@
 // Bật ads: true = có quảng cáo, false = tắt hoàn toàn
 export const ENABLE_ADS = true;
 // Test mode: true = test ads (không bị giới hạn), false = real ads (có doanh thu)
-export const TEST_ADS = true;
+export const TEST_ADS = false;
 
 // ─── App ID ─────────────────────────────────────────────────────────────────
 export const ADMOB_APP_ID = 'ca-app-pub-6917313063209470~6292641213';
