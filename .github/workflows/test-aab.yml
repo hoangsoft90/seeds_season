@@ -1,0 +1,13 @@
+# Test workflow - zero secrets
+
+name: Test AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Test
+        run: echo "Hello from AAB test"
