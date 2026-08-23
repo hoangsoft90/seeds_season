@@ -100,13 +100,14 @@ jobs:
             echo "WARNING: No keystore found, skipping key.properties"
             exit 0
           fi
-          cat > android/key.properties << EOF
+          cat > android/key.properties << PROPEOF
           storePassword=$KEYSTORE_PASSWORD
           keyPassword=$KEY_PASSWORD
           keyAlias=$KEY_ALIAS
           storeFile=release.keystore
-          EOF
-          echo "key.properties created"
+          PROPEOF
+          echo "key.properties created:"
+          cat android/key.properties
 
       - name: Make builds include JS bundle (standalone, no Metro)
         run: |
@@ -152,24 +153,36 @@ jobs:
           cd android/app
           # Backup original build.gradle
           cp build.gradle build.gradle.bak
-          # Add signingConfigs block after defaultConfig
-          sed -i '/defaultConfig {/,/}/a\
-          \    signingConfigs {\
-          \        release {\
-          \            if (project.hasProperty("keyProperties")) {\
-          \                storeFile file(keyProperties.storeFile)\
-          \                storePassword keyProperties.storePassword\
-          \                keyAlias keyProperties.keyAlias\
-          \                keyPassword keyProperties.keyPassword\
-          \            }\
-          \        }\
-          \    }' build.gradle
+          # Load key.properties as Gradle properties
+          if ! grep -q "keyProperties" build.gradle; then
+            echo ""
+            echo "// Load signing properties from key.properties"
+            echo "def keyProperties = new Properties()"
+            echo "keyProperties.load(new FileInputStream(rootProject.file('key.properties')))"
+            echo "project.ext.set('keyProperties', keyProperties)"
+            echo "" >> build.gradle
+          fi
+          # Add signingConfigs block
+          if ! grep -q "signingConfigs" build.gradle; then
+            sed -i '/defaultConfig {/,/}/a\
+            signingConfigs {\
+                release {\
+                    storeFile file(keyProperties.storeFile)\
+                    storePassword keyProperties.storePassword\
+                    keyAlias keyProperties.keyAlias\
+                    keyPassword keyProperties.keyPassword\
+                }\
+            }' build.gradle
+            echo "Added signingConfigs block"
+          fi
           # Add signingConfig to release buildType
-          sed -i '/buildTypes {/,/}/a\
-          \        release {\
-          \            signingConfig signingConfigs.release\
-          \        }' build.gradle
+          if ! grep -q "signingConfig signingConfigs.release" build.gradle; then
+            sed -i 's/release {/release {\\n                signingConfig signingConfigs.release/' build.gradle
+            echo "Added signingConfig to release buildType"
+          fi
           echo "Release signing configured"
+          echo "=== build.gradle signing section ==="
+          grep -A 10 'signingConfigs' build.gradle | head -15
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
