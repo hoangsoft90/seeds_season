@@ -14,6 +14,7 @@ concurrency:
 jobs:
   build:
     runs-on: ubuntu-latest
+    timeout-minutes: 30
 
     steps:
       - name: Checkout code
@@ -47,43 +48,19 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Force play-services-ads to 23.x
-        run: |
-          ROOT_BUILD="android/build.gradle"
-          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then echo "Patched"; exit 0; fi
-          cat >> "$ROOT_BUILD" << 'GRADLEOF'
-
-          allprojects {
-              configurations.all {
-                  resolutionStrategy {
-                      force "com.google.android.gms:play-services-ads:23.6.0"
-                      force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
-                  }
-              }
-          }
-          GRADLEOF
-          echo "Patched"
+      - name: Patch play-services-ads version
+        run: bash .github/scripts/patch-play-services.sh
 
       - name: Decode keystore
         env:
           RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-        run: |
-          mkdir -p android/app
-          echo "$RELEASE_KEYSTORE" | base64 -d > android/app/release.keystore
-          ls -la android/app/release.keystore
+        run: mkdir -p android/app && echo "$RELEASE_KEYSTORE" | base64 -d > android/app/release.keystore && ls -la android/app/release.keystore
 
       - name: Write keystore.properties
         env:
           KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
           KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          echo "storePassword=$KS_PASS" > android/keystore.properties
-          echo "keyPassword=$KS_PASS" >> android/keystore.properties
-          echo "keyAlias=$KS_ALIAS" >> android/keystore.properties
-          echo "storeFile=release.keystore" >> android/keystore.properties
+        run: bash -c 'echo "storePassword=$KS_PASS" > android/keystore.properties && echo "keyPassword=$KS_PASS" >> android/keystore.properties && echo "keyAlias=$KS_ALIAS" >> android/keystore.properties && echo "storeFile=release.keystore" >> android/keystore.properties'
 
       - name: Patch build.gradle for signing
         run: python3 .github/scripts/patch-signing.py
@@ -95,10 +72,7 @@ jobs:
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Build release AAB
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew bundleRelease
+        run: cd android && chmod +x gradlew && ./gradlew bundleRelease
 
       - name: Verify AAB
         run: |
