@@ -57,6 +57,21 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
+      # Disable Sentry source map upload trong CI (cần SENTRY_AUTH_TOKEN)
+      - name: Disable Sentry source map upload
+        run: |
+          cd android/app
+          # Comment out sentry plugin từ build.gradle
+          if grep -q "@sentry/react-native" build.gradle; then
+            sed -i 's|id "@sentry/react-native"|// id "@sentry/react-native" // disabled in CI|' build.gradle
+            echo "Sentry plugin disabled in build.gradle"
+          fi
+          # Backup và tạo sentry.properties dummy
+          echo "defaults.project=seeds-season" > sentry.properties
+          echo "defaults.org=seeds-season" >> sentry.properties
+          echo "auth.token=dummy-token" >> sentry.properties
+          echo "Sentry properties created"
+
       # Decode keystore từ GitHub Secrets
       - name: Decode keystore
         env:
