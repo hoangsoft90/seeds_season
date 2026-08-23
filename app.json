@@ -2,7 +2,7 @@
   "expo": {
     "name": "Seeds Season",
     "slug": "seeds-season",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "scheme": "seedseason",
@@ -19,7 +19,7 @@
         "backgroundColor": "#22c55e"
       },
       "package": "com.tronggihomnay.app",
-      "versionCode": 1,
+      "versionCode": 2,
       "compileSdkVersion": 36,
       "targetSdkVersion": 36,
       "minSdkVersion": 24,
