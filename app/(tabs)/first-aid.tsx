@@ -20,7 +20,8 @@ import {
   isQuestion,
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
-import { t, onLanguageChange } from "../../lib/i18n";
+import { t, getCurrentLanguage, onLanguageChange } from "../../lib/i18n";
+import { getFirstAidText } from "../../lib/i18n/first-aid-i18n";
 import { AppBannerAd } from "../../components/BannerAd";
 
 export default function FirstAidScreen() {
@@ -106,8 +107,8 @@ export default function FirstAidScreen() {
               onPress={() => handleSelectSymptom(s)}
             >
               <Text style={styles.symptomIcon}>{s.icon}</Text>
-              <Text style={styles.symptomLabel}>{s.label}</Text>
-              <Text style={styles.symptomDesc}>{s.desc}</Text>
+              <Text style={styles.symptomLabel}>{getFirstAidText(s.id, s.id, "label", getCurrentLanguage(), s.label)}</Text>
+              <Text style={styles.symptomDesc}>{getFirstAidText(s.id, s.id, "desc", getCurrentLanguage(), s.desc)}</Text>
             </TouchableOpacity>
           ))}
         </View>
@@ -126,14 +127,14 @@ export default function FirstAidScreen() {
         <TouchableOpacity onPress={handleBack} style={styles.backBtn}>
           <Text style={styles.backBtnText}>{t("firstAid.back")}</Text>
         </TouchableOpacity>
-        <Text style={styles.questionText}>{currentNode.question}</Text>
+        <Text style={styles.questionText}>{getFirstAidText(selectedSymptom.id, currentNode.id, "question", getCurrentLanguage(), currentNode.question)}</Text>
         {currentNode.answers.map((a) => (
           <TouchableOpacity
             key={a.id}
             style={styles.answerBtn}
             onPress={() => handleAnswer(a.id)}
           >
-            <Text style={styles.answerText}>{a.label}</Text>
+            <Text style={styles.answerText}>{getFirstAidText(selectedSymptom.id, a.id, "label", getCurrentLanguage(), a.label)}</Text>
           </TouchableOpacity>
         ))}
         <View style={styles.adSpacer} />
@@ -149,17 +150,17 @@ export default function FirstAidScreen() {
     <ScrollView style={styles.container} contentContainerStyle={styles.content}>
       <View style={styles.diagnosisCard}>
         <Text style={styles.diagnosisTitle}>{t("firstAid.diagnosis")}</Text>
-        <Text style={styles.diagnosisText}>{currentNode.diagnosis}</Text>
+        <Text style={styles.diagnosisText}>{getFirstAidText(selectedSymptom.id, currentNode.id, "diagnosis", getCurrentLanguage(), currentNode.diagnosis)}</Text>
 
         <Text style={styles.remedyTitle}>{t("firstAid.remedy")}</Text>
         {currentNode.remedy.map((step, i) => (
           <Text key={i} style={styles.remedyStep}>
-            {i + 1}. {step}
+            {i + 1}. {getFirstAidText(selectedSymptom.id, currentNode.id, `remedy.${i}`, getCurrentLanguage(), step)}
           </Text>
         ))}
 
         <View style={styles.seekHelp}>
-          <Text style={styles.seekHelpText}>💡 {currentNode.seekHelp}</Text>
+          <Text style={styles.seekHelpText}>💡 {getFirstAidText(selectedSymptom.id, currentNode.id, "seekHelp", getCurrentLanguage(), currentNode.seekHelp)}</Text>
         </View>
       </View>
 

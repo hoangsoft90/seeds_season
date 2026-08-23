@@ -22,8 +22,9 @@ import {
   soilLabel,
 } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
-import { t, onLanguageChange } from "../../lib/i18n";
+import { t, getCurrentLanguage, onLanguageChange } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
+import { getBeginnerNotes, getRegionalNotes } from "../../lib/i18n/crop-notes-i18n";
 
 const DEMO_USER = "demo-user";
 
@@ -176,7 +177,9 @@ export default function CropDetailScreen() {
                     • {t("cropDetail.window", { type: w.type ?? "primary", months: w.months.join(", ") })}
                   </Text>
                 ))}
-                {rule.regional_notes && <Text style={styles.text}>📝 {rule.regional_notes}</Text>}
+                {rule.regional_notes && (
+                  <Text style={styles.text}>📝 {getRegionalNotes(base.id, region, getCurrentLanguage()) ?? rule.regional_notes}</Text>
+                )}
               </View>
             );
           })}
@@ -194,7 +197,7 @@ export default function CropDetailScreen() {
         <Text style={styles.text}>
           {t("cropDetail.disease", { value: beg.disease_resistance })}
         </Text>
-        {beg.notes && <Text style={styles.text}>📝 {beg.notes}</Text>}
+        {beg.notes && <Text style={styles.text}>📝 {getBeginnerNotes(base.id, getCurrentLanguage()) ?? beg.notes}</Text>}
       </Section>
 
       {/* Add to garden */}

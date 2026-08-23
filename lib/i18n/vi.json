@@ -71,6 +71,8 @@
     "back": "← Quay lại",
     "diagnosis": "📋 Chẩn đoán",
     "remedy": "🔧 Cách xử lý:",
+    "seekHelp": "📞 Khi nào cần tìm thêm trợ giúp:",
+    "answer": "Trả lời:",
     "restart": "🔁 Bắt đầu lại",
     "home": "🏠 Về trang chủ"
   },
@@ -101,7 +103,9 @@
     "firstAidLink": "🆘 Cây có vấn đề? → Sơ cứu",
     "days": "ngày",
     "water": "Nước",
-    "soil": "Đất"
+    "soil": "Đất",
+    "beginnerNotes": "📝 Mẹo cho người mới",
+    "regionalNotes": "📝 Mẹo vùng miền"
   },
   "labels": {
     "categories": {
@@ -173,5 +177,9 @@
     "currentLang": "Ngôn ngữ hiện tại",
     "userGuide": "📖 Hướng dẫn sử dụng",
     "privacyPolicy": "🔒 Chính sách bảo mật"
+  },
+  "engine": {
+    "noMatch": "⚠️ Điều kiện hiện tại khá khắc nghiệt. Gợi ý chờ 1-2 tuần hoặc thử trồng trong nhà/nấm/mầm hạt.",
+    "noMatchDetail": "Hiện tại không có loại cây nào phù hợp với điều kiện của bạn. Xem lý do loại bên dưới."
   }
 }

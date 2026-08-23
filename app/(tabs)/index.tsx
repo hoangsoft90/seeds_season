@@ -13,6 +13,7 @@ import {
 } from "react-native";
 import { useRouter } from "expo-router";
 import { getRecommendations } from "../../lib/recommendation-engine/engine";
+import { OpenMeteoWeatherProvider } from "../../lib/recommendation-engine/weather";
 import { getCropsForCountry } from "../../lib/data/crops";
 import { getAllCountries, getCountryConfig } from "../../lib/data/countries";
 import type {
@@ -97,7 +98,7 @@ export default function HomeScreen() {
     return countryConfig.month_names?.map((_: string, i: number) => `T${i + 1}`) ?? MONTHS;
   }, [countryConfig]);
 
-  const runRecommendation = useCallback(() => {
+  const runRecommendation = useCallback(async () => {
     if (!selectedCountry || !selectedRegion || !selectedLocation) {
       Alert.alert(t("onboarding.missingInfo"), t("onboarding.missingInfoMsg"));
       return;
@@ -112,7 +113,16 @@ export default function HomeScreen() {
       pot_depth_cm: potDepth,
     };
 
-    const result = getRecommendations(ctx, countryCrops);
+    // Use real weather from Open-Meteo API (free, no key needed)
+    let weatherData = undefined;
+    try {
+      const weatherProvider = new OpenMeteoWeatherProvider();
+      weatherData = await weatherProvider.getWeather(ctx);
+    } catch {
+      // Fallback to dummy weather if API fails
+    }
+    const ctxWithWeather = weatherData ? { ...ctx, weather: weatherData } : ctx;
+    const result = getRecommendations(ctxWithWeather, countryCrops);
     setRecommendations(result);
     setShowOnboarding(false);
   }, [selectedCountry, selectedRegion, selectedMonth, selectedLocation, sunlight, potDepth, countryCrops]);
@@ -255,7 +265,7 @@ export default function HomeScreen() {
 
       {recommendations.status === "no_match" ? (
         <View style={styles.noMatch}>
-          <Text style={styles.noMatchText}>{recommendations.message}</Text>
+          <Text style={styles.noMatchText}>{t("engine.noMatch")}</Text>
         </View>
       ) : (
         <View>

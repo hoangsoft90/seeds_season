@@ -71,6 +71,8 @@
     "back": "← Back",
     "diagnosis": "📋 Diagnosis",
     "remedy": "🔧 How to fix:",
+    "seekHelp": "📞 When to seek more help:",
+    "answer": "Answer:",
     "restart": "🔁 Start over",
     "home": "🏠 Home"
   },
@@ -101,7 +103,9 @@
     "firstAidLink": "🆘 Plant problems? → First Aid",
     "days": "days",
     "water": "Water",
-    "soil": "Soil"
+    "soil": "Soil",
+    "beginnerNotes": "📝 Beginner tips",
+    "regionalNotes": "📝 Regional tips"
   },
   "labels": {
     "categories": {
@@ -173,5 +177,9 @@
     "currentLang": "Current language",
     "userGuide": "📖 User Guide",
     "privacyPolicy": "🔒 Privacy Policy"
+  },
+  "engine": {
+    "noMatch": "⚠️ Current conditions are quite harsh. Try again in 1-2 weeks or try indoor/growing mushrooms/sprouts.",
+    "noMatchDetail": "No crops currently match your conditions. Check the exclusions below for why."
   }
 }
