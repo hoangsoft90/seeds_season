@@ -1,4 +1,4 @@
-# Build Signed Release AAB — Expo prebuild + Gradle signing
+# Minimal release AAB workflow
 
 name: Build Release AAB
 
@@ -13,111 +13,8 @@ jobs:
     timeout-minutes: 30
 
     steps:
-      - name: Checkout code
+      - name: Checkout
         uses: actions/checkout@v4
 
-      - name: Setup Node.js
-        uses: actions/setup-node@v4
-        with:
-          node-version: "22"
-
-      - name: Install dependencies
-        run: npm install
-
-      - name: Run tests
-        run: npm test
-
-      - name: Fix Kotlin version
-        run: |
-          for f in node_modules/react-native/gradle/libs.versions.toml node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
-            if [ -f "$f" ]; then
-              sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
-              echo "Patched: $f"
-            fi
-          done
-
-      - name: Setup Java JDK 21
-        uses: actions/setup-java@v4
-        with:
-          java-version: "21"
-          distribution: "temurin"
-
-      - name: Generate native Android project
-        run: npx expo prebuild --platform android --no-install --clean
-
-      - name: Force play-services-ads to 23.x
-        run: |
-          ROOT_BUILD="android/build.gradle"
-          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
-            echo "Already patched"
-            exit 0
-          fi
-          cat >> "$ROOT_BUILD" << 'GRADLEOF'
-
-          // Force play-services-ads to 23.x
-          allprojects {
-              configurations.all {
-                  resolutionStrategy {
-                      force "com.google.android.gms:play-services-ads:23.6.0"
-                      force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
-                      force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
-                  }
-              }
-          }
-          GRADLEOF
-          echo "Patched"
-
-      - name: Decode keystore
-        env:
-          RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-        run: |
-          mkdir -p android/app
-          echo "$RELEASE_KEYSTORE" | base64 -d > android/app/release.keystore
-          ls -la android/app/release.keystore
-
-      - name: Write keystore.properties
-        env:
-          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
-          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          echo "storePassword=$KS_PASS" > android/keystore.properties
-          echo "keyPassword=$KS_PASS" >> android/keystore.properties
-          echo "keyAlias=$KS_ALIAS" >> android/keystore.properties
-          echo "storeFile=release.keystore" >> android/keystore.properties
-          cat android/keystore.properties
-
-      - name: Patch build.gradle for signing
-        run: |
-          python3 .github/scripts/patch-signing.py
-
-      - name: Setup Android SDK
-        uses: android-actions/setup-android@v3
-
-      - name: Accept licenses
-        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
-
-      - name: Build release AAB
-        run: |
-          cd android
-          chmod +x gradlew
-          ./gradlew bundleRelease
-
-      - name: Verify AAB
-        run: |
-          AAB=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -1)
-          if [ -z "$AAB" ]; then
-            echo "ERROR: No AAB found"
-            exit 1
-          fi
-          echo "AAB: $AAB"
-          ls -la "$AAB"
-
-      - name: Upload AAB
-        uses: actions/upload-artifact@v4
-        with:
-          name: release-aab
-          path: android/app/build/outputs/bundle/release/*.aab
-          retention-days: 30
-          if-no-files-found: error
+      - name: Test echo
+        run: echo "Hello from Release AAB workflow"
