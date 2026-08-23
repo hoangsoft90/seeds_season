@@ -158,10 +158,14 @@ jobs:
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
       - name: Build release AAB (with embedded JS bundle)
+        env:
+          SENTRY_SOURCEMAPS_ENABLE: "false"
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+          SENTRY_ORG: ${{ secrets.SENTRY_ORG }}
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew bundleRelease
+          ./gradlew bundleRelease --no-daemon
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
