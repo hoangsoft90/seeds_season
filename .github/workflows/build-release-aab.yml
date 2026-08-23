@@ -151,38 +151,53 @@ jobs:
             exit 0
           fi
           cd android/app
-          # Backup original build.gradle
           cp build.gradle build.gradle.bak
-          # Load key.properties as Gradle properties
-          if ! grep -q "keyProperties" build.gradle; then
-            echo ""
-            echo "// Load signing properties from key.properties"
-            echo "def keyProperties = new Properties()"
-            echo "keyProperties.load(new FileInputStream(rootProject.file('key.properties')))"
-            echo "project.ext.set('keyProperties', keyProperties)"
-            echo "" >> build.gradle
-          fi
-          # Add signingConfigs block
-          if ! grep -q "signingConfigs" build.gradle; then
-            sed -i '/defaultConfig {/,/}/a\
-            signingConfigs {\
-                release {\
-                    storeFile file(keyProperties.storeFile)\
-                    storePassword keyProperties.storePassword\
-                    keyAlias keyProperties.keyAlias\
-                    keyPassword keyProperties.keyPassword\
-                }\
-            }' build.gradle
-            echo "Added signingConfigs block"
-          fi
-          # Add signingConfig to release buildType
-          if ! grep -q "signingConfig signingConfigs.release" build.gradle; then
-            sed -i 's/release {/release {\\n                signingConfig signingConfigs.release/' build.gradle
-            echo "Added signingConfig to release buildType"
-          fi
-          echo "Release signing configured"
+          # Use Python to properly inject signing config
+          python3 << 'PYEOF'
+import re
+
+with open('build.gradle', 'r') as f:
+    content = f.read()
+
+# Add keyProperties loader if not exists
+if 'keyProperties' not in content:
+    loader = """
+// Load signing properties from key.properties
+def keyProperties = new Properties()
+keyProperties.load(new FileInputStream(rootProject.file('key.properties')))
+project.ext.set('keyProperties', keyProperties)
+"""
+    content = loader + content
+
+# Add signingConfigs block if not exists
+if 'signingConfigs' not in content:
+    signing_block = """    signingConfigs {
+        release {
+            storeFile file(keyProperties.storeFile)
+            storePassword keyProperties.storePassword
+            keyAlias keyProperties.keyAlias
+            keyPassword keyProperties.keyPassword
+        }
+    }
+"""
+    content = content.replace('android {', 'android {\n' + signing_block)
+
+# Add signingConfig to release buildType if not exists
+if 'signingConfig signingConfigs.release' not in content:
+    content = re.sub(
+        r'(buildTypes \{[^}]*release \{[^}]*?)(})',
+        r'\1        signingConfig signingConfigs.release\n    \2',
+        content,
+        flags=re.DOTALL
+    )
+
+with open('build.gradle', 'w') as f:
+    f.write(content)
+
+print('Signing config injected successfully')
+PYEOF
           echo "=== build.gradle signing section ==="
-          grep -A 10 'signingConfigs' build.gradle | head -15
+          grep -A 15 'signingConfigs' build.gradle | head -20
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
