@@ -1,0 +1,174 @@
+# Build Release AAB — Expo prebuild + Gradle bundling (Google Play)
+# AAB upload lên Google Play Console (Play Store tự tối ưu cho từng device)
+
+name: Build Release AAB
+
+on:
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: "22"
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Run tests
+        run: npm test
+
+      - name: Fix Kotlin version in react-native version catalogs
+        run: |
+          for f in \
+            node_modules/react-native/gradle/libs.versions.toml \
+            node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
+            if [ -f "$f" ]; then
+              sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
+              echo "Patched: $f"
+            fi
+          done
+
+      - name: Setup Java JDK 21
+        uses: actions/setup-java@v4
+        with:
+          java-version: "21"
+          distribution: "temurin"
+
+      # Cache Gradle để tránh rate limit 429 (Maven Central)
+      - name: Cache Gradle dependencies
+        uses: actions/cache@v4
+        with:
+          path: |
+            ~/.gradle/caches
+            ~/.gradle/wrapper
+          key: gradle-${{ runner.os }}-${{ hashFiles('**/*.gradle*', '**/gradle-wrapper.properties') }}
+          restore-keys: |
+            gradle-${{ runner.os }}-
+
+      - name: Generate native Android project
+        run: npx expo prebuild --platform android --no-install --clean
+
+      # Decode keystore từ GitHub Secrets
+      - name: Decode keystore
+        env:
+          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+        run: |
+          if [ -z "$KEYSTORE_BASE64" ]; then
+            echo "WARNING: KEYSTORE_BASE64 not set, skipping signing"
+            exit 0
+          fi
+          echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
+          echo "Keystore decoded successfully"
+
+      # Tạo key.properties cho Gradle signing
+      - name: Create key.properties
+        env:
+          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
+          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
+          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+        run: |
+          if [ ! -f android/app/release.keystore ]; then
+            echo "WARNING: No keystore found, skipping key.properties"
+            exit 0
+          fi
+          cat > android/key.properties << EOF
+          storePassword=$KEYSTORE_PASSWORD
+          keyPassword=$KEY_PASSWORD
+          keyAlias=$KEY_ALIAS
+          storeFile=release.keystore
+          EOF
+          echo "key.properties created"
+
+      - name: Make builds include JS bundle (standalone, no Metro)
+        run: |
+          sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
+          echo "Patched debuggableVariants to [] (all variants bundle JS)"
+          grep "debuggableVariants" android/app/build.gradle
+
+      - name: Force play-services-ads to 23.x for Kotlin 1.9.x compat
+        run: |
+          ROOT_BUILD="android/build.gradle"
+          if [ ! -f "$ROOT_BUILD" ]; then
+            echo "ERROR: $ROOT_BUILD not found"
+            exit 1
+          fi
+          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
+            echo "Already patched, skipping"
+            exit 0
+          fi
+          echo "" >> "$ROOT_BUILD"
+          echo "// Force play-services-ads to 23.x — v24.6.0 compiled with Kotlin 2.1.0" >> "$ROOT_BUILD"
+          echo "// incompatible with React Native SDK 52 Kotlin 1.9.x compiler" >> "$ROOT_BUILD"
+          echo "allprojects {" >> "$ROOT_BUILD"
+          echo "    configurations.all {" >> "$ROOT_BUILD"
+          echo "        resolutionStrategy {" >> "$ROOT_BUILD"
+          echo "            force \"com.google.android.gms:play-services-ads:23.6.0\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25\"" >> "$ROOT_BUILD"
+          echo "        }" >> "$ROOT_BUILD"
+          echo "    }" >> "$ROOT_BUILD"
+          echo "}" >> "$ROOT_BUILD"
+          echo "Patched $ROOT_BUILD"
+          tail -15 "$ROOT_BUILD"
+
+      # Inject signing config vào build.gradle nếu có keystore
+      - name: Configure release signing
+        run: |
+          if [ ! -f android/key.properties ]; then
+            echo "WARNING: No key.properties, release will be unsigned"
+            exit 0
+          fi
+          cd android/app
+          # Backup original build.gradle
+          cp build.gradle build.gradle.bak
+          # Add signingConfigs block after defaultConfig
+          sed -i '/defaultConfig {/,/}/a\
+          \    signingConfigs {\
+          \        release {\
+          \            if (project.hasProperty("keyProperties")) {\
+          \                storeFile file(keyProperties.storeFile)\
+          \                storePassword keyProperties.storePassword\
+          \                keyAlias keyProperties.keyAlias\
+          \                keyPassword keyProperties.keyPassword\
+          \            }\
+          \        }\
+          \    }' build.gradle
+          # Add signingConfig to release buildType
+          sed -i '/buildTypes {/,/}/a\
+          \        release {\
+          \            signingConfig signingConfigs.release\
+          \        }' build.gradle
+          echo "Release signing configured"
+
+      - name: Setup Android SDK
+        uses: android-actions/setup-android@v3
+
+      - name: Accept Android licenses
+        run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
+
+      - name: Build release AAB (with embedded JS bundle)
+        run: |
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
+
+      - name: Upload AAB artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: release-aab
+          path: android/app/build/outputs/bundle/release/*.aab
+          retention-days: 30
+          if-no-files-found: error
+
+
