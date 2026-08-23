@@ -1,7 +1,7 @@
 # Build Signed Release AAB — same structure as working Debug APK workflow
 # Keystore stored as GitHub secret: RELEASE_KEYSTORE
 
-name: Build Release AAB
+name: Build Release AAB v2
 
 on:
   push:
