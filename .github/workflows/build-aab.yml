@@ -1,4 +1,4 @@
-# Build Release AAB — test without secrets
+# Build Release AAB — signed with release keystore
 
 name: Build AAB
 
@@ -46,7 +46,7 @@ jobs:
       - name: Make builds include JS bundle (standalone)
         run: |
           sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
-          echo "Patched"
+          echo "Patched debuggableVariants"
 
       - name: Force play-services-ads to 23.x
         run: |
@@ -67,7 +67,24 @@ jobs:
           echo "        }" >> "$ROOT_BUILD"
           echo "    }" >> "$ROOT_BUILD"
           echo "}" >> "$ROOT_BUILD"
-          echo "Patched $ROOT_BUILD"
+
+      - name: Decode release keystore
+        env:
+          RELEASE_KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE }}
+        run: echo "$RELEASE_KEYSTORE_B64" | base64 -d > android/app/release.keystore
+
+      - name: Write keystore.properties
+        env:
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
+          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+        run: |
+          echo "storePassword=$KS_PASS" > android/keystore.properties
+          echo "keyPassword=$KS_PASS" >> android/keystore.properties
+          echo "keyAlias=$KS_ALIAS" >> android/keystore.properties
+          echo "storeFile=release.keystore" >> android/keystore.properties
+
+      - name: Patch build.gradle for release signing
+        run: python3 .github/scripts/patch-signing.py
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -75,13 +92,22 @@ jobs:
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Build release AAB
+      - name: Build release AAB (signed, skip Sentry upload)
+        env:
+          SENTRY_UPLOAD: "false"
         run: |
           cd android
           chmod +x gradlew
-          ./gradlew bundleRelease
+          ./gradlew bundleRelease -PsentryUpload=false
 
-      - name: Upload AAB artifact
+      - name: Verify AAB
+        run: |
+          AAB=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -1)
+          if [ -z "$AAB" ]; then echo "ERROR: No AAB"; exit 1; fi
+          echo "AAB: $AAB"
+          ls -la "$AAB"
+
+      - name: Upload AAB
         uses: actions/upload-artifact@v4
         with:
           name: release-aab
