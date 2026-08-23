@@ -2,7 +2,7 @@
  * Crop Detail Screen — shows full crop info with timeline, growing rules, etc.
  */
 import { useLocalSearchParams, useRouter } from "expo-router";
-import { useEffect, useCallback } from "react";
+import { useEffect, useCallback, useState } from "react";
 import {
   View,
   Text,
@@ -22,7 +22,7 @@ import {
   soilLabel,
 } from "../../lib/labels";
 import { AppBannerAd } from "../../components/BannerAd";
-import { t } from "../../lib/i18n";
+import { t, onLanguageChange } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 
 const DEMO_USER = "demo-user";
@@ -42,6 +42,12 @@ export default function CropDetailScreen() {
       regionLabels[r.id] = r.name;
     }
   }
+
+  // Re-render on language change
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
 
   // Safe back handler (hardware back button)
   useEffect(() => {

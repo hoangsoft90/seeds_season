@@ -18,7 +18,7 @@ import { listGarden, markGhost } from "../../lib/garden/store";
 import type { GardenPlant, GhostCause } from "../../lib/garden/types";
 import { GHOST_CAUSE_LABEL } from "../../lib/labels";
 import { getCropById, getSupportedCropCountryIds } from "../../lib/data/crops";
-import { t, getCurrentLanguage } from "../../lib/i18n";
+import { t, getCurrentLanguage, onLanguageChange } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
 import { AppBannerAd } from "../../components/BannerAd";
 
@@ -28,6 +28,12 @@ const GHOST_CAUSES: GhostCause[] = ["sun_heat", "pest", "waterlogged", "unknown"
 
 export default function GardenScreen() {
   const router = useRouter();
+  // Re-render on language change
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
+
   const [plants, setPlants] = useState<GardenPlant[]>([]);
   const [loaded, setLoaded] = useState(false);
 

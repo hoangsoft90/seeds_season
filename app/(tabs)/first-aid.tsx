@@ -20,12 +20,19 @@ import {
   isQuestion,
 } from "../../lib/first-aid";
 import type { FirstAidNode, FirstAidSymptom } from "../../lib/data/first-aid";
-import { t } from "../../lib/i18n";
+import { t, onLanguageChange } from "../../lib/i18n";
 import { AppBannerAd } from "../../components/BannerAd";
 
 export default function FirstAidScreen() {
   const router = useRouter();
   const symptoms = getFirstAidSymptoms();
+
+  // Re-render on language change
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
+
   const [selectedSymptom, setSelectedSymptom] = useState<FirstAidSymptom | null>(null);
   const [currentNodeId, setCurrentNodeId] = useState<string | null>(null);
   const [history, setHistory] = useState<string[]>([]);

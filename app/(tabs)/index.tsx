@@ -22,9 +22,8 @@ import type {
 import type { CountryConfig } from "../../lib/data/countries/types";
 import { CATEGORY_LABEL, DIFFICULTY_LABEL } from "../../lib/labels";
 import { buildWhyText } from "../../lib/explanation";
-import { t, getCurrentLanguage } from "../../lib/i18n";
+import { t, getCurrentLanguage, onLanguageChange } from "../../lib/i18n";
 import { getCropLocalName } from "../../lib/i18n/crops-i18n";
-import { LanguageSwitcher } from "../../components/LanguageSwitcher";
 import { AppBannerAd } from "../../components/BannerAd";
 
 const LOCATION_TYPES: LocationType[] = ["window", "balcony", "garden"];
@@ -39,6 +38,12 @@ const COUNTRIES = getAllCountries();
 export default function HomeScreen() {
   const router = useRouter();
   const backPressCount = useRef(0);
+
+  // Re-render on language change
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
 
   // Safe back handler — double-tap to exit on Home tab
   useEffect(() => {
@@ -129,11 +134,6 @@ export default function HomeScreen() {
       <ScrollView style={styles.container} contentContainerStyle={styles.content}>
         <Text style={styles.title}>{t("onboarding.title")}</Text>
         <Text style={styles.subtitle}>{t("onboarding.subtitle")}</Text>
-
-        <LanguageSwitcher onLanguageChange={() => {
-          // Force re-render on language change
-          setRecommendations((prev) => prev ? { ...prev } : null);
-        }} />
 
         <Text style={styles.label}>{t("onboarding.country")}</Text>
         <View style={styles.row}>

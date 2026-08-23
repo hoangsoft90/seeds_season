@@ -1,8 +1,9 @@
 import { Stack } from "expo-router";
-import { t } from "../lib/i18n";
+import { t, onLanguageChange } from "../lib/i18n";
 import { StatusBar } from "expo-status-bar";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
-import { StyleSheet } from "react-native";
+import { StyleSheet, Text } from "react-native";
+import { useState, useEffect } from "react";
 import "../lib/i18n"; // Initialize i18n on app start
 
 // Sentry + AdMob removed temporarily to debug "Text strings" error
@@ -11,6 +12,12 @@ import "../lib/i18n"; // Initialize i18n on app start
 // import { AdMobProvider } from "../components/AdMobProvider";
 
 function RootLayoutInner() {
+  // Re-render on language change so Stack screen titles update
+  const [, setTick] = useState(0);
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
+
   return (
     <GestureHandlerRootView style={styles.root}>
       {/* AdMobProvider removed temporarily */}

@@ -1,7 +1,7 @@
 /**
  * Settings Screen — language picker, app info, links.
  */
-import { useState } from "react";
+import { useState, useEffect } from "react";
 import {
   View,
   Text,
@@ -14,6 +14,7 @@ import {
   LANGUAGES,
   getCurrentLanguage,
   setLanguage,
+  onLanguageChange,
   type LanguageCode,
   t,
 } from "../../lib/i18n";
@@ -22,8 +23,13 @@ export default function SettingsScreen() {
   const router = useRouter();
   const [currentLang, setCurrentLang] = useState<LanguageCode>(getCurrentLanguage());
 
-  const handleSelectLanguage = (lang: LanguageCode) => {
-    setLanguage(lang);
+  // Re-render when language changes from any source
+  useEffect(() => {
+    return onLanguageChange(() => setCurrentLang(getCurrentLanguage()));
+  }, []);
+
+  const handleSelectLanguage = async (lang: LanguageCode) => {
+    await setLanguage(lang);
     setCurrentLang(lang);
   };
 

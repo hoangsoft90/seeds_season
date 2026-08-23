@@ -1,26 +1,21 @@
 /**
- * Tab Layout — 3 main tabs: Home, Garden, First Aid.
- * Titles update dynamically when language changes (via useFocusEffect).
+ * Tab Layout — 4 tabs: Home, Garden, First Aid, Settings.
+ * Titles update dynamically when language changes (via event listener).
  */
-import { Tabs, useFocusEffect } from "expo-router";
+import { Tabs } from "expo-router";
 import { Text } from "react-native";
 import { useState, useCallback } from "react";
-import { t, getCurrentLanguage } from "../../lib/i18n";
+import { t, onLanguageChange } from "../../lib/i18n";
+import { useEffect } from "react";
 
 export default function TabLayout() {
-  // Track language to force re-render on language change
-  const [lang, setLang] = useState(getCurrentLanguage());
+  // Force re-render when language changes
+  const [, setTick] = useState(0);
 
-  useFocusEffect(
-    useCallback(() => {
-      const current = getCurrentLanguage();
-      if (current !== lang) {
-        setLang(current);
-      }
-    }, [lang])
-  );
+  useEffect(() => {
+    return onLanguageChange(() => setTick((n) => n + 1));
+  }, []);
 
-  // Re-compute titles on each render (lang dependency triggers re-render)
   const homeTitle = t("tabs.home");
   const gardenTitle = t("tabs.garden");
   const firstAidTitle = t("tabs.firstAid");

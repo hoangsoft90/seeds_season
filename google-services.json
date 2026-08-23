@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "749064162091",
+    "project_id": "planttoday",
+    "storage_bucket": "planttoday.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:749064162091:android:5dea676141e705c6dd936e",
+        "android_client_info": {
+          "package_name": "com.tronggihomnay.app"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyC5oX-s5lKkxKmIuF8bGwgrZeg24O57gYI"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
