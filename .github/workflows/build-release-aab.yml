@@ -1,15 +1,12 @@
-# Build Signed Release AAB
+# Build Signed Release AAB — same structure as working Debug APK workflow
+# Keystore stored as GitHub secret: RELEASE_KEYSTORE
 
 name: Build Release AAB
 
 on:
-  workflow_dispatch:
   push:
     branches: [main]
-
-concurrency:
-  group: release-aab-${{ github.ref }}
-  cancel-in-progress: true
+  workflow_dispatch:
 
 jobs:
   build:
@@ -31,11 +28,14 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Fix Kotlin version
+      - name: Fix Kotlin version in react-native version catalogs
         run: |
-          for f in node_modules/react-native/gradle/libs.versions.toml node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
+          for f in \
+            node_modules/react-native/gradle/libs.versions.toml \
+            node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
             if [ -f "$f" ]; then
               sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
+              echo "Patched: $f"
             fi
           done
 
@@ -48,40 +48,92 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Patch play-services-ads version
-        run: bash .github/scripts/patch-play-services.sh
+      - name: Make builds include JS bundle (standalone, no Metro)
+        run: |
+          sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
+          echo "Patched debuggableVariants to [] (all variants bundle JS)"
 
-      - name: Decode keystore
-        env:
-          RELEASE_KEYSTORE: ${{ secrets.RELEASE_KEYSTORE }}
-        run: mkdir -p android/app && echo "$RELEASE_KEYSTORE" | base64 -d > android/app/release.keystore && ls -la android/app/release.keystore
+      - name: Force play-services-ads to 23.x for Kotlin 1.9.x compat
+        run: |
+          ROOT_BUILD="android/build.gradle"
+          if [ ! -f "$ROOT_BUILD" ]; then
+            echo "ERROR: $ROOT_BUILD not found"
+            exit 1
+          fi
+          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
+            echo "Already patched, skipping"
+            exit 0
+          fi
+          echo "" >> "$ROOT_BUILD"
+          echo "allprojects {" >> "$ROOT_BUILD"
+          echo "    configurations.all {" >> "$ROOT_BUILD"
+          echo "        resolutionStrategy {" >> "$ROOT_BUILD"
+          echo "            force \"com.google.android.gms:play-services-ads:23.6.0\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
+          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25\"" >> "$ROOT_BUILD"
+          echo "        }" >> "$ROOT_BUILD"
+          echo "    }" >> "$ROOT_BUILD"
+          echo "}" >> "$ROOT_BUILD"
+          echo "Patched $ROOT_BUILD"
+
+      - name: Decode release keystore from GitHub secret
+        run: |
+          echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > android/app/release.keystore
+          ls -la android/app/release.keystore
 
       - name: Write keystore.properties
-        env:
-          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
-          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: bash -c 'echo "storePassword=$KS_PASS" > android/keystore.properties && echo "keyPassword=$KS_PASS" >> android/keystore.properties && echo "keyAlias=$KS_ALIAS" >> android/keystore.properties && echo "storeFile=release.keystore" >> android/keystore.properties'
+        run: |
+          echo "storePassword=${{ secrets.RELEASE_KEYSTORE_PASS }}" > android/keystore.properties
+          echo "keyPassword=${{ secrets.RELEASE_KEYSTORE_PASS }}" >> android/keystore.properties
+          echo "keyAlias=${{ secrets.RELEASE_KEY_ALIAS }}" >> android/keystore.properties
+          echo "storeFile=release.keystore" >> android/keystore.properties
 
-      - name: Patch build.gradle for signing
-        run: python3 .github/scripts/patch-signing.py
+      - name: Patch build.gradle for release signing
+        run: |
+          python3 -c "
+          import re
+          f = open('android/app/build.gradle')
+          c = f.read()
+          f.close()
+          if 'keystoreProperties' in c:
+              print('Already patched')
+              exit(0)
+          ld = 'def keystorePropertiesFile = rootProject.file(\"keystore.properties\")\n'
+          ld += 'def keystoreProperties = new Properties()\n'
+          ld += 'if (keystorePropertiesFile.exists()) {\n'
+          ld += '    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n'
+          ld += '}\n\n'
+          c = re.sub(r'(android \{)', ld + r'\1', c, count=1)
+          sc = 'signingConfigs {\n'
+          sc += '    release {\n'
+          sc += '        storeFile keystoreProperties.storeFile ? file(keystoreProperties.storeFile) : file(\"release.keystore\")\n'
+          sc += '        storePassword keystoreProperties[\"storePassword\"]\n'
+          sc += '        keyAlias keystoreProperties[\"keyAlias\"]\n'
+          sc += '        keyPassword keystoreProperties[\"keyPassword\"]\n'
+          sc += '    }\n'
+          sc += '}'
+          c = re.sub(r'signingConfigs \{[\s\S]*?\n    \}', sc, c)
+          f = open('android/app/build.gradle', 'w')
+          f.write(c)
+          f.close()
+          print('Patched signing config')
+          "
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
 
-      - name: Accept licenses
+      - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Build release AAB
-        run: cd android && chmod +x gradlew && ./gradlew bundleRelease
-
-      - name: Verify AAB
+      - name: Build release AAB (signed, with embedded JS bundle)
         run: |
-          AAB=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -1)
-          if [ -z "$AAB" ]; then echo "ERROR: No AAB"; exit 1; fi
-          echo "AAB: $AAB"
-          ls -la "$AAB"
+          cd android
+          chmod +x gradlew
+          ./gradlew bundleRelease
 
-      - name: Upload AAB
+      - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
         with:
           name: release-aab
