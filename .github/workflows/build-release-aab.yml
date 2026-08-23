@@ -59,28 +59,20 @@ jobs:
           sed -i 's|id "@sentry/react-native"|// id "@sentry/react-native"|' build.gradle 2>/dev/null || true
           sed -i '/sentry.gradle/d' build.gradle 2>/dev/null || true
 
-      - name: Decode keystore
-        env:
-          KEYSTORE_BASE64: ${{ secrets.KEYSTORE_BASE64 }}
+      - name: Decode keystore (hardcoded)
         run: |
-          if [ -n "$KEYSTORE_BASE64" ]; then
-            echo "$KEYSTORE_BASE64" | base64 -d > android/app/release.keystore
-            echo "Keystore decoded"
-          fi
+          echo "MIIKvgIBAzCCCmgGCSqGSIb3DQEHAaCCClkEggpVMIIKUTCCBagGCSqGSIb3DQEHAaCCBZkEggWVMIIFkTCCBY0GCyqGSIb3DQEMCgECoIIFMDCCBSwwZgYJKoZIhvcNAQUNMFkwOAYJKoZIhvcNAQUMMCsEFADE3pYDuTilu6lrukjNQ+JOm1oBAgInEAIBIDAMBggqhkiG9w0CCQUAMB0GCWCGSAFlAwQBKgQQMYgjkWy9in9nQdf+161u5QSCBMDqXrIofLKplkzNigjLchDdiQvhYsTG06FZF7iNMRwSuKWetMProX2vHIiDiuuk4jC/NYw7rz130+7drHU591xNRW/4ok2hSnpi/ft6Pbzq0FcVV3zf9Bfmnz7CKtOTCS/nYRNo9Gfl/sQ4/paVBsaaWIkizAvhAUUpSXNuYQ+uUgioR51wlgXIQI0J5lJMQVqGllcTloZKhPhGdb/KTSOE5r7hW3aUcZIsgeOvSRra68JZX2tTqUXmpUo3rJkH/Di4bk2nlXfCKYPF8vW/apT6kvHN+SjL2okMwb0PodhrWpS8UnjW+dda5pctzl6ORIzeitCDR4pXtkaaP/UvGncKfFcNPTRgDsxedRZX0IcEojA+QYqBNkyYuJKsRC+K+MJm+RFwCkj1+6py3kWqDkKYf1adQoQqDUO0ifB5ZW9mx24mVOLB/x+LcAcVNfTMqAEHIXMIvgSsZx+FfpA9pmk0a76oKtuNVjbmspyEZs8APmJxglPF5yPaz0edMWiCmjS5+Sa/wMiHEeMBL5cyVoL8PGdqvPiWSZmKsiZ/jqOfS6qWDDlmiWeYT0Qih7RNZVdGjqzE7nyBaJOseJrasnchtsr8rw5LejrQSOvpsuHrWdj8kctD+6YEQ8HwYuZ0MKvEKIYMAVQBvYILyCUzf2MDVbR81uZ3VwTxJXvwZI2cdDyBL6olhrlJtJutXTgJZ3CrfOWjusxAIrtD6LWHZvqQ3mVGBKSlTtK4e9TEWEr4LH5JFlJZM69wCcNwUAAnNhjh3sN4EUMlsaBZ7ByTNfbwCip/AedsSM2Y142aEolwbJhbIoN/T7GEuBdVAdPgmzBB49lNiO7chEyRhM1rqE04EVM18lAO8SrAEkEClH0w/Uea0JQHu9derVCH1MWPbfA4hEHVe+Y0qaunXU4PO4J3vvI33Zn5ip7eypOLrXc7hGu1w7aqgAztRRTmtMOA7eDpQilQ0pB/jab7t9d7wsJBR3a7TadDhkvFsfOVGdeVfDiNYyFxDxC0/V8SIwQvKWdyaO18x99sf9g3tS6cOL0mnqnyHMFujgCLxaQMUHnaKqnA5HVkxl2fk9e6UTOZtjpjoTUyIgg/DC7fMo/txkhL3BtHuKKzQWsidtMgMDdSHw9K3vs17r1N2CBd0Ya1kO26XpvIfnUixJPUv5scgnTwh4Bxz0sgU0Ki8ekqRd8eh8KrBgAKOAZo9A8Bm4S5xyFvhav6A62rxdMgEijXyN1Gn1OoJhbw+/R9QflxqnwjPBV1BHbUWJWTGR43B4SeKc32KKUNkHqKIbQUVv5N77ya8y1ASum+C8v86zOQszNHPJGOUD/JrM9H2yCZuZN8azr9p+zhHtPlqqnJIdYBQs1+ZoGk/Olzn861q3fyh5TnYsdscxL/NtK76qSkW5Ui29e+FuzVtvYt+/5kzwa/R/guUwAGyUpWc0jxGUwGdstBsbP24YqMAOmblDpbGWaCFbr6cqFahEoJ7U49wyQiA10K2lT6BzzC+x3u2TUQh27aBbLJ2E53kVJ7FeA2VQ6e8nD6gV/mVzAa7czm74M/MrUv5jQQ9rWrl9SmlAJgfpCTu84jeZU2ZQZhq/zhVPngpZgMhBJNkEEw50ZiOm3HbAWaMUowJQYJKoZIhvcNAQkUMRgeFgBzAGUAZQBkAHMAcwBlAGEAcwBvAG4wIQYJKoZIhvcNAQkVMRQEElRpbWUgMTc4NzQ5MDcxNzU4NTCCBKEGCSqGSIb3DQEHBqCCBJIwggSOAgEAMIIEhwYJKoZIhvcNAQcBMGYGCSqGSIb3DQEFDTBZMDgGCSqGSIb3DQEFDDArBBQ7x5PgMQfiV7XgbtCQVwUwLeLEqQICJxACASAwDAYIKoZIhvcNAgkFADAdBglghkgBZQMEASoEEO0RMNvADUJwVWXH1Dit+lOAggQQOrroWQI8U4nmUc6HWl4UBzukA7cPRt3P4ye3G2H+QPx4tr1rt11oUMn7kRBEuYHnN4aZsptv0Y3lqS1iZ9tcnQ42SpDBSbwlHC5O6nCARIt0H0fDAuyCUrmuqLd8AK4lNX0dlHpd5nd8ZxyBEoynAneRDY+hlDvrVzL6jTkEPx9vu7wygyGc8DJkyX7fboW7dbdZJpzVf1wldYxTRhtc8/YrDNDJc3xlgOLUaWsUqbUS9U7e0cl1rZ5UnhKB+DfUFxKcQEd6IGPoB9tUg1lonY4IBKomhqLztkVcET3XYFLfc1+3xdBxmpth8OaHUrUde0BgIAgouR91Wc/2OWseLUHeyrFyoER3DYCL6W0aYbtPOC9OC7awcBwtG2jFR3k8q8tXmTcdLFCL8q+/Rir3HrhaUC4IzVSMZiEaQ++AeANfoiTDxbL3bqIgk+tikACKxirX3tlkmlAWzfFB+Dbky7NSTC6hqM6Q4LBW0Hm0THWCu2/7BBvgyLtTvlgSmSXU/TNUSOH/gpYRK49muaTw+x9PrNv8/w4dcuCPe5kovWPCxnhhtG3fP327IIpHBpMR4S+8aVI7i6VELCuUH0tEaibdoC6Xab3Iy1ereaDW6vldJoGFQrSfDzKPVO0sVVsYNRm4DpCvpX5sF+IdJBo5H0Mgp4KX7nURGpPn1JJDS9i8CORUcQX8GnFlBHQbGEDtrhd0DfgWy2Z1aR5zP3GGEbHevovF7YwATvbD14VuHnJ1cqwvztu2FqsN3EsXpUkswGjgktO6kWdHKJjGpMms883PcxksDqoJZ5qXtMnt2KXCFoBhnEwmKF1Wg9rz8NQIOzcse0Sv04ChORj2V4HiPAiMhWt9PfhqNEq5qK4NBS1mVBw41tvGWLbsliMy8F6sQcTfktxCDIGZiej+DoK3FJHU2JE9DPfi47TV3z9SVN1Cf8hdHB71nIXXLQ6cAHNe4njp07w2nZHKcnEBNhd/JFB5V1m8MckSfXhsv/7M9f6Y+2VYTC5moS/1JTZS1aVn218IKjBYCWrdiTzgakXRQ7G6X9K53at1/otCQ9WmzTeytFZ31mQaTlXsboKuj0cbPxI57+NdjNVy9FGDFJKkfdQPjhxryWhzp/QA/JdzAOMnUj/0SYXZXRKUk6gvtZjrhn6EbRnP0y97emkrW41UmegNFo4IXodhxTvE1zmr4+gtFBqsqmUIpeBzd2klsgTZ+lrcaYgxt16RsTT6WWlhIbu5pJTNDly2ApkvqFd8EI6a2WeZ5IaXKtfgE6im2+Y3fwXHix/03re7cAk/xVz//0H1NFhHfPsuQo8hVaccjhJ5dMzJn5xkbtrwChVFh9YWLzfBUx7iSnQkSD5WgzT4dkA7DkDKwm60ZcGILdnpyBwwTTAxMA0GCWCGSAFlAwQCAQUABCBR8qQQU2lWAIWRf9E8YPKx9heqBD8+7+KchW4Y09Se1wQUQ40eWozpXmZV0syo0wO7nWBUVoQCAicQ" | base64 -d > android/app/release.keystore
+          echo "Keystore decoded"
 
-      - name: Create key.properties
-        env:
-          KEYSTORE_PASSWORD: ${{ secrets.KEYSTORE_PASSWORD }}
-          KEY_ALIAS: ${{ secrets.KEY_ALIAS }}
-          KEY_PASSWORD: ${{ secrets.KEY_PASSWORD }}
+      - name: Create key.properties (hardcoded)
         run: |
-          if [ -f android/app/release.keystore ]; then
-            echo "storePassword=$KEYSTORE_PASSWORD" > android/key.properties
-            echo "keyPassword=$KEY_PASSWORD" >> android/key.properties
-            echo "keyAlias=$KEY_ALIAS" >> android/key.properties
-            echo "storeFile=release.keystore" >> android/key.properties
-            echo "key.properties created"
-          fi
+          cat > android/key.properties << PROPEOF
+          storePassword=seedsseason123
+          keyPassword=seedsseason123
+          keyAlias=seedsseason
+          storeFile=release.keystore
+          PROPEOF
+          echo "key.properties created"
 
       - name: Patch debuggableVariants
         run: sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
