@@ -1,4 +1,4 @@
-# Build Release AAB — same structure as Debug APK, adds signing + bundleRelease
+# Build Release AAB — test without secrets
 
 name: Build AAB
 
@@ -25,11 +25,9 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Fix Kotlin version in react-native version catalogs
+      - name: Fix Kotlin version
         run: |
-          for f in \
-            node_modules/react-native/gradle/libs.versions.toml \
-            node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
+          for f in node_modules/react-native/gradle/libs.versions.toml node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
             if [ -f "$f" ]; then
               sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
               echo "Patched: $f"
@@ -45,12 +43,12 @@ jobs:
       - name: Generate native Android project
         run: npx expo prebuild --platform android --no-install --clean
 
-      - name: Make builds include JS bundle (standalone, no Metro)
+      - name: Make builds include JS bundle (standalone)
         run: |
           sed -i 's|//.*debuggableVariants.*|debuggableVariants = []|' android/app/build.gradle
-          echo "Patched debuggableVariants"
+          echo "Patched"
 
-      - name: Force play-services-ads to 23.x for Kotlin 1.9.x compat
+      - name: Force play-services-ads to 23.x
         run: |
           ROOT_BUILD="android/build.gradle"
           if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
@@ -70,24 +68,6 @@ jobs:
           echo "    }" >> "$ROOT_BUILD"
           echo "}" >> "$ROOT_BUILD"
           echo "Patched $ROOT_BUILD"
-
-      - name: Decode release keystore
-        env:
-          RELEASE_KEYSTORE_B64: ${{ secrets.RELEASE_KEYSTORE }}
-        run: echo "$RELEASE_KEYSTORE_B64" | base64 -d > android/app/release.keystore
-
-      - name: Write keystore.properties
-        env:
-          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
-          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
-        run: |
-          echo "storePassword=$KS_PASS" > android/keystore.properties
-          echo "keyPassword=$KS_PASS" >> android/keystore.properties
-          echo "keyAlias=$KS_ALIAS" >> android/keystore.properties
-          echo "storeFile=release.keystore" >> android/keystore.properties
-
-      - name: Patch build.gradle for release signing
-        run: python3 .github/scripts/patch-signing.py
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
