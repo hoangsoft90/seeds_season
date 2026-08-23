@@ -1,4 +1,4 @@
-# Build Release AAB — exact clone of Debug APK workflow
+# Build Release AAB — signed with release keystore
 
 name: Build AAB
 
@@ -74,10 +74,11 @@ jobs:
           echo "        }" >> "$ROOT_BUILD"
           echo "    }" >> "$ROOT_BUILD"
           echo "}" >> "$ROOT_BUILD"
-          echo "Patched $ROOT_BUILD"
 
-      - name: Decode keystore into /tmp
-        run: echo "${{ secrets.RELEASE_KEYSTORE }}" | base64 -d > /tmp/release.keystore
+      - name: Decode keystore
+        env:
+          KS_B64: ${{ secrets.RELEASE_KEYSTORE }}
+        run: echo "$KS_B64" | base64 -d > /tmp/release.keystore
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
@@ -85,15 +86,18 @@ jobs:
       - name: Accept Android licenses
         run: yes | sdkmanager --licenses > /dev/null 2>&1 || true
 
-      - name: Build release AAB (signed with release keystore)
+      - name: Build release AAB (signed)
+        env:
+          KS_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
+          KS_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
         run: |
           cd android
           chmod +x gradlew
           ./gradlew bundleRelease \
             -Pandroid.injected.signing.store.file=/tmp/release.keystore \
-            -Pandroid.injected.signing.store.password=${{ secrets.RELEASE_KEYSTORE_PASS }} \
-            -Pandroid.injected.signing.key.alias=${{ secrets.RELEASE_KEY_ALIAS }} \
-            -Pandroid.injected.signing.key.password=${{ secrets.RELEASE_KEYSTORE_PASS }}
+            -Pandroid.injected.signing.store.password=$KS_PASS \
+            -Pandroid.injected.signing.key.alias=$KS_ALIAS \
+            -Pandroid.injected.signing.key.password=$KS_PASS
 
       - name: Upload AAB artifact
         uses: actions/upload-artifact@v4
