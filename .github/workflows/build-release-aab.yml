@@ -59,20 +59,22 @@ jobs:
             echo "Already patched, skipping"
             exit 0
           fi
-          echo "" >> "$ROOT_BUILD"
-          echo "// Force play-services-ads to 23.x — v24.6.0 compiled with Kotlin 2.1.0" >> "$ROOT_BUILD"
-          echo "// incompatible with React Native SDK 52 Kotlin 1.9.x compiler" >> "$ROOT_BUILD"
-          echo "allprojects {" >> "$ROOT_BUILD"
-          echo "    configurations.all {" >> "$ROOT_BUILD"
-          echo "        resolutionStrategy {" >> "$ROOT_BUILD"
-          echo "            force \"com.google.android.gms:play-services-ads:23.6.0\"" >> "$ROOT_BUILD"
-          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib:1.9.25\"" >> "$ROOT_BUILD"
-          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25\"" >> "$ROOT_BUILD"
-          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25\"" >> "$ROOT_BUILD"
-          echo "            force \"org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25\"" >> "$ROOT_BUILD"
-          echo "        }" >> "$ROOT_BUILD"
-          echo "    }" >> "$ROOT_BUILD"
-          echo "}" >> "$ROOT_BUILD"
+          cat >> "$ROOT_BUILD" << 'GRADLEOF'
+
+          // Force play-services-ads to 23.x — v24.6.0 compiled with Kotlin 2.1.0
+          // incompatible with React Native SDK 52 Kotlin 1.9.x compiler
+          allprojects {
+              configurations.all {
+                  resolutionStrategy {
+                      force "com.google.android.gms:play-services-ads:23.6.0"
+                      force "org.jetbrains.kotlin:kotlin-stdlib:1.9.25"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk7:1.9.25"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-jdk8:1.9.25"
+                      force "org.jetbrains.kotlin:kotlin-stdlib-common:1.9.25"
+                  }
+              }
+          }
+          GRADLEOF
           echo "Patched $ROOT_BUILD"
 
       - name: Decode release keystore from GitHub secret
@@ -95,10 +97,11 @@ jobs:
           storeFile=release.keystore
           EOF
           echo "keystore.properties created"
+          cat android/keystore.properties
 
-      - name: Patch build.gradle to use release signing config
+      - name: Patch build.gradle for release signing
         run: |
-          python3 << 'PYEOF'
+          python3 -c "
           import re
 
           with open('android/app/build.gradle', 'r') as f:
@@ -108,49 +111,30 @@ jobs:
               print('Already patched, skipping')
               exit(0)
 
-          # 1. Add keystoreProperties loader after imports/before android block
-          loader = (
-              'def keystorePropertiesFile = rootProject.file("keystore.properties")\n'
-              'def keystoreProperties = new Properties()\n'
-              'if (keystorePropertiesFile.exists()) {\n'
-              '    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n'
-              '}\n\n'
-          )
-          # Insert before 'android {'
-          content = re.sub(
-              r'(android \{)',
-              loader + r'\1',
-              content,
-              count=1
-          )
+          loader = 'def keystorePropertiesFile = rootProject.file(\"keystore.properties\")\n'
+          loader += 'def keystoreProperties = new Properties()\n'
+          loader += 'if (keystorePropertiesFile.exists()) {\n'
+          loader += '    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n'
+          loader += '}\n\n'
 
-          # 2. Patch signingConfigs release block
-          signing_replacement = (
-              'signingConfigs {\n'
-              '    release {\n'
-              '        storeFile keystoreProperties.storeFile ? file(keystoreProperties.storeFile) : file("release.keystore")\n'
-              '        storePassword keystoreProperties["storePassword"]\n'
-              '        keyAlias keystoreProperties["keyAlias"]\n'
-              '        keyPassword keystoreProperties["keyPassword"]\n'
-              '    }\n'
-              '}'
-          )
-          # Replace existing signingConfigs block (may span multiple lines)
-          content = re.sub(
-              r'signingConfigs \{[\s\S]*?\n    \}',
-              signing_replacement,
-              content
-          )
+          content = re.sub(r'(android \{)', loader + r'\1', content, count=1)
+
+          signing = 'signingConfigs {\n'
+          signing += '    release {\n'
+          signing += '        storeFile keystoreProperties.storeFile ? file(keystoreProperties.storeFile) : file(\"release.keystore\")\n'
+          signing += '        storePassword keystoreProperties[\"storePassword\"]\n'
+          signing += '        keyAlias keystoreProperties[\"keyAlias\"]\n'
+          signing += '        keyPassword keystoreProperties[\"keyPassword\"]\n'
+          signing += '    }\n'
+          signing += '}'
+
+          content = re.sub(r'signingConfigs \{[\s\S]*?\n    \}', signing, content)
 
           with open('android/app/build.gradle', 'w') as f:
               f.write(content)
 
           print('Patched build.gradle with release signing config')
-          # Show the signingConfigs section
-          for line in content.split('\n'):
-              if 'signingConfig' in line.lower() or 'keystore' in line.lower():
-                  print(line)
-          PYEOF
+          "
 
       - name: Setup Android SDK
         uses: android-actions/setup-android@v3
