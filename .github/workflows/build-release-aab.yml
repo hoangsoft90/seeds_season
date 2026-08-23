@@ -1,5 +1,4 @@
-# Build Signed Release AAB — Expo prebuild + Gradle signing
-# Keystore stored as GitHub secret: RELEASE_KEYSTORE
+# Build Signed Release AAB
 
 name: Build Release AAB
 
@@ -33,7 +32,6 @@ jobs:
           for f in node_modules/react-native/gradle/libs.versions.toml node_modules/@react-native/gradle-plugin/gradle/libs.versions.toml; do
             if [ -f "$f" ]; then
               sed -i 's/^kotlin = "1\.9\.24"/kotlin = "1.9.25"/' "$f"
-              echo "Patched: $f"
             fi
           done
 
@@ -49,13 +47,9 @@ jobs:
       - name: Force play-services-ads to 23.x
         run: |
           ROOT_BUILD="android/build.gradle"
-          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then
-            echo "Already patched"
-            exit 0
-          fi
+          if grep -q "resolutionStrategy" "$ROOT_BUILD" 2>/dev/null; then echo "Patched"; exit 0; fi
           cat >> "$ROOT_BUILD" << 'GRADLEOF'
 
-          // Force play-services-ads to 23.x
           allprojects {
               configurations.all {
                   resolutionStrategy {
@@ -87,7 +81,6 @@ jobs:
           echo "keyPassword=$KS_PASS" >> android/keystore.properties
           echo "keyAlias=$KS_ALIAS" >> android/keystore.properties
           echo "storeFile=release.keystore" >> android/keystore.properties
-          cat android/keystore.properties
 
       - name: Patch build.gradle for signing
         run: python3 .github/scripts/patch-signing.py
@@ -107,10 +100,7 @@ jobs:
       - name: Verify AAB
         run: |
           AAB=$(find android/app/build/outputs/bundle/release -name "*.aab" 2>/dev/null | head -1)
-          if [ -z "$AAB" ]; then
-            echo "ERROR: No AAB found"
-            exit 1
-          fi
+          if [ -z "$AAB" ]; then echo "ERROR: No AAB"; exit 1; fi
           echo "AAB: $AAB"
           ls -la "$AAB"
 
