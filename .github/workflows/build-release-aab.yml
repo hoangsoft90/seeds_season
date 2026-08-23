@@ -83,42 +83,39 @@ jobs:
         run: |
           mkdir -p android/app
           echo "$RELEASE_KEYSTORE" | base64 -d > android/app/release.keystore
-          echo "Keystore decoded: $(ls -la android/app/release.keystore)"
+          ls -la android/app/release.keystore
 
       - name: Generate keystore.properties
         env:
-          RELEASE_KEYSTORE_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
-          RELEASE_KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
+          KEYSTORE_PASS: ${{ secrets.RELEASE_KEYSTORE_PASS }}
+          KEY_ALIAS: ${{ secrets.RELEASE_KEY_ALIAS }}
         run: |
-          cat > android/keystore.properties << EOF
-          storePassword=${RELEASE_KEYSTORE_PASS}
-          keyPassword=${RELEASE_KEYSTORE_PASS}
-          keyAlias=${RELEASE_KEY_ALIAS}
+          python3 -c "
+          content = f'''storePassword=${{KEYSTORE_PASS}}
+          keyPassword=${{KEYSTORE_PASS}}
+          keyAlias=${{KEY_ALIAS}}
           storeFile=release.keystore
-          EOF
-          echo "keystore.properties created"
-          cat android/keystore.properties
+          '''
+          with open('android/keystore.properties', 'w') as f:
+              f.write(content.strip() + chr(10))
+          print('keystore.properties created')
+          "
 
       - name: Patch build.gradle for release signing
         run: |
           python3 -c "
           import re
-
           with open('android/app/build.gradle', 'r') as f:
               content = f.read()
-
           if 'keystoreProperties' in content:
               print('Already patched, skipping')
               exit(0)
-
           loader = 'def keystorePropertiesFile = rootProject.file(\"keystore.properties\")\n'
           loader += 'def keystoreProperties = new Properties()\n'
           loader += 'if (keystorePropertiesFile.exists()) {\n'
           loader += '    keystoreProperties.load(new FileInputStream(keystorePropertiesFile))\n'
           loader += '}\n\n'
-
           content = re.sub(r'(android \{)', loader + r'\1', content, count=1)
-
           signing = 'signingConfigs {\n'
           signing += '    release {\n'
           signing += '        storeFile keystoreProperties.storeFile ? file(keystoreProperties.storeFile) : file(\"release.keystore\")\n'
@@ -127,12 +124,9 @@ jobs:
           signing += '        keyPassword keystoreProperties[\"keyPassword\"]\n'
           signing += '    }\n'
           signing += '}'
-
           content = re.sub(r'signingConfigs \{[\s\S]*?\n    \}', signing, content)
-
           with open('android/app/build.gradle', 'w') as f:
               f.write(content)
-
           print('Patched build.gradle with release signing config')
           "
 
