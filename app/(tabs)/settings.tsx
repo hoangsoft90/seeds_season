@@ -88,9 +88,17 @@ export default function SettingsScreen() {
         </View>
       </View>
 
-      {/* Privacy Policy */}
+      {/* User Guide */}
       <TouchableOpacity
         style={styles.linkButton}
+        onPress={() => Linking.openURL("https://planttoday.web.app/guide.html")}
+      >
+        <Text style={styles.linkText}>{t("settings.userGuide") || "📖 User Guide"}</Text>
+      </TouchableOpacity>
+
+      {/* Privacy Policy */}
+      <TouchableOpacity
+        style={[styles.linkButton, { marginTop: 8 }]}
         onPress={() => Linking.openURL("https://hoangsoft90.github.io/seeds_season/privacy-policy.html")}
       >
         <Text style={styles.linkText}>{t("settings.privacyPolicy") || "🔒 Privacy Policy"}</Text>

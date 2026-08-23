@@ -167,6 +167,7 @@
     "appName": "App",
     "version": "Version",
     "currentLang": "Current language",
+    "userGuide": "📖 User Guide",
     "privacyPolicy": "🔒 Privacy Policy"
   }
 }

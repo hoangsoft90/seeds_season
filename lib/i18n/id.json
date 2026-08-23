@@ -167,6 +167,7 @@
     "appName": "Aplikasi",
     "version": "Versi",
     "currentLang": "Bahasa saat ini",
+    "userGuide": "📖 Panduan Pengguna",
     "privacyPolicy": "🔒 Kebijakan Privasi"
   }
 }
