@@ -12,7 +12,6 @@ keyProperties.load(new FileInputStream(rootProject.file('key.properties')))
 project.ext.set('keyProperties', keyProperties)
 
 """
-    # Insert after "android {" line
     content = re.sub(r'(android\s*\{)', r'\1\n' + loader, content, count=1)
 
 # Step 2: Add signingConfigs block inside android block (before buildTypes)
@@ -26,26 +25,27 @@ if 'signingConfigs' not in content:
         }
     }
 """
-    # Insert before buildTypes
     content = re.sub(r'(\s*buildTypes\s*\{)', signing_block + r'\1', content, count=1)
 
 # Step 3: Add signingConfig to release buildType
+# Must target "release {" inside buildTypes, NOT inside signingConfigs
 if 'signingConfig signingConfigs.release' not in content:
-    # Find "release {" inside buildTypes and add signingConfig after it
-    # Simple approach: find "release {" and insert after the opening brace
-    content = re.sub(
-        r'(\brelease\s*\{)',
-        r'\1\n            signingConfig signingConfigs.release',
-        content,
-        count=1
-    )
+    # Find "buildTypes {" and then find "release {" after it
+    # Replace only the release inside buildTypes
+    buildTypes_match = re.search(r'buildTypes\s*\{', content)
+    if buildTypes_match:
+        start = buildTypes_match.end()
+        # Find the release block after buildTypes
+        release_match = re.search(r'\brelease\s*\{', content[start:])
+        if release_match:
+            insert_pos = start + release_match.end()
+            content = content[:insert_pos] + '\n            signingConfig signingConfigs.release' + content[insert_pos:]
 
 with open('build.gradle', 'w') as f:
     f.write(content)
 
 print('Signing config injected successfully')
 print('--- Verifying ---')
-# Verify
 with open('build.gradle', 'r') as f:
     verify = f.read()
 if 'signingConfig signingConfigs.release' in verify:
