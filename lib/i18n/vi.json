@@ -35,7 +35,7 @@
     "sunlight": "Giờ nắng/ngày: {{hours}}h",
     "potDepth": "Độ sâu chậu: {{depth}}cm",
     "cropCount": "📊 {{count}} loại cây có sẵn cho {{country}}",
-    "submit": "🔍 Gợiý cho tôi",
+    "submit": "🔍 Gợi ý cho tôi",
     "missingInfo": "Thiếu thông tin",
     "missingInfoMsg": "Vui lòng chọn quốc gia, vùng và vị trí trồng."
   },
