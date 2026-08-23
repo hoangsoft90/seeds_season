@@ -10,6 +10,7 @@ import {
   StyleSheet,
 } from "react-native";
 import { useRouter } from "expo-router";
+import { Linking } from "react-native";
 import {
   LANGUAGES,
   getCurrentLanguage,
@@ -90,7 +91,7 @@ export default function SettingsScreen() {
       {/* Privacy Policy */}
       <TouchableOpacity
         style={styles.linkButton}
-        onPress={() => router.push("/privacy-policy")}
+        onPress={() => Linking.openURL("https://hoangsoft90.github.io/seeds_season/privacy-policy.html")}
       >
         <Text style={styles.linkText}>{t("settings.privacyPolicy") || "🔒 Privacy Policy"}</Text>
       </TouchableOpacity>
